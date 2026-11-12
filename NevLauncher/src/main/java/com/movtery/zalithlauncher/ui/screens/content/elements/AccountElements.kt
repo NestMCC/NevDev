@@ -59,6 +59,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -1923,38 +1924,39 @@ fun SelectCapeDialog(
         }
     }
 
-    val panelShape = RoundedCornerShape(28.dp)
+    val panelShape = RoundedCornerShape(22.dp)
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Column(
             modifier = Modifier
-                .padding(all = 16.dp)
-                .fillMaxWidth(0.94f)
+                .padding(all = 12.dp)
+                .fillMaxWidth(0.8f)
+                .widthIn(max = 560.dp)
                 .heightIn(max = rememberDialogMaxHeight())
-                .nevGlow(panelShape, 18.dp, 0.8f)
+                .nevGlow(panelShape, 14.dp, 0.8f)
                 .clip(panelShape)
                 .background(NevRed.PanelBrush)
                 .border(NevCardBorder, panelShape)
-                .padding(horizontal = 20.dp, vertical = 18.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             //Header: ubin ikon gradasi + label kecil + judul + tombol tutup
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(14.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Box(
                     modifier = Modifier
-                        .size(54.dp)
-                        .nevGlow(RoundedCornerShape(16.dp), 10.dp, 0.9f)
-                        .background(NevRed.GradientDiagonal, RoundedCornerShape(16.dp)),
+                        .size(40.dp)
+                        .nevGlow(RoundedCornerShape(12.dp), 8.dp, 0.9f)
+                        .background(NevRed.GradientDiagonal, RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        modifier = Modifier.size(28.dp),
+                        modifier = Modifier.size(22.dp),
                         painter = painterResource(R.drawable.ic_checkroom),
                         contentDescription = null,
                         tint = NevRed.OnGradient
@@ -1963,14 +1965,14 @@ fun SelectCapeDialog(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = stringResource(R.string.account_cape_kicker),
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
-                        letterSpacing = 2.sp,
+                        letterSpacing = 1.5.sp,
                         color = NevRed.GradientEnd
                     )
                     Text(
                         text = stringResource(R.string.account_change_cape_select_cape),
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.ExtraBold,
                         color = NevRed.OnPanel
                     )
@@ -1984,8 +1986,8 @@ fun SelectCapeDialog(
                 ) {
                     Icon(
                         modifier = Modifier
-                            .padding(12.dp)
-                            .size(22.dp),
+                            .padding(8.dp)
+                            .size(18.dp),
                         painter = painterResource(R.drawable.ic_close),
                         contentDescription = stringResource(R.string.generic_close)
                     )
@@ -1994,16 +1996,16 @@ fun SelectCapeDialog(
 
             Text(
                 text = stringResource(R.string.account_cape_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
                 color = NevRed.Muted
             )
 
             androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
                 modifier = Modifier.weight(1f, fill = false),
-                columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(minSize = 140.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(bottom = 8.dp, top = 4.dp)
+                columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(minSize = 100.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(bottom = 6.dp, top = 2.dp)
             ) {
                 items(capes.size) { index ->
                     val cape = capes[index]
@@ -2033,11 +2035,11 @@ private fun CapeGridCard(
     val avatar by produceState<ImageBitmap?>(null, cape, density) {
         value = withContext(Dispatchers.IO) {
             if (cape != EmptyCape) {
-                getCapeAvatar(cape = cape, size = 96.dp, density = density)?.asImageBitmap()
+                getCapeAvatar(cape = cape, size = 72.dp, density = density)?.asImageBitmap()
             } else null
         }
     }
-    val shape = RoundedCornerShape(20.dp)
+    val shape = RoundedCornerShape(16.dp)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -2052,15 +2054,15 @@ private fun CapeGridCard(
                 shape
             )
             .clickable(onClick = onClick)
-            .padding(12.dp),
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(112.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .height(84.dp)
+                .clip(RoundedCornerShape(12.dp))
                 .background(Color.Black.copy(alpha = 0.4f)),
             contentAlignment = Alignment.Center
         ) {
@@ -2076,7 +2078,7 @@ private fun CapeGridCard(
                 )
             } else if (cape == EmptyCape) {
                 Icon(
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(28.dp),
                     painter = painterResource(R.drawable.ic_close),
                     contentDescription = null,
                     tint = NevRed.Muted
@@ -2086,14 +2088,14 @@ private fun CapeGridCard(
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(6.dp)
-                        .size(26.dp)
-                        .nevGlow(CircleShape, 6.dp, 0.9f)
+                        .padding(4.dp)
+                        .size(20.dp)
+                        .nevGlow(CircleShape, 5.dp, 0.9f)
                         .background(NevRed.GradientDiagonal, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(12.dp),
                         painter = painterResource(R.drawable.ic_check),
                         contentDescription = null,
                         tint = NevRed.OnGradient
@@ -2103,7 +2105,7 @@ private fun CapeGridCard(
         }
         AndroidStringText(
             text = name,
-            style = MaterialTheme.typography.labelLarge.copy(color = NevRed.OnPanel),
+            style = MaterialTheme.typography.labelMedium.copy(color = NevRed.OnPanel),
             fontWeight = FontWeight.Bold,
             maxLines = 1
         )

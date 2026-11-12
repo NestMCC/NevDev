@@ -20,9 +20,12 @@ package com.movtery.zalithlauncher.ui.screens.main.control_editor
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -32,10 +35,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -51,12 +56,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.movtery.guide.guideLazyList
 import com.movtery.guide.guideNode
 import com.movtery.layer_controller.data.HideLayerWhen
@@ -68,7 +77,7 @@ import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.bridge.CURSOR_DISABLED
 import com.movtery.zalithlauncher.bridge.CURSOR_ENABLED
 import com.movtery.zalithlauncher.setting.AllSettings
-import com.movtery.zalithlauncher.ui.components.DualMenuSubscreen
+import com.movtery.zalithlauncher.ui.components.CenterMenuSubscreen
 import com.movtery.zalithlauncher.ui.components.FloatingBall
 import com.movtery.zalithlauncher.ui.components.MarqueeText
 import com.movtery.zalithlauncher.ui.components.MenuListLayout
@@ -78,7 +87,9 @@ import com.movtery.zalithlauncher.ui.components.MenuTextButton
 import com.movtery.zalithlauncher.ui.components.ScalingActionButton
 import com.movtery.zalithlauncher.ui.components.lazyScrollWithBar
 import com.movtery.zalithlauncher.ui.guide.GuideKeys
+import com.movtery.zalithlauncher.ui.theme.NevRed
 import com.movtery.zalithlauncher.ui.theme.cardColor
+import com.movtery.zalithlauncher.ui.theme.nevGlow
 import com.movtery.zalithlauncher.ui.theme.onCardColor
 import com.movtery.zalithlauncher.utils.string.isNotEmptyOrBlank
 import sh.calvin.reorderable.ReorderableItem
@@ -131,21 +142,33 @@ fun MenuBox(
     opened: Boolean,
     onClick: () -> Unit
 ) {
+    //Tombol menu bulat bergaya Nev: gradasi saat terbuka, panel gelap + garis tepi saat tertutup
     FloatingBall(
         modifier = modifier,
         position = position,
         onPositionChanged = onPositionChanged,
-        onClick = onClick
+        onClick = onClick,
+        color = Color.Transparent,
+        contentColor = Color.White,
+        shape = CircleShape
     ) {
+        val brush = if (opened) NevRed.GradientDiagonal else NevRed.PanelBrush
         Box(
             modifier = Modifier
-                .padding(all = 2.dp)
-                .size(28.dp),
+                .size(44.dp)
+                .nevGlow(CircleShape, 8.dp, 0.7f)
+                .clip(CircleShape)
+                .background(brush)
+                .border(
+                    1.5.dp,
+                    if (opened) NevRed.OnGradient.copy(alpha = 0.5f) else NevRed.OutlineBright,
+                    CircleShape
+                ),
             contentAlignment = Alignment.Center
         ) {
             Crossfade(opened) { state ->
                 Icon(
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(22.dp),
                     painter = painterResource(
                         if (state) {
                             R.drawable.ic_menu_open
@@ -153,7 +176,8 @@ fun MenuBox(
                             R.drawable.ic_menu
                         }
                     ),
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = if (state) NevRed.OnGradient else NevRed.OnPanel
                 )
             }
         }
@@ -189,54 +213,45 @@ fun EditorMenu(
     saveAndExit: () -> Unit,
     onExit: () -> Unit
 ) {
-    DualMenuSubscreen(
+    //Satu panel di tengah: header + dua bagian (Menu | Lapisan Kontrol) yang rapi
+    CenterMenuSubscreen(
         state = state,
         closeScreen = closeScreen,
-        leftMenuTitle = {
-            Text(
-                modifier = Modifier.padding(all = 8.dp),
-                text = stringResource(R.string.control_editor_menu_title),
-                style = MaterialTheme.typography.titleMedium
+        widthFraction = 0.86f,
+        maxWidth = 900.dp
+    ) {
+        //Header: logo N + judul + tombol fokus lapisan + tutup
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(NevRed.PanelBrush)
+                .padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .border(1.dp, NevRed.OutlineBright, RoundedCornerShape(8.dp)),
+                painter = painterResource(R.drawable.img_nev_logo),
+                contentDescription = null,
+                contentScale = ContentScale.Fit
             )
-        },
-        leftMenuContent = {
-            EditorMenuContent(
+            Text(
                 modifier = Modifier.weight(1f),
-                closeScreen = closeScreen,
-                addNewButton = addNewButton,
-                addNewText = addNewText,
-                addNewJoystick = addNewJoystick,
-                openStyleList = openStyleList,
-                openJoystickStyleList = openJoystickStyleList,
-                openStyleCabinet = openStyleCabinet,
-                isPreviewMode = isPreviewMode,
-                onPreviewChanged = onPreviewChanged,
-                previewScenario = previewScenario,
-                onPreviewScenarioChanged = onPreviewScenarioChanged,
-                previewHideLayerWhen = previewHideLayerWhen,
-                onPreviewHideLayerChanged = onPreviewHideLayerChanged,
-                onSave = onSave,
-                saveAndExit = saveAndExit,
-                onExit = onExit
-            )
-        },
-        rightMenuTitle = {
-            Text(
-                modifier = Modifier.padding(all = 8.dp),
-                text = stringResource(R.string.control_editor_layers_title),
-                style = MaterialTheme.typography.titleMedium
+                text = stringResource(R.string.control_editor_menu_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = NevRed.OnPanel,
+                maxLines = 1
             )
             //切换控件层聚焦
             IconButton(
-                modifier = Modifier.align(Alignment.CenterEnd),
-                onClick = {
-                    onLayerFocusChanged(isLayerFocus.not())
-                },
+                onClick = { onLayerFocusChanged(isLayerFocus.not()) },
                 enabled = isPreviewMode.not() && selectedLayer != null
             ) {
-                Crossfade(
-                    targetState = isLayerFocus
-                ) { isFocus ->
+                Crossfade(targetState = isLayerFocus) { isFocus ->
                     Icon(
                         painter = painterResource(
                             if (isFocus) {
@@ -249,19 +264,90 @@ fun EditorMenu(
                     )
                 }
             }
-        },
-        rightMenuContent = {
-            ControlLayerMenu(
-                layers = layers,
-                onReorder = onReorder,
-                selectedLayer = selectedLayer,
-                onLayerSelected = onLayerSelected,
-                createLayer = createLayer,
-                onAttribute = onAttribute,
-                onHideSwitch = onHideSwitch,
-                enabled = isPreviewMode.not()
-            )
+            IconButton(onClick = closeScreen) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = stringResource(R.string.generic_close)
+                )
+            }
         }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(
+                    Brush.horizontalGradient(listOf(Color.Transparent, NevRed.Outline, Color.Transparent))
+                )
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            //Kiri: menu editor
+            Column(modifier = Modifier.weight(1f)) {
+                EditorSectionLabel(text = stringResource(R.string.control_editor_menu_title))
+                EditorMenuContent(
+                    modifier = Modifier.weight(1f),
+                    closeScreen = closeScreen,
+                    addNewButton = addNewButton,
+                    addNewText = addNewText,
+                    addNewJoystick = addNewJoystick,
+                    openStyleList = openStyleList,
+                    openJoystickStyleList = openJoystickStyleList,
+                    openStyleCabinet = openStyleCabinet,
+                    isPreviewMode = isPreviewMode,
+                    onPreviewChanged = onPreviewChanged,
+                    previewScenario = previewScenario,
+                    onPreviewScenarioChanged = onPreviewScenarioChanged,
+                    previewHideLayerWhen = previewHideLayerWhen,
+                    onPreviewHideLayerChanged = onPreviewHideLayerChanged,
+                    onSave = onSave,
+                    saveAndExit = saveAndExit,
+                    onExit = onExit
+                )
+            }
+            //Pembatas vertikal
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(1.dp)
+                    .background(
+                        Brush.verticalGradient(listOf(Color.Transparent, NevRed.Outline, Color.Transparent))
+                    )
+            )
+            //Kanan: lapisan kontrol
+            Column(modifier = Modifier.weight(1f)) {
+                EditorSectionLabel(text = stringResource(R.string.control_editor_layers_title))
+                ControlLayerMenu(
+                    layers = layers,
+                    onReorder = onReorder,
+                    selectedLayer = selectedLayer,
+                    onLayerSelected = onLayerSelected,
+                    createLayer = createLayer,
+                    onAttribute = onAttribute,
+                    onHideSwitch = onHideSwitch,
+                    enabled = isPreviewMode.not()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EditorSectionLabel(text: String) {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(NevRed.PanelDeep)
+            .padding(horizontal = 14.dp, vertical = 6.dp),
+        text = text.uppercase(),
+        style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 1.5.sp,
+        color = NevRed.GradientEnd,
+        maxLines = 1
     )
 }
 
