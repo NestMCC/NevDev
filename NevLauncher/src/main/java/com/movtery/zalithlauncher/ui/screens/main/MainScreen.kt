@@ -44,6 +44,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -474,8 +476,11 @@ private fun SideRail(
     openFileManager: () -> Unit,
 ) {
     CompositionLocalProvider(LocalContentColor provides contentColor) {
+        //Bisa digeser vertikal: saat launcher diperbesar, menu Pengaturan tetap bisa dijangkau
+        val scrollState = rememberScrollState()
         Column(
             modifier = modifier
+                .verticalScroll(scrollState)
                 .padding(top = 52.dp, bottom = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
