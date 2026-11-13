@@ -183,32 +183,60 @@ class PathManager {
             return publicDir
         }
 
+        private fun File.isEmptyDir(): Boolean = isDirectory && list()?.isEmpty() == true
+
         /**
-         * Pindahkan data lama dari Android/data ke folder di beranda (dipindah, bukan disalin).
+         * Pindahkan [src] ke [dest]. Coba rename dulu; bila gagal (misalnya beda mount antara
+         * Android/data dan penyimpanan utama), salin dulu lalu hapus sumbernya.
+         * Bila penyalinan gagal, salinan setengah jadi dibuang dan sumber dibiarkan utuh.
+         * @return true bila [dest] sudah berisi data dari [src]
+         */
+        private fun moveEntry(src: File, dest: File): Boolean {
+            if (dest.isEmptyDir()) dest.delete() //folder kosong sisa percobaan lama, boleh ditimpa
+            if (dest.exists()) return false
+            if (src.renameTo(dest)) return true
+
+            return try {
+                if (src.isDirectory) FileUtils.copyDirectory(src, dest) else FileUtils.copyFile(src, dest)
+                if (!FileUtils.deleteQuietly(src)) {
+                    Logger.warning(TAG, "Copied to ${dest.absolutePath}, but unable to remove the original: ${src.absolutePath}")
+                }
+                true
+            } catch (e: Exception) {
+                Logger.warning(TAG, "Failed to move ${src.absolutePath} to ${dest.absolutePath}", e)
+                FileUtils.deleteQuietly(dest)
+                false
+            }
+        }
+
+        /**
+         * Pindahkan data lama dari Android/data ke folder di beranda.
          * Folder game (.minecraft) dipindah lebih dulu; bila gagal, tidak ada yang dipindah
          * dan launcher tetap memakai folder lama agar data tidak terlihat hilang.
          * @return false bila folder game gagal dipindah
          */
         private fun migrateLegacyData(legacyDir: File, publicDir: File): Boolean {
-            if (!legacyDir.isDirectory) return true
-
-            val legacyGame = File(legacyDir, GAME_DIR_NAME)
             val publicGame = File(publicDir, GAME_DIR_NAME)
-            if (legacyGame.exists() && !publicGame.exists()) {
-                if (!legacyGame.renameTo(publicGame)) {
-                    Logger.warning(TAG, "Failed to move game folder to ${publicGame.absolutePath}, keeping ${legacyDir.absolutePath}")
-                    return false
+
+            if (legacyDir.isDirectory && legacyDir.canonicalPath != publicDir.canonicalPath) {
+                val legacyGame = File(legacyDir, GAME_DIR_NAME)
+                if (legacyGame.exists() && (!publicGame.exists() || publicGame.isEmptyDir())) {
+                    if (!moveEntry(legacyGame, publicGame)) {
+                        Logger.warning(TAG, "Failed to move game folder to ${publicGame.absolutePath}, keeping ${legacyDir.absolutePath}")
+                        return false
+                    }
+                }
+
+                //sisanya (log, layout kontrol, dll.) dipindah semampunya, tidak menimpa data yang sudah ada
+                legacyDir.listFiles()?.forEach { child ->
+                    if (child.name == GAME_DIR_NAME) return@forEach
+                    moveEntry(child, File(publicDir, child.name))
                 }
             }
 
-            //sisanya (log, layout kontrol, dll.) dipindah semampunya, tidak menimpa file yang sudah ada
-            legacyDir.listFiles()?.forEach { child ->
-                if (child.name == GAME_DIR_NAME) return@forEach
-                val dest = File(publicDir, child.name)
-                if (dest.exists()) return@forEach
-                if (!child.renameTo(dest)) {
-                    Logger.warning(TAG, "Failed to move ${child.absolutePath} to ${dest.absolutePath}")
-                }
+            //pastikan folder game ada, supaya folder NevLauncher di beranda tidak kosong
+            if (!publicGame.exists() && !publicGame.mkdirs()) {
+                Logger.warning(TAG, "Failed to create game folder: ${publicGame.absolutePath}")
             }
             return true
         }
