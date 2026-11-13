@@ -47,6 +47,7 @@ import com.movtery.zalithlauncher.game.renderer.Renderers
 import com.movtery.zalithlauncher.game.renderer.getSfpewLibraryPath
 import com.movtery.zalithlauncher.game.renderer.isSfpewEnabledFor
 import com.movtery.zalithlauncher.game.renderer.prepareRendererLaunchConfig
+import com.movtery.zalithlauncher.game.renderer.renderers.NevRenderer
 import com.movtery.zalithlauncher.game.support.touch_controller.ControllerProxy
 import com.movtery.zalithlauncher.game.version.installed.Version
 import com.movtery.zalithlauncher.game.version.installed.VersionInfoParser
@@ -449,6 +450,14 @@ private fun setRendererEnv(
 
     // SDL 环境变量
     envMap["SDL_OPENGL_LIBRARY"] = rendererId
+
+    // MC 26.3+ membandingkan alamat glGetError dari LWJGL dan dari SDL_GL_GetProcAddress.
+    // SDL harus memuat library GL yang sama dengan LWJGL (org.lwjgl.opengl.libname),
+    // bukan libGLESv2 sistem, kalau tidak muncul "glGetError mismatch".
+    if (renderer === NevRenderer) {
+        val glLib = File(PathManager.DIR_NATIVE_LIB, renderer.getRendererLibrary())
+        if (glLib.isFile) envMap["SDL_OPENGL_LIBRARY"] = glLib.absolutePath
+    }
 
     if (rendererId.startsWith("opengles2")) {
         envMap["LIBGL_ES"] = "2"
