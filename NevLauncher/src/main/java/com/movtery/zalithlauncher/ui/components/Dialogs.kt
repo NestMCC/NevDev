@@ -777,6 +777,7 @@ private fun NevOutlineButton(
 
 private fun Modifier.androidx_widthIn(max: Dp): Modifier = this.then(Modifier.widthIn(max = max))
 
+@Composable
 private fun Modifier.androidx_border(
     shape: androidx.compose.ui.graphics.Shape,
     width: Dp = 1.2.dp,
@@ -791,6 +792,7 @@ private fun Modifier.androidx_fill(
 private fun Modifier.androidx_fillBrush(brush: androidx.compose.ui.graphics.Brush): Modifier =
     this.then(Modifier.background(brush))
 
+@Composable
 private fun Modifier.androidx_panelBackground(shape: androidx.compose.ui.graphics.Shape): Modifier =
     this.then(
         Modifier.background(
