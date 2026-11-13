@@ -688,6 +688,7 @@ fun NevLauncherTheme(
     content: @Composable () -> Unit
 ) {
     val colorTheme = AllSettings.launcherColorTheme.state
+    val nevStyle = nevStyleFor(AllSettings.launcherDesignStyle.state)
     val customColorInt = AllSettings.launcherCustomColor.state
     val customColor = Color(customColorInt)
     val customPaletteStyle = AllSettings.launcherCustomPaletteStyle.state
@@ -709,6 +710,7 @@ fun NevLauncherTheme(
                 ColorThemeType.URBAN_ASH -> urbanAshDark
                 ColorThemeType.VERDANT_DAWN -> verdantDawnDark
                 ColorThemeType.NEV_LAVA -> nevLavaDark
+                ColorThemeType.CRYOGENIC -> cryogenicDark
                 ColorThemeType.CUSTOM -> customDark(
                     color = customColor,
                     style = customPaletteStyle
@@ -725,6 +727,7 @@ fun NevLauncherTheme(
                 ColorThemeType.URBAN_ASH -> urbanAshLight
                 ColorThemeType.VERDANT_DAWN -> verdantDawnLight
                 ColorThemeType.NEV_LAVA -> nevLavaLight
+                ColorThemeType.CRYOGENIC -> cryogenicLight
                 ColorThemeType.CUSTOM -> customLight(
                     color = customColor,
                     style = customPaletteStyle
@@ -764,7 +767,8 @@ fun NevLauncherTheme(
     CompositionLocalProvider(
         LocalBackgroundViewModel provides backgroundViewModel,
         LocalFestivals provides festivals,
-        LocalDensity provides scaledDensity
+        LocalDensity provides scaledDensity,
+        LocalNevStyle provides nevStyle
     ) {
         MaterialExpressiveTheme(
             colorScheme = currentDisplayScheme,

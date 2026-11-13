@@ -143,6 +143,20 @@
     <!-- Option of the theme color setting in launcher settings -->
     <string name="theme_color_verdant_dawn">Silent Forest Dawn</string>
     <string name="theme_color_nev_lava">Nev Lava</string>
+    <string name="theme_color_cryogenic">Cryogenic</string>
+    <string name="settings_tab_display">Display</string>
+    <string name="settings_display_design_theme_title">Design Theme</string>
+    <string name="settings_display_design_theme_summary">Pick the overall look of the launcher.</string>
+    <string name="settings_display_theme_nev_lava_desc">Red and orange, bold gaming look.</string>
+    <string name="settings_display_theme_cryogenic_desc">Ice blue and cyan, dark futuristic panels.</string>
+    <string name="settings_display_style_title">Design Style</string>
+    <string name="settings_display_style_summary">Changes the shape and feel of panels, tabs and buttons, independent of color.</string>
+    <string name="settings_display_style_nev">Classic (rounded)</string>
+    <string name="settings_display_style_cryogenic">Cryogenic (glass, cut corners)</string>
+    <string name="settings_display_nav_side_title">Menu Position</string>
+    <string name="settings_display_nav_side_summary">Where the main navigation menu (File, Server, Download, Settings...) sits.</string>
+    <string name="settings_display_nav_side_start">Left</string>
+    <string name="settings_display_nav_side_end">Right</string>
     <!-- Title of the color picker dialog -->
     <string name="theme_color_picker_title">Color Picker</string>
     <!-- Button in the color picker dialog to edit the color as a hex code -->
@@ -340,6 +354,8 @@
     <!-- Status label in the mod loader list; %s is the list of incompatible game versions -->
     <string name="download_game_addon_incompatible_with">Incompatible with %s</string>
     <!-- Status label for OptiFine versions; %s is the compatible Forge version -->
+    <string name="download_addon_files_count">%1$d files</string>
+    <string name="download_addon_compatible_badge">Compatible</string>
     <string name="download_game_addon_compatible_with">Compatible with %s</string>
     <!-- Message asking the user to pick a version first; %s is the mod loader name -->
     <string name="download_game_addon_request_addon">Please select the %s version first</string>

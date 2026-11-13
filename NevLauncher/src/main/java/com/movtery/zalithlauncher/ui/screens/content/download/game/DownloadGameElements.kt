@@ -50,6 +50,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
+import com.movtery.zalithlauncher.ui.theme.nevShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -290,6 +294,7 @@ fun <E> AddonListLayout(
                                         .fillMaxWidth()
                                         .padding(all = 4.dp),
                                     number = index + 1,
+                                    index = index,
                                     selected = selectedItem == item,
                                     itemName = getItemText(item),
                                     summary = summary?.let {
@@ -455,8 +460,20 @@ fun AddonListItem(
     selected: Boolean,
     itemName: String,
     summary: (@Composable () -> Unit)? = null,
+    index: Int? = null,
     onClick: () -> Unit = {}
 ) {
+    if (LocalNevStyle.current.cutCorners) {
+        CryoAddonListItem(
+            modifier = modifier,
+            selected = selected,
+            itemName = itemName,
+            summary = summary,
+            index = index,
+            onClick = onClick
+        )
+        return
+    }
     val shape = RoundedCornerShape(20.dp)
     Row(
         modifier = modifier
@@ -513,6 +530,81 @@ fun AddonListItem(
                     tint = NevRed.OnGradient,
                     contentDescription = null
                 )
+            }
+        }
+    }
+}
+
+/** Baris versi gaya Cryogenic: nomor, versi monospace, ringkasan, dan lingkaran centang. */
+@Composable
+private fun CryoAddonListItem(
+    modifier: Modifier,
+    selected: Boolean,
+    itemName: String,
+    summary: (@Composable () -> Unit)?,
+    index: Int?,
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = nevShape(20.dp),
+        color = Color.Transparent,
+        contentColor = NevRed.OnPanel,
+        border = BorderStroke(
+            if (selected) 1.5.dp else 1.dp,
+            if (selected) NevRed.OutlineBright else NevRed.Outline.copy(alpha = 0.75f)
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .background(
+                    Brush.horizontalGradient(
+                        listOf(NevRed.Panel.copy(alpha = 0.8f), NevRed.PanelDeep.copy(alpha = 0.9f))
+                    )
+                )
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            if (index != null) {
+                Text(
+                    text = "%02d".format(index + 1),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontFamily = FontFamily.Monospace,
+                    color = NevRed.GradientEnd
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = itemName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
+                )
+                summary?.invoke()
+            }
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .then(
+                        if (selected) Modifier.background(NevRed.GradientDiagonal, CircleShape)
+                        else Modifier.border(1.5.dp, NevRed.Outline, CircleShape)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (selected) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        painter = painterResource(R.drawable.ic_check),
+                        contentDescription = null,
+                        tint = NevRed.OnGradient
+                    )
+                }
             }
         }
     }

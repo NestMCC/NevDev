@@ -113,6 +113,20 @@ fun SimpleAlertDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    if (useCryoDialog()) {
+        CryoDialog(
+            title = title,
+            confirmText = confirmText,
+            dismissText = dismissText,
+            onConfirm = onConfirm,
+            onDismiss = onDismiss,
+            onDismissRequest = onDismiss,
+            dismissOnOutside = dismissByDialog
+        ) {
+            Text(text = text, style = MaterialTheme.typography.bodyLarge)
+        }
+        return
+    }
     NevAlertDialog(
         title = title,
         onDismissRequest = { if (dismissByDialog) onDismiss() },
@@ -141,6 +155,18 @@ fun SimpleAlertDialog(
     dismissByDialog: Boolean = true,
     onDismiss: () -> Unit
 ) {
+    if (useCryoDialog()) {
+        CryoDialog(
+            title = title,
+            confirmText = confirmText,
+            onConfirm = onDismiss,
+            onDismissRequest = onDismiss,
+            dismissOnOutside = dismissByDialog
+        ) {
+            Text(text = text, style = MaterialTheme.typography.bodyLarge)
+        }
+        return
+    }
     NevAlertDialog(
         title = title,
         onDismissRequest = { if (dismissByDialog) onDismiss() },
@@ -161,6 +187,18 @@ fun SimpleAlertDialog(
     onCancel: () -> Unit,
     onDismissRequest: () -> Unit = {}
 ) {
+    if (useCryoDialog()) {
+        CryoDialog(
+            title = title,
+            confirmText = confirmText,
+            dismissText = dismissText,
+            onConfirm = onConfirm,
+            onDismiss = onCancel,
+            onDismissRequest = onDismissRequest,
+            content = text
+        )
+        return
+    }
     NevAlertDialog(
         title = title,
         onDismissRequest = onDismissRequest,
@@ -187,6 +225,16 @@ fun SimpleAlertDialog(
     confirmText: String = stringResource(R.string.generic_confirm),
     onDismiss: () -> Unit
 ) {
+    if (useCryoDialog()) {
+        CryoDialog(
+            title = title,
+            confirmText = confirmText,
+            onConfirm = onDismiss,
+            onDismissRequest = onDismiss,
+            content = text
+        )
+        return
+    }
     NevAlertDialog(
         title = title,
         onDismissRequest = onDismiss,
