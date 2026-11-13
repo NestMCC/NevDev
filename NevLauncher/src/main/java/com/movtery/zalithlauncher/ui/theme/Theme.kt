@@ -655,6 +655,82 @@ private val nevLavaDark = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark.nevLava,
 )
 
+private val cyberLight = lightColorScheme(
+    primary = primaryLight.cyber,
+    onPrimary = onPrimaryLight.cyber,
+    primaryContainer = primaryContainerLight.cyber,
+    onPrimaryContainer = onPrimaryContainerLight.cyber,
+    secondary = secondaryLight.cyber,
+    onSecondary = onSecondaryLight.cyber,
+    secondaryContainer = secondaryContainerLight.cyber,
+    onSecondaryContainer = onSecondaryContainerLight.cyber,
+    tertiary = tertiaryLight.cyber,
+    onTertiary = onTertiaryLight.cyber,
+    tertiaryContainer = tertiaryContainerLight.cyber,
+    onTertiaryContainer = onTertiaryContainerLight.cyber,
+    error = errorLight.cyber,
+    onError = onErrorLight.cyber,
+    errorContainer = errorContainerLight.cyber,
+    onErrorContainer = onErrorContainerLight.cyber,
+    background = backgroundLight.cyber,
+    onBackground = onBackgroundLight.cyber,
+    surface = surfaceLight.cyber,
+    onSurface = onSurfaceLight.cyber,
+    surfaceVariant = surfaceVariantLight.cyber,
+    onSurfaceVariant = onSurfaceVariantLight.cyber,
+    outline = outlineLight.cyber,
+    outlineVariant = outlineVariantLight.cyber,
+    scrim = scrimLight.cyber,
+    inverseSurface = inverseSurfaceLight.cyber,
+    inverseOnSurface = inverseOnSurfaceLight.cyber,
+    inversePrimary = inversePrimaryLight.cyber,
+    surfaceDim = surfaceDimLight.cyber,
+    surfaceBright = surfaceBrightLight.cyber,
+    surfaceContainerLowest = surfaceContainerLowestLight.cyber,
+    surfaceContainerLow = surfaceContainerLowLight.cyber,
+    surfaceContainer = surfaceContainerLight.cyber,
+    surfaceContainerHigh = surfaceContainerHighLight.cyber,
+    surfaceContainerHighest = surfaceContainerHighestLight.cyber,
+)
+
+private val cyberDark = darkColorScheme(
+    primary = primaryDark.cyber,
+    onPrimary = onPrimaryDark.cyber,
+    primaryContainer = primaryContainerDark.cyber,
+    onPrimaryContainer = onPrimaryContainerDark.cyber,
+    secondary = secondaryDark.cyber,
+    onSecondary = onSecondaryDark.cyber,
+    secondaryContainer = secondaryContainerDark.cyber,
+    onSecondaryContainer = onSecondaryContainerDark.cyber,
+    tertiary = tertiaryDark.cyber,
+    onTertiary = onTertiaryDark.cyber,
+    tertiaryContainer = tertiaryContainerDark.cyber,
+    onTertiaryContainer = onTertiaryContainerDark.cyber,
+    error = errorDark.cyber,
+    onError = onErrorDark.cyber,
+    errorContainer = errorContainerDark.cyber,
+    onErrorContainer = onErrorContainerDark.cyber,
+    background = backgroundDark.cyber,
+    onBackground = onBackgroundDark.cyber,
+    surface = surfaceDark.cyber,
+    onSurface = onSurfaceDark.cyber,
+    surfaceVariant = surfaceVariantDark.cyber,
+    onSurfaceVariant = onSurfaceVariantDark.cyber,
+    outline = outlineDark.cyber,
+    outlineVariant = outlineVariantDark.cyber,
+    scrim = scrimDark.cyber,
+    inverseSurface = inverseSurfaceDark.cyber,
+    inverseOnSurface = inverseOnSurfaceDark.cyber,
+    inversePrimary = inversePrimaryDark.cyber,
+    surfaceDim = surfaceDimDark.cyber,
+    surfaceBright = surfaceBrightDark.cyber,
+    surfaceContainerLowest = surfaceContainerLowestDark.cyber,
+    surfaceContainerLow = surfaceContainerLowDark.cyber,
+    surfaceContainer = surfaceContainerDark.cyber,
+    surfaceContainerHigh = surfaceContainerHighDark.cyber,
+    surfaceContainerHighest = surfaceContainerHighestDark.cyber,
+)
+
 private fun customLight(
     color: Color,
     style: PaletteStyle,
@@ -709,6 +785,7 @@ fun NevLauncherTheme(
                 ColorThemeType.URBAN_ASH -> urbanAshDark
                 ColorThemeType.VERDANT_DAWN -> verdantDawnDark
                 ColorThemeType.NEV_LAVA -> nevLavaDark
+                ColorThemeType.CYBER -> cyberDark
                 ColorThemeType.CUSTOM -> customDark(
                     color = customColor,
                     style = customPaletteStyle
@@ -725,6 +802,7 @@ fun NevLauncherTheme(
                 ColorThemeType.URBAN_ASH -> urbanAshLight
                 ColorThemeType.VERDANT_DAWN -> verdantDawnLight
                 ColorThemeType.NEV_LAVA -> nevLavaLight
+                ColorThemeType.CYBER -> cyberLight
                 ColorThemeType.CUSTOM -> customLight(
                     color = customColor,
                     style = customPaletteStyle
