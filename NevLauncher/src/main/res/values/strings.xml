@@ -3208,4 +3208,6 @@
     <string name="donate_title">Dukung Nev Launcher</string>
     <string name="donate_message">Donasimu membantu Nev Launcher tetap gratis dan terus berkembang terimakasih</string>
     <string name="donate_button">Donasi Sekarang</string>
+    <string name="download_addon_version_file_count">%d files</string>
+    <string name="download_addon_version_compatible">Compatible</string>
 </resources>

@@ -25,6 +25,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -282,11 +284,12 @@ fun <E> AddonListLayout(
                                 .padding(vertical = 4.dp),
                             contentPadding = PaddingValues(horizontal = 4.dp)
                         ) {
-                            items(items) { item ->
+                            itemsIndexed(items) { index, item ->
                                 AddonListItem(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(all = 4.dp),
+                                    number = index + 1,
                                     selected = selectedItem == item,
                                     itemName = getItemText(item),
                                     summary = summary?.let {
@@ -448,29 +451,69 @@ private fun <E> AddonListHeader(
 @Composable
 fun AddonListItem(
     modifier: Modifier = Modifier,
+    number: Int? = null,
     selected: Boolean,
     itemName: String,
     summary: (@Composable () -> Unit)? = null,
     onClick: () -> Unit = {}
 ) {
+    val shape = RoundedCornerShape(20.dp)
     Row(
         modifier = modifier
-            .clip(shape = MaterialTheme.shapes.medium)
-            .clickable(onClick = onClick),
-        verticalAlignment = Alignment.CenterVertically
+            .clip(shape)
+            .border(
+                width = if (selected) 1.4.dp else 1.dp,
+                color = if (selected) NevRed.OutlineBright else NevRed.Outline.copy(alpha = 0.7f),
+                shape = shape
+            )
+            .background(
+                Brush.horizontalGradient(
+                    listOf(NevRed.Panel.copy(alpha = 0.8f), NevRed.PanelDeep.copy(alpha = 0.9f))
+                )
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        RadioButton(
-            selected = selected,
-            onClick = onClick
-        )
+        if (number != null) {
+            Text(
+                text = "%02d".format(number),
+                style = MaterialTheme.typography.labelLarge,
+                fontFamily = FontFamily.Monospace,
+                color = NevRed.GradientEnd
+            )
+        }
         Column(
+            modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
                 text = itemName,
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.titleMedium,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold
             )
             summary?.invoke()
+        }
+        //Lingkaran pilihan: terisi gradasi + centang saat dipilih
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .then(
+                    if (selected) Modifier.background(NevRed.Gradient, CircleShape)
+                    else Modifier.border(1.dp, NevRed.Outline, CircleShape)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (selected) {
+                Icon(
+                    modifier = Modifier.size(22.dp),
+                    painter = painterResource(R.drawable.ic_check),
+                    tint = NevRed.OnGradient,
+                    contentDescription = null
+                )
+            }
         }
     }
 }

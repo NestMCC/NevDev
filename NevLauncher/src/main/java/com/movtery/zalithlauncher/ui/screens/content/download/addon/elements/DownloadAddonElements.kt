@@ -29,6 +29,12 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -268,24 +274,31 @@ fun AddonVersionItemLayout(
                         exit = shrinkVertically(animationSpec = getAnimateTween()) + fadeOut(),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        LazyColumn(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(max = maxListHeight)
-                                .padding(vertical = 4.dp),
-                            contentPadding = PaddingValues(horizontal = 4.dp)
+                                .verticalScroll(rememberScrollState())
+                                .padding(horizontal = 10.dp, vertical = 6.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            items(infoMap.versions) { version ->
-                                AddonVersionListItem(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(all = 4.dp),
-                                    version = version,
-                                    installed = installedChecker?.invoke(version),
-                                    onClick = {
-                                        onItemClicked(version)
+                            infoMap.versions.chunked(2).forEach { pair ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    pair.forEach { version ->
+                                        AddonVersionListItem(
+                                            modifier = Modifier.weight(1f),
+                                            version = version,
+                                            installed = installedChecker?.invoke(version),
+                                            onClick = { onItemClicked(version) }
+                                        )
                                     }
-                                )
+                                    if (pair.size == 1) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                    }
+                                }
                             }
                         }
                     }
@@ -307,52 +320,87 @@ private fun AddonVersionHeadLayout(
     Row(
         modifier = modifier
             .clickable(onClick = onClick)
-            .padding(vertical = 4.dp),
+            .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 12.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .size(44.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(NevRed.GradientDiagonal),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                modifier = Modifier.padding(vertical = 8.dp),
-                text = infoMap.gameVersion,
-                style = MaterialTheme.typography.titleSmall
-            )
-            infoMap.loader?.let { loader ->
-                LittleTextLabel(
-                    text = loader.getDisplayName(),
-                    shape = MaterialTheme.shapes.small
-                )
-            }
-        }
-        if (isAdapt) {
             Icon(
-                modifier = Modifier.size(18.dp),
-                painter = painterResource(R.drawable.ic_star_filled),
-                contentDescription = null
+                modifier = Modifier.size(24.dp),
+                painter = painterResource(R.drawable.ic_package_2_outlined),
+                contentDescription = null,
+                tint = NevRed.OnGradient
+            )
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = infoMap.gameVersion,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                infoMap.loader?.let { loader ->
+                    LittleTextLabel(
+                        text = loader.getDisplayName(),
+                        shape = RoundedCornerShape(50)
+                    )
+                }
+            }
+            Text(
+                modifier = Modifier.alpha(0.7f),
+                text = stringResource(R.string.download_addon_version_file_count, infoMap.versions.size),
+                style = MaterialTheme.typography.labelMedium
             )
         }
         if (hasInstalled) {
-            InstalledModBadge(
-                modifier = Modifier.padding(start = 4.dp),
-                size = 16.dp
-            )
+            InstalledModBadge(size = 16.dp)
         }
-        if (!infoMap.versions.isEmpty()) {
+        if (isAdapt) {
             Row(
-                modifier = Modifier.padding(end = 4.dp),
+                modifier = Modifier
+                    .border(1.dp, NevRed.OutlineBright.copy(alpha = 0.8f), RoundedCornerShape(50))
+                    .padding(horizontal = 10.dp, vertical = 5.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                val rotation by animateFloatAsState(
-                    targetValue = if (expanded) -180f else 0f,
-                    animationSpec = getAnimateTween()
+                Icon(
+                    modifier = Modifier.size(14.dp),
+                    painter = painterResource(R.drawable.ic_star_filled),
+                    contentDescription = null,
+                    tint = NevRed.OutlineBright
                 )
+                Text(
+                    text = stringResource(R.string.download_addon_version_compatible),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = NevRed.OutlineBright
+                )
+            }
+        }
+        if (infoMap.versions.isNotEmpty()) {
+            val rotation by animateFloatAsState(
+                targetValue = if (expanded) -180f else 0f,
+                animationSpec = getAnimateTween()
+            )
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .border(1.dp, NevRed.Outline, CircleShape)
+                    .clip(CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(
                     modifier = Modifier
                         .size(28.dp)
@@ -372,105 +420,120 @@ private fun AddonVersionListItem(
     installed: InstalledMod? = null,
     onClick: () -> Unit = {}
 ) {
-    Row(
-        modifier = modifier
-            .clip(shape = MaterialTheme.shapes.medium)
-            .background(
-                color = if (installed != null) {
-                    MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
-                } else {
-                    Color.Transparent
-                },
-                shape = MaterialTheme.shapes.medium
-            )
-            .clickable(onClick = onClick),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        //直观的版本状态
-        val releaseType = remember { version.platformReleaseType() }
-        val displayName = remember { version.platformDisplayName() }
-        val downloadCount = remember { version.platformDownloadCount() }
-        val date = remember { version.platformDatePublished() }
+    val releaseType = remember { version.platformReleaseType() }
+    val displayName = remember { version.platformDisplayName() }
+    val downloadCount = remember { version.platformDownloadCount() }
+    val date = remember { version.platformDatePublished() }
+    val context = LocalContext.current
+    val shape = RoundedCornerShape(16.dp)
 
-        Box(
-            modifier = Modifier
-                .padding(start = 12.dp, end = 8.dp)
-                .size(34.dp)
-                .clip(shape = CircleShape)
-                .background(releaseType.color.copy(alpha = 0.2f)),
-            contentAlignment = Alignment.Center
+    Column(
+        modifier = modifier
+            .clip(shape)
+            .background(
+                if (installed != null) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
+                else Color.Black.copy(alpha = 0.25f)
+            )
+            .border(1.dp, NevRed.Outline.copy(alpha = 0.7f), shape)
+            .clickable(onClick = onClick)
+            .padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(releaseType.color.copy(alpha = 0.2f))
+                    .border(1.dp, releaseType.color.copy(alpha = 0.6f), RoundedCornerShape(10.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = releaseType.name.take(1),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = releaseType.color
+                )
+            }
             Text(
-                text = releaseType.name.take(1),
+                modifier = Modifier.weight(1f),
+                text = displayName,
                 style = MaterialTheme.typography.labelLarge,
-                color = releaseType.color
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
-        //版本简要信息
-        Column(
-            modifier = Modifier.padding(all = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+        Row(
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = displayName,
-                style = MaterialTheme.typography.labelLarge
-            )
-
-            val context = LocalContext.current
-
-            Row(
-                modifier = Modifier.alpha(0.7f),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .alpha(0.75f),
+                verticalArrangement = Arrangement.spacedBy(3.dp)
             ) {
-                //下载量
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(14.dp),
                         painter = painterResource(R.drawable.ic_download_2_outlined),
                         contentDescription = null
                     )
                     Text(
                         text = formatNumberByLocale(context, downloadCount),
-                        style = MaterialTheme.typography.labelMedium
+                        style = MaterialTheme.typography.labelSmall
                     )
                 }
-                //更新时间
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(14.dp),
                         painter = painterResource(R.drawable.ic_autorenew),
                         contentDescription = null
                     )
                     Text(
-                        text = getTimeAgo(
-                            context = LocalContext.current,
-                            pastInstant = date
-                        ),
-                        style = MaterialTheme.typography.labelMedium
+                        text = getTimeAgo(context = context, pastInstant = date),
+                        style = MaterialTheme.typography.labelSmall
                     )
                 }
-                //版本状态
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(14.dp),
                         painter = painterResource(R.drawable.ic_package_2_outlined),
                         contentDescription = null
                     )
                     Text(
                         text = stringResource(releaseType.textRes),
-                        style = MaterialTheme.typography.labelMedium
+                        style = MaterialTheme.typography.labelSmall
                     )
                 }
+            }
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(NevRed.GradientDiagonal),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    painter = painterResource(R.drawable.ic_download_2_outlined),
+                    contentDescription = null,
+                    tint = NevRed.OnGradient
+                )
             }
         }
     }

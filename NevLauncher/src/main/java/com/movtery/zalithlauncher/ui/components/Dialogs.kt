@@ -19,6 +19,13 @@
 package com.movtery.zalithlauncher.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
+import com.movtery.zalithlauncher.ui.theme.NevActionButton
+import com.movtery.zalithlauncher.ui.theme.NevRed
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -106,37 +113,16 @@ fun SimpleAlertDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = {
-            if (dismissByDialog) onDismiss()
-        },
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        text = {
-            val scrollState = rememberScrollState()
-            Column(
-                modifier = Modifier
-                    .fadeEdge(state = scrollState)
-                    .verticalScrollWithBar(state = scrollState)
-            ) {
-                Text(text = text)
-            }
-        },
-        confirmButton = {
-            Button(onClick = onConfirm) {
-                MarqueeText(text = confirmText)
-            }
-        },
-        dismissButton = {
-            FilledTonalButton(onClick = onDismiss) {
-                MarqueeText(text = dismissText)
-            }
-        }
-    )
+    NevAlertDialog(
+        title = title,
+        onDismissRequest = { if (dismissByDialog) onDismiss() },
+        confirmText = confirmText,
+        onConfirm = onConfirm,
+        dismissText = dismissText,
+        onDismiss = onDismiss
+    ) {
+        Text(text = text)
+    }
 }
 
 /**
@@ -155,32 +141,14 @@ fun SimpleAlertDialog(
     dismissByDialog: Boolean = true,
     onDismiss: () -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = {
-            if (dismissByDialog) onDismiss()
-        },
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        text = {
-            val scrollState = rememberScrollState()
-            Column(
-                modifier = Modifier
-                    .fadeEdge(state = scrollState)
-                    .verticalScrollWithBar(state = scrollState)
-            ) {
-                Text(text = text)
-            }
-        },
-        confirmButton = {
-            Button(onClick = onDismiss) {
-                MarqueeText(text = confirmText)
-            }
-        }
-    )
+    NevAlertDialog(
+        title = title,
+        onDismissRequest = { if (dismissByDialog) onDismiss() },
+        confirmText = confirmText,
+        onConfirm = onDismiss
+    ) {
+        Text(text = text)
+    }
 }
 
 @Composable
@@ -193,35 +161,16 @@ fun SimpleAlertDialog(
     onCancel: () -> Unit,
     onDismissRequest: () -> Unit = {}
 ) {
-    AlertDialog(
+    NevAlertDialog(
+        title = title,
         onDismissRequest = onDismissRequest,
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        text = {
-            val scrollState = rememberScrollState()
-            Column(
-                modifier = Modifier
-                    .fadeEdge(state = scrollState)
-                    .verticalScrollWithBar(state = scrollState)
-            ) {
-                text()
-            }
-        },
-        confirmButton = {
-            Button(onClick = onConfirm) {
-                MarqueeText(text = confirmText)
-            }
-        },
-        dismissButton = {
-            FilledTonalButton(onClick = onCancel) {
-                MarqueeText(text = dismissText)
-            }
-        }
-    )
+        confirmText = confirmText,
+        onConfirm = onConfirm,
+        dismissText = dismissText,
+        onDismiss = onCancel
+    ) {
+        text()
+    }
 }
 
 /**
@@ -238,30 +187,14 @@ fun SimpleAlertDialog(
     confirmText: String = stringResource(R.string.generic_confirm),
     onDismiss: () -> Unit
 ) {
-    AlertDialog(
+    NevAlertDialog(
+        title = title,
         onDismissRequest = onDismiss,
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        text = {
-            val scrollState = rememberScrollState()
-            Column(
-                modifier = Modifier
-                    .fadeEdge(state = scrollState)
-                    .verticalScrollWithBar(state = scrollState)
-            ) {
-                text()
-            }
-        },
-        confirmButton = {
-            Button(onClick = onDismiss) {
-                MarqueeText(text = confirmText)
-            }
-        }
-    )
+        confirmText = confirmText,
+        onConfirm = onDismiss
+    ) {
+        text()
+    }
 }
 
 @Composable
@@ -687,3 +620,213 @@ fun ProgressDialog(
         }
     }
 }
+
+/**
+ * Dialog bergaya Nev: bingkai gelap bergaris oranye dengan aksen sudut, label sistem,
+ * judul dua warna (kata terakhir beraksen), garis pemisah, isi, lalu tombol bergradasi.
+ * Bila [dismissText] dan [onDismiss] diberikan, tombol sekunder bergaris ditampilkan di samping tombol utama.
+ */
+@Composable
+fun NevAlertDialog(
+    title: String,
+    onDismissRequest: () -> Unit,
+    confirmText: String,
+    onConfirm: () -> Unit,
+    dismissText: String? = null,
+    onDismiss: (() -> Unit)? = null,
+    content: @Composable () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        val corner = 28.dp
+        val shape = androidx.compose.foundation.shape.RoundedCornerShape(corner)
+        val bracket = NevRed.GradientEnd
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier
+                .fillMaxWidth(0.92f)
+                .androidx_widthIn(560.dp)
+                .heightIn(max = rememberDialogMaxHeight() - 32.dp)
+                .androidx_border(shape)
+                .androidx_panelBackground(shape)
+                .androidx_cornerBrackets(corner, bracket)
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 22.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    androidx.compose.foundation.layout.Box(
+                        modifier = Modifier
+                            .size(60.dp)
+                            .androidx_border(androidx.compose.foundation.shape.RoundedCornerShape(18.dp), 1.5.dp, NevRed.OutlineBright)
+                            .androidx_fill(androidx.compose.foundation.shape.RoundedCornerShape(18.dp), NevRed.PanelDeep),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        androidx.compose.material3.Icon(
+                            modifier = Modifier.size(30.dp),
+                            painter = androidx.compose.ui.res.painterResource(R.drawable.ic_info_filled),
+                            tint = NevRed.GradientEnd,
+                            contentDescription = null
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "NEV // SYSTEM",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                            color = NevRed.GradientEnd,
+                            maxLines = 1
+                        )
+                        val accentColor = androidx.compose.ui.graphics.lerp(NevRed.GradientEnd, androidx.compose.ui.graphics.Color.White, 0.35f)
+                        val head = title.substringBeforeLast(' ', "")
+                        val tail = title.substringAfterLast(' ')
+                        Text(
+                            text = androidx.compose.ui.text.buildAnnotatedString {
+                                if (head.isNotEmpty()) append("$head ")
+                                withStyle(androidx.compose.ui.text.SpanStyle(color = accentColor)) { append(tail) }
+                            },
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            color = androidx.compose.ui.graphics.Color.White
+                        )
+                    }
+                }
+
+                androidx.compose.foundation.layout.Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .androidx_fillBrush(
+                            androidx.compose.ui.graphics.Brush.horizontalGradient(
+                                listOf(NevRed.OutlineBright, NevRed.Outline.copy(alpha = 0.2f))
+                            )
+                        )
+                )
+
+                val scrollState = rememberScrollState()
+                androidx.compose.foundation.layout.Box(
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .fadeEdge(state = scrollState)
+                        .verticalScrollWithBar(state = scrollState)
+                ) {
+                    androidx.compose.runtime.CompositionLocalProvider(
+                        androidx.compose.material3.LocalContentColor provides NevRed.OnPanel
+                    ) {
+                        content()
+                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    if (dismissText != null && onDismiss != null) {
+                        NevOutlineButton(
+                            modifier = Modifier.weight(1f),
+                            text = dismissText,
+                            onClick = onDismiss
+                        )
+                    }
+                    NevActionButton(
+                        modifier = Modifier.weight(1f),
+                        text = confirmText,
+                        onClick = onConfirm
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun NevOutlineButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp)
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = shape,
+        color = androidx.compose.ui.graphics.Color.Transparent,
+        contentColor = NevRed.OnPanel,
+        border = androidx.compose.foundation.BorderStroke(1.dp, NevRed.OutlineBright.copy(alpha = 0.8f))
+    ) {
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier
+                .androidx_fill(shape, NevRed.SurfaceHigh.copy(alpha = 0.6f))
+                .padding(horizontal = 18.dp, vertical = 14.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                maxLines = 1
+            )
+        }
+    }
+}
+
+private fun Modifier.androidx_widthIn(max: Dp): Modifier = this.then(Modifier.widthIn(max = max))
+
+private fun Modifier.androidx_border(
+    shape: androidx.compose.ui.graphics.Shape,
+    width: Dp = 1.2.dp,
+    color: androidx.compose.ui.graphics.Color = NevRed.OutlineBright.copy(alpha = 0.85f)
+): Modifier = this.then(Modifier.border(width, color, shape))
+
+private fun Modifier.androidx_fill(
+    shape: androidx.compose.ui.graphics.Shape,
+    color: androidx.compose.ui.graphics.Color
+): Modifier = this.then(Modifier.background(color, shape))
+
+private fun Modifier.androidx_fillBrush(brush: androidx.compose.ui.graphics.Brush): Modifier =
+    this.then(Modifier.background(brush))
+
+private fun Modifier.androidx_panelBackground(shape: androidx.compose.ui.graphics.Shape): Modifier =
+    this.then(
+        Modifier.background(
+            androidx.compose.ui.graphics.Brush.verticalGradient(
+                listOf(NevRed.Panel, NevRed.PanelDeep)
+            ),
+            shape
+        )
+    )
+
+/** Aksen sudut kanan-atas dan kiri-bawah: busur sesuai lengkung bingkai plus garis pendek. */
+private fun Modifier.androidx_cornerBrackets(corner: Dp, color: androidx.compose.ui.graphics.Color): Modifier =
+    this.then(
+        Modifier.drawBehind {
+            val stroke = 3.dp.toPx()
+            val inset = 6.dp.toPx()
+            val ri = corner.toPx() - inset
+            val w = size.width
+            val h = size.height
+            val line = 28.dp.toPx()
+            val style = androidx.compose.ui.graphics.drawscope.Stroke(width = stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            //Kanan-atas
+            drawArc(
+                color = color, startAngle = 270f, sweepAngle = 90f, useCenter = false,
+                topLeft = androidx.compose.ui.geometry.Offset(w - inset - 2 * ri, inset),
+                size = androidx.compose.ui.geometry.Size(2 * ri, 2 * ri), style = style
+            )
+            drawLine(color, androidx.compose.ui.geometry.Offset(w - inset - ri - line, inset), androidx.compose.ui.geometry.Offset(w - inset - ri, inset), stroke, androidx.compose.ui.graphics.StrokeCap.Round)
+            drawLine(color, androidx.compose.ui.geometry.Offset(w - inset, inset + ri), androidx.compose.ui.geometry.Offset(w - inset, inset + ri + line), stroke, androidx.compose.ui.graphics.StrokeCap.Round)
+            //Kiri-bawah
+            drawArc(
+                color = color, startAngle = 90f, sweepAngle = 90f, useCenter = false,
+                topLeft = androidx.compose.ui.geometry.Offset(inset, h - inset - 2 * ri),
+                size = androidx.compose.ui.geometry.Size(2 * ri, 2 * ri), style = style
+            )
+            drawLine(color, androidx.compose.ui.geometry.Offset(inset + ri, h - inset), androidx.compose.ui.geometry.Offset(inset + ri + line, h - inset), stroke, androidx.compose.ui.graphics.StrokeCap.Round)
+            drawLine(color, androidx.compose.ui.geometry.Offset(inset, h - inset - ri), androidx.compose.ui.geometry.Offset(inset, h - inset - ri - line), stroke, androidx.compose.ui.graphics.StrokeCap.Round)
+        }
+    )

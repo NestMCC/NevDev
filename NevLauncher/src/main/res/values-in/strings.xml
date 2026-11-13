@@ -1594,4 +1594,6 @@
     <string name="storage_home_folder_restart_message">Izin sudah diberikan. Mulai ulang launcher untuk memindahkan filenya ke folder \"NevLauncher\" di beranda. Data yang sudah ada akan dipindah otomatis.</string>
     <string name="storage_home_folder_restart">Mulai ulang</string>
     <string name="storage_home_folder_later">Nanti</string>
+    <string name="download_addon_version_file_count">%d file</string>
+    <string name="download_addon_version_compatible">Kompatibel</string>
 </resources>
