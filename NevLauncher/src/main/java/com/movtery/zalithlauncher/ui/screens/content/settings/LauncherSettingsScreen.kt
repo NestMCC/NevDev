@@ -185,6 +185,7 @@ fun LauncherSettingsScreen(
                                 ColorThemeType.VERDANT_DAWN -> stringResource(R.string.theme_color_verdant_dawn)
                                 ColorThemeType.NEV_LAVA -> stringResource(R.string.theme_color_nev_lava)
                                 ColorThemeType.CRYOGENIC -> stringResource(R.string.theme_color_cryogenic)
+                                ColorThemeType.CYBER -> stringResource(R.string.theme_color_cyber)
                                 ColorThemeType.CUSTOM -> stringResource(R.string.generic_custom)
                             }
                         },

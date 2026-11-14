@@ -136,6 +136,7 @@
     <string name="settings_display_nav_side_summary">Letak menu navigasi utama (File, Server, Unduh, Pengaturan, dst.).</string>
     <string name="settings_display_nav_side_start">Kiri</string>
     <string name="settings_display_nav_side_end">Kanan</string>
+    <string name="theme_color_cyber">Cyber</string>
     <string name="download_game_install_title">Menginstal Game</string>
     <string name="download_task_flow_label">ALUR UNDUHAN UTAMA</string>
     <string name="download_game_install_vanilla">Mengunduh Vanila %s</string>

@@ -157,6 +157,7 @@
     <string name="settings_display_nav_side_summary">Where the main navigation menu (File, Server, Download, Settings...) sits.</string>
     <string name="settings_display_nav_side_start">Left</string>
     <string name="settings_display_nav_side_end">Right</string>
+    <string name="theme_color_cyber">Cyber</string>
     <!-- Title of the color picker dialog -->
     <string name="theme_color_picker_title">Color Picker</string>
     <!-- Button in the color picker dialog to edit the color as a hex code -->
