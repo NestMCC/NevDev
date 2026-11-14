@@ -23,7 +23,6 @@ import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.coroutine.Task
 import com.movtery.zalithlauncher.game.path.getGameHome
 import com.movtery.zalithlauncher.game.versioninfo.models.GameManifest
-import com.movtery.zalithlauncher.game.versioninfo.models.VersionManifest
 import com.movtery.zalithlauncher.ui.androidText
 import com.movtery.zalithlauncher.utils.file.formatFileSize
 import com.movtery.zalithlauncher.utils.logging.Logger
@@ -147,20 +146,21 @@ class MinecraftDownloader(
         clientName: String,
         clientVersionsDir: File = downloader.versionsTarget
     ) {
-        val inheritsFrom = downloader.takeIf {
-            gameManifest.inheritsFrom != null
-        }?.findVersion(gameManifest.inheritsFrom)
+        //versi induk (mis. vanilla untuk Fabric): pakai json lokal bila ada, agar peluncuran tidak bergantung pada internet.
+        //hanya bila file lokal tidak ada/rusak baru mengambil dari daftar versi online
+        val inheritsFromId = gameManifest.inheritsFrom
+        if (inheritsFromId != null) {
+            val localJson = downloader.getVersionJsonPath(inheritsFromId)
+            val parentManifest = localJson.takeIf { it.isFile && it.canRead() }?.let { file ->
+                runCatching { file.readText().parseTo(GameManifest::class.java) }.getOrNull()
+            } ?: downloader.findVersion(inheritsFromId)?.let { downloader.createVersionJson(it) }
 
-        //优先尝试解析原版
-        inheritsFrom?.let {
-            downloader.createVersionJson(it)
-        }?.let { gameManifest1 ->
-            progressDownloadTasks(gameManifest1, gameManifest.inheritsFrom)
+            parentManifest?.let { progressDownloadTasks(it, inheritsFromId) }
         }
 
         commonScheduleDownloads(
             gameManifest = gameManifest,
-            inheritsFrom = inheritsFrom,
+            inheritsFromId = inheritsFromId,
             clientName = clientName,
             clientVersionsDir = clientVersionsDir
         )
@@ -168,7 +168,7 @@ class MinecraftDownloader(
 
     private suspend fun commonScheduleDownloads(
         gameManifest: GameManifest,
-        inheritsFrom: VersionManifest.Version? = null,
+        inheritsFromId: String? = null,
         clientName: String,
         clientVersionsDir: File
     ) {
@@ -182,8 +182,8 @@ class MinecraftDownloader(
                 scheduleDownload(urls, hash, targetFile, size)
             },
             scheduleCopy = { targetFile ->
-                inheritsFrom?.let { inheritsFrom ->
-                    val inheritsJar = downloader.getVersionJarPath(inheritsFrom.id)
+                inheritsFromId?.let { inheritsId ->
+                    val inheritsJar = downloader.getVersionJarPath(inheritsId)
 
                     allDownloadTasks.find {
                         it.targetFile.absolutePath == inheritsJar.absolutePath

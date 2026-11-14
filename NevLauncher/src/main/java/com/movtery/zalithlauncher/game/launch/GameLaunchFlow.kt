@@ -299,14 +299,31 @@ class GameLaunchFlow(scope: CoroutineScope) {
      */
     private suspend fun checkMods(version: Version): GameManifest? {
         val modsDir = VersionFolders.MOD.getDir(version.getGameDir())
+
+        //folder mods tidak berubah sejak peluncuran sebelumnya: pakai hasil lama, tanpa membuka ulang semua jar
+        val signature = ModScanCache.signature(modsDir)
+        ModScanCache.read(modsDir, signature)?.let { cached ->
+            version.fpeEmulatorModDetected = cached.fpeEmulatorModDetected
+            if (cached.touchProxy) version.enableTouchProxy = true
+            return null
+        }
+
         val mods = AllModReader(modsDir).readAllLocals()
         version.fpeEmulatorModDetected = detectFpeEmulatorMods(mods)
 
-        if (mods.any { it.id == "touchcontroller" && it.file.isEnabled() }) {
+        val touchProxy = mods.any { it.id == "touchcontroller" && it.file.isEnabled() }
+        if (touchProxy) {
             version.enableTouchProxy = true
         }
 
         val patched = patchLwjgl3ifyIfNeeded(version, mods)
+        //hanya simpan cache jika tidak ada patch manifest yang perlu dibuat ulang (mis. lwjgl3ify)
+        if (patched == null) {
+            ModScanCache.write(
+                modsDir, signature,
+                ModScanCache.Result(version.fpeEmulatorModDetected, touchProxy)
+            )
+        }
         return patched
     }
 }
