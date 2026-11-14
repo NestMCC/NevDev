@@ -19,7 +19,6 @@
 package com.movtery.zalithlauncher.game.launch.handler
 
 import android.app.Activity
-import android.os.SystemClock
 import android.view.KeyEvent
 import android.view.Surface
 import androidx.compose.runtime.Composable
@@ -54,18 +53,10 @@ import com.movtery.zalithlauncher.viewmodel.ErrorViewModel
 import com.movtery.zalithlauncher.viewmodel.EventViewModel
 import com.movtery.zalithlauncher.viewmodel.GamepadViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.libsdl.app.SDLActivity
 import org.lwjgl.glfw.CallbackBridge
-
-/** Durasi minimal kartu loading ditampilkan (ms) */
-private const val LOADING_MIN_MS = 2_000L
-
-/** Durasi maksimal kartu loading ditampilkan (ms) */
-private const val LOADING_MAX_MS = 5_000L
 
 class GameHandler(
     val activity: Activity,
@@ -90,13 +81,6 @@ class GameHandler(
 
     private var isGameRendering = false
     private var showGameInfo by mutableStateOf(true)
-
-    /**
-     * Kartu loading ("Menunggu logo Mojang muncul") hanya tampil singkat:
-     * hilang saat logo Mojang muncul, tetapi minimal [LOADING_MIN_MS] dan maksimal [LOADING_MAX_MS]
-     */
-    private var loadingScope: CoroutineScope? = null
-    private var loadingStartTime = 0L
 
     /**
      * 日志展示状态
@@ -151,14 +135,6 @@ class GameHandler(
             save()
         }
 
-        //batas maksimal: setelah 5 detik kartu loading ditutup walau logo Mojang belum muncul
-        loadingScope = scope
-        loadingStartTime = SystemClock.elapsedRealtime()
-        scope.launch {
-            delay(LOADING_MAX_MS)
-            showGameInfo = false
-        }
-
         super.execute(surface, screenSize, scope)
     }
 
@@ -177,17 +153,7 @@ class GameHandler(
     override fun onGraphicOutput() {
         if (!isGameRendering) {
             isGameRendering = true
-            //batas minimal: kartu loading tampil sedikitnya 2 detik agar tidak berkedip
-            val remaining = LOADING_MIN_MS - (SystemClock.elapsedRealtime() - loadingStartTime)
-            val loadingScope = loadingScope
-            if (remaining > 0 && loadingScope != null) {
-                loadingScope.launch {
-                    delay(remaining)
-                    showGameInfo = false
-                }
-            } else {
-                showGameInfo = false
-            }
+            showGameInfo = false
             //游戏已经开始渲染，如果日志状态为渲染前显示，则在这里关闭日志
             if (logState == LogState.SHOW_BEFORE_LOADING) {
                 logState = LogState.CLOSE

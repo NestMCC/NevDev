@@ -31,6 +31,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -52,27 +54,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.background
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -664,17 +645,6 @@ fun GameScreen(
     ) {
         val screenSize = rememberBoxSize()
 
-        //Kartu loading digambar paling bawah, di bawah tombol kontrol
-        GameInfoBox(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(all = 16.dp),
-            versionName = version.getVersionName(),
-            versionInfo = version.getVersionInfo()?.getInfoString(),
-            visible = showGameInfo,
-            onClose = onInfoBoxClose
-        )
-
         if (!viewModel.isEditingLayout) {
             if (AllSettings.gamepadControl.state) {
                 GamepadOnActionListener(
@@ -758,20 +728,6 @@ fun GameScreen(
             )
         }
 
-        //Lapisan transparan di atas kontrol: hanya agar tombol X kartu loading tetap bisa diklik
-        if (showGameInfo && !viewModel.isEditingLayout) {
-            GameInfoBox(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(all = 16.dp)
-                    .alpha(0f),
-                versionName = version.getVersionName(),
-                versionInfo = version.getVersionInfo()?.getInfoString(),
-                visible = true,
-                onClose = onInfoBoxClose
-            )
-        }
-
         //陀螺仪控制
         val isGyroscopeAvailable = remember(context) {
             isGyroscopeAvailable(context = context)
@@ -790,6 +746,16 @@ fun GameScreen(
                 sensitivity = AllSettings.gyroscopeSensitivity.state / 100f
             )
         }
+
+        GameInfoBox(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(all = 16.dp),
+            versionName = version.getVersionName(),
+            versionInfo = version.getVersionInfo()?.getInfoString(),
+            visible = showGameInfo,
+            onClose = onInfoBoxClose
+        )
 
         LogBox(
             enableLog = !viewModel.isEditingLayout && logState.value,
@@ -940,111 +906,59 @@ private fun GameInfoBox(
 ) {
     AnimatedVisibility(
         visible = visible,
-        enter = fadeIn() + scaleIn(initialScale = 0.94f),
-        exit = fadeOut() + scaleOut(targetScale = 0.94f),
+        enter = fadeIn(),
+        exit = fadeOut(),
         modifier = modifier
     ) {
-        val shape = RoundedCornerShape(28.dp)
-        val accent = MaterialTheme.colorScheme.primary
-
-        //加载卡片：深色底 + 强调色描边与光晕；左侧 Nev Launcher 徽标，右侧圆形关闭按钮，底部为进度条
-        Box(
-            modifier = Modifier
-                .widthIn(max = 560.dp)
-                .shadow(
-                    elevation = 18.dp,
-                    shape = shape,
-                    ambientColor = accent,
-                    spotColor = accent
-                )
-                .clip(shape)
-                .background(
-                    Brush.verticalGradient(
-                        listOf(Color(0xFF14171F), Color(0xFF0C0E13))
-                    )
-                )
-                .border(width = 1.dp, color = accent.copy(alpha = 0.5f), shape = shape)
+        BackgroundCard(
+            modifier = modifier,
+            influencedByBackground = false,
+            shape = MaterialTheme.shapes.extraLarge
         ) {
-            Column(
-                modifier = Modifier.padding(start = 20.dp, end = 16.dp, top = 20.dp, bottom = 18.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
+            Row {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .padding(vertical = 16.dp)
+                        .padding(start = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    //Logo Nev Launcher
-                    Image(
-                        modifier = Modifier.size(60.dp),
-                        painter = painterResource(R.drawable.img_nev_logo),
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit
+                    LoadingIndicator(
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     )
 
+                    //提示信息
                     Column(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f, fill = false),
                         verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         Text(
-                            text = stringResource(R.string.game_loading_title),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.ExtraBold,
-                            letterSpacing = 0.5.sp,
-                            color = Color.White,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            text = stringResource(R.string.game_loading),
+                            style = MaterialTheme.typography.bodyLarge
                         )
                         Text(
-                            text = versionName,
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.SemiBold,
-                            color = accent,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            text = stringResource(R.string.game_loading_version_name, versionName),
+                            style = MaterialTheme.typography.labelLarge
                         )
                         versionInfo?.let { info ->
                             Text(
-                                text = info,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = Color.White.copy(alpha = 0.55f),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                text = stringResource(R.string.game_loading_version_info, info),
+                                style = MaterialTheme.typography.labelLarge
                             )
                         }
                     }
-
-                    Box(
-                        modifier = Modifier
-                            .size(44.dp)
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.08f))
-                            .clickable(onClick = onClose),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(18.dp),
-                            painter = painterResource(R.drawable.ic_close),
-                            tint = Color.White.copy(alpha = 0.7f),
-                            contentDescription = stringResource(R.string.generic_close)
-                        )
-                    }
                 }
 
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(6.dp)
-                        .clip(CircleShape),
-                    color = accent,
-                    trackColor = Color.White.copy(alpha = 0.08f)
-                )
-
-                Text(
-                    text = stringResource(R.string.game_loading),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = Color.White.copy(alpha = 0.6f)
-                )
+                IconButton(
+                    modifier = Modifier.padding(top = 4.dp, end = 4.dp),
+                    onClick = onClose
+                ) {
+                    Icon(
+                        modifier = Modifier.size(18.dp),
+                        painter = painterResource(R.drawable.ic_close),
+                        contentDescription = stringResource(R.string.generic_close)
+                    )
+                }
             }
         }
     }
