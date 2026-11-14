@@ -66,6 +66,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
@@ -663,6 +664,17 @@ fun GameScreen(
     ) {
         val screenSize = rememberBoxSize()
 
+        //Kartu loading digambar paling bawah, di bawah tombol kontrol
+        GameInfoBox(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(all = 16.dp),
+            versionName = version.getVersionName(),
+            versionInfo = version.getVersionInfo()?.getInfoString(),
+            visible = showGameInfo,
+            onClose = onInfoBoxClose
+        )
+
         if (!viewModel.isEditingLayout) {
             if (AllSettings.gamepadControl.state) {
                 GamepadOnActionListener(
@@ -746,6 +758,20 @@ fun GameScreen(
             )
         }
 
+        //Lapisan transparan di atas kontrol: hanya agar tombol X kartu loading tetap bisa diklik
+        if (showGameInfo && !viewModel.isEditingLayout) {
+            GameInfoBox(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(all = 16.dp)
+                    .alpha(0f),
+                versionName = version.getVersionName(),
+                versionInfo = version.getVersionInfo()?.getInfoString(),
+                visible = true,
+                onClose = onInfoBoxClose
+            )
+        }
+
         //陀螺仪控制
         val isGyroscopeAvailable = remember(context) {
             isGyroscopeAvailable(context = context)
@@ -764,16 +790,6 @@ fun GameScreen(
                 sensitivity = AllSettings.gyroscopeSensitivity.state / 100f
             )
         }
-
-        GameInfoBox(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(all = 16.dp),
-            versionName = version.getVersionName(),
-            versionInfo = version.getVersionInfo()?.getInfoString(),
-            visible = showGameInfo,
-            onClose = onInfoBoxClose
-        )
 
         LogBox(
             enableLog = !viewModel.isEditingLayout && logState.value,
