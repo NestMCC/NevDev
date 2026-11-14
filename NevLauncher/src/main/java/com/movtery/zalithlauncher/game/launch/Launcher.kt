@@ -371,8 +371,6 @@ abstract class Launcher(
         args.addUnlessPresent("-XX:-UsePerfData", "UsePerfData")
         // Hindari SecureRandom menunggu entropi saat start
         args.addUnlessPresent("-Djava.security.egd=file:/dev/urandom", "-Djava.security.egd")
-        // Lewati verifikasi bytecode kelas dari classpath (game/mod): memuat ribuan kelas Minecraft jadi lebih cepat
-        args.addUnlessPresent("-XX:-BytecodeVerificationRemote", "BytecodeVerification", "-Xverify", "-noverify")
 
         // Render Distance Smooth: tuning GC agar tidak stutter saat chunk banyak dimuat
         if (AllSettings.smoothRenderDistance.getValue()) {
