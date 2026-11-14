@@ -558,6 +558,16 @@ private fun CustomThemeDialog(
         selectedColor.toHex()
     }
 
+    //Bar hue hanya mengubah hue. Bila warna kustom tersimpan hitam/abu-abu (saturasi atau kecerahan ~0),
+    //menggeser hue tidak mengubah apa pun; maka saat hue digeser, saturasi/kecerahan dinaikkan ke penuh.
+    val currentHue = colorController.hue
+    LaunchedEffect(currentHue) {
+        if (currentHue != colorController.initialHue) {
+            if (colorController.saturation < 0.1f) colorController.setSaturation(1f)
+            if (colorController.value < 0.1f) colorController.setValue(1f)
+        }
+    }
+
     /**
      * 是否开启编辑Hex对话框
      */
