@@ -1932,6 +1932,8 @@
     <!-- Summary of the Java runtime item in the Game settings tab -->
     <string name="settings_game_java_runtime_summary">Specify the default Java environment to use</string>
     <!-- Slider title in the Game tab and version settings for the memory given to the game -->
+    <string name="settings_game_ram_max_title">Max RAM (-Xmx)</string>
+    <string name="settings_game_ram_quick_title">Quick picks:</string>
     <string name="settings_game_java_memory_title">Memory Allocation</string>
     <!-- Summary of the memory allocation slider in the Game settings tab -->
     <string name="settings_game_java_memory_summary">Adjust Minecraft\'s memory usage</string>

@@ -622,6 +622,8 @@
     <string name="settings_game_auto_pick_java_runtime_summary">Saat Java dibutuhkan, launcher bakal otomatis memilih lingkungan yang sesuai. Jika tidak bisa ditentukan, launcher bakal menggunakan lingkungan Java bawaan</string>
     <string name="settings_game_java_runtime_title">Runtime Java</string>
     <string name="settings_game_java_runtime_summary">Pilih lingkungan Java default yang akan digunakan</string>
+    <string name="settings_game_ram_max_title">RAM Maksimum (-Xmx)</string>
+    <string name="settings_game_ram_quick_title">Pilihan Cepat:</string>
     <string name="settings_game_java_memory_title">Alokasi RAM</string>
     <string name="settings_game_java_memory_summary">Atur penggunaan RAM untuk Minecraft</string>
     <string name="settings_game_jvm_args_title">Argumen JVM</string>

@@ -389,6 +389,7 @@ private fun GameConfigs(
             title = stringResource(R.string.settings_game_java_memory_title),
             summary = stringResource(R.string.settings_game_java_memory_summary),
             suffix = "MB",
+            ramDesign = true,
             onValueChange = { stateful.ramAllocation = it },
             previewContent = {
                 AnimatedVisibility(

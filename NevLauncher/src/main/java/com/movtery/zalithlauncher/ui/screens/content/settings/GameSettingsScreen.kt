@@ -56,6 +56,7 @@ import com.movtery.zalithlauncher.ui.screens.TitledNavKey
 import com.movtery.zalithlauncher.ui.screens.content.elements.MemoryPreview
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.CardPosition
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.IntSliderSettingsCard
+import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.RamAllocationSettingsCard
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.ListSettingsCard
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.SettingsCard
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.SettingsCardColumn
@@ -208,15 +209,13 @@ fun GameSettingsScreen(
                         )
                     }
 
-                    IntSliderSettingsCard(
+                    RamAllocationSettingsCard(
                         modifier = Modifier.fillMaxWidth(),
                         position = CardPosition.Middle,
-                        unit = AllSettings.ramAllocation,
-                        title = stringResource(R.string.settings_game_java_memory_title),
-                        summary = stringResource(R.string.settings_game_java_memory_summary),
+                        value = AllSettings.ramAllocation.state ?: AllSettings.ramAllocation.min,
                         valueRange = AllSettings.ramAllocation.floatRange.start..getMaxMemoryForSettings(LocalContext.current).toFloat(),
-                        suffix = "MB",
-                        fineTuningControl = true,
+                        onValueChange = { AllSettings.ramAllocation.updateState(it) },
+                        onValueChangeFinished = { AllSettings.ramAllocation.save(AllSettings.ramAllocation.state) },
                         previewContent = {
                             MemoryPreview(
                                 modifier = Modifier

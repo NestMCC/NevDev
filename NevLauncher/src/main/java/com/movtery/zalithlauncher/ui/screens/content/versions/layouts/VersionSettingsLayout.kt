@@ -53,6 +53,7 @@ import com.movtery.zalithlauncher.ui.components.TitleAndSummary
 import com.movtery.zalithlauncher.ui.screens.content.elements.VersionIconImage
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.CardPosition
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.IntSliderSettingsCard
+import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.RamAllocationSettingsCard
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.SettingsCard
 import kotlin.math.min
 
@@ -155,6 +156,7 @@ fun ToggleableIntSliderSettingsCard(
     enabled: Boolean = true,
     onValueChange: (Int) -> Unit = {},
     onValueChangeFinished: () -> Unit = {},
+    ramDesign: Boolean = false,
     previewContent: @Composable (ColumnScope.() -> Unit) = {}
 ) {
     var checked by remember { mutableStateOf(currentValue >= valueRange.start) }
@@ -164,6 +166,40 @@ fun ToggleableIntSliderSettingsCard(
     }
 
     if (!enabled) checked = false
+
+    val checkbox: @Composable () -> Unit = {
+        Checkbox(
+            modifier = Modifier.padding(start = 12.dp),
+            checked = checked,
+            enabled = enabled,
+            onCheckedChange = {
+                checked = it
+                value = defaultValue
+                onValueChange(if (checked) value else -1)
+                onValueChangeFinished()
+            }
+        )
+    }
+
+    if (ramDesign) {
+        //desain baru alokasi RAM: slider bertitik + pilihan cepat
+        RamAllocationSettingsCard(
+            modifier = modifier,
+            position = position,
+            value = value,
+            title = title,
+            valueRange = valueRange,
+            onValueChange = {
+                value = it
+                onValueChange(value)
+            },
+            onValueChangeFinished = onValueChangeFinished,
+            enabled = checked,
+            appendContent = checkbox,
+            previewContent = previewContent
+        )
+        return
+    }
 
     IntSliderSettingsCard(
         modifier = modifier,
