@@ -195,7 +195,7 @@ class LauncherUpgradeViewModel: ViewModel() {
     }
 
     /**
-     * Mengambil rilis terbaru dari GitHub Release NestMCC/NevDev.
+     * Mengambil rilis terbaru dari GitHub Release NestMCC/Nev-Launcher.
      * @return null bila gagal; [NO_RELEASE_YET] bila repo belum punya rilis.
      */
     private suspend fun fetchRemoteData(): RemoteData? {

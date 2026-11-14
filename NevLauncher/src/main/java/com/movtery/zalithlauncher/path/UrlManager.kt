@@ -51,7 +51,7 @@ const val URL_MINECRAFT_VERSION_REPOS: String = "https://piston-meta.mojang.com/
 const val URL_MINECRAFT_ASSETS_INDEX: String = "https://launchermeta.mojang.com/v1/packages"
 const val URL_MINECRAFT_PURCHASE = "https://www.xbox.com/games/store/minecraft-java-bedrock-edition-for-pc/9nxp44l49shj"
 /** GitHub Release tempat APK Nev Launcher diunggah; dipakai untuk pop-up pembaruan. */
-const val URL_RELEASE_REPO: String = "NestMCC/NevDev"
+const val URL_RELEASE_REPO: String = "NestMCC/Nev-Launcher"
 const val URL_RELEASE_LATEST_API: String = "https://api.github.com/repos/$URL_RELEASE_REPO/releases/latest"
 const val URL_RELEASES_PAGE: String = "https://github.com/$URL_RELEASE_REPO/releases"
 const val URL_PROJECT: String = "https://github.com/ZalithLauncher/ZalithLauncher2"
