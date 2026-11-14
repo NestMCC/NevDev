@@ -42,21 +42,26 @@ import com.movtery.zalithlauncher.BuildConfig
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.path.GLOBAL_CLIENT
 import com.movtery.zalithlauncher.path.GLOBAL_JSON
-import com.movtery.zalithlauncher.path.URL_PROJECT_INFO
+import com.movtery.zalithlauncher.path.URL_RELEASE_LATEST_API
 import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.ui.components.MarqueeText
 import com.movtery.zalithlauncher.ui.components.SimpleListDialog
 import com.movtery.zalithlauncher.ui.screens.content.elements.DisabledAlpha
 import com.movtery.zalithlauncher.ui.upgrade.UpgradeDialog
 import com.movtery.zalithlauncher.ui.upgrade.UpgradeFilesDialog
-import com.movtery.zalithlauncher.upgrade.GithubContentApi
+import com.movtery.zalithlauncher.upgrade.GithubRelease
 import com.movtery.zalithlauncher.upgrade.RemoteData
+import com.movtery.zalithlauncher.upgrade.isNewerVersion
+import com.movtery.zalithlauncher.upgrade.toRemoteData
 import com.movtery.zalithlauncher.upgrade.TooFrequentOperationException
 import com.movtery.zalithlauncher.utils.logging.Logger
 import com.movtery.zalithlauncher.utils.network.safeBodyAsJson
 import com.movtery.zalithlauncher.utils.network.withRetry
-import com.movtery.zalithlauncher.utils.string.decodeBase64
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -77,12 +82,15 @@ sealed interface LauncherUpgradeOperation {
     data class OpenCloudDrive(val cloudDrive: RemoteData.CloudDrive) : LauncherUpgradeOperation
 }
 
-/**
- * 最新版本的信息获取源
- */
-private const val LATEST_VERSION = "latest_version_md.json"
-private const val LATEST_API_URL = "$URL_PROJECT_INFO/$LATEST_VERSION"
-private const val LATEST_API_CHINESE_URL = "https://repo.miawa.cn/zalith-info/v2/$LATEST_VERSION"
+/** Penanda: repo belum memiliki Release sama sekali (dianggap sudah versi terbaru). */
+private val NO_RELEASE_YET = RemoteData(
+    code = 0,
+    version = "0.0.0",
+    createdAt = "1970-01-01T00:00:00Z",
+    files = emptyList(),
+    defaultBody = RemoteData.RemoteBody(language = "", markdown = ""),
+    bodies = emptyList()
+)
 
 /**
  * 用于记录启动器更新 ViewModel
@@ -126,7 +134,7 @@ class LauncherUpgradeViewModel: ViewModel() {
         viewModelScope.launch {
             if (
                 isWithinRateLimit(
-                    time = TimeUnit.HOURS.toMillis(1L),
+                    time = TimeUnit.MINUTES.toMillis(10L),
                     lastCheckTime = AllSettings.lastUpgradeCheck.getValue()
                 )
             ) {
@@ -187,34 +195,24 @@ class LauncherUpgradeViewModel: ViewModel() {
     }
 
     /**
-     * 从远端获取最新的启动器信息
+     * Mengambil rilis terbaru dari GitHub Release NestMCC/NevDev.
+     * @return null bila gagal; [NO_RELEASE_YET] bila repo belum punya rilis.
      */
     private suspend fun fetchRemoteData(): RemoteData? {
         return withContext(Dispatchers.IO) {
             runCatching {
                 withRetry(logTag = "LauncherUpgrade", maxRetries = 2) {
-                    //获取最新的启动器信息
-                    val api = GLOBAL_CLIENT.get(LATEST_API_URL).safeBodyAsJson<GithubContentApi>()
-                    //需要Base64解密
-                    val contentString = decodeBase64(api.content)
-                    GLOBAL_JSON.decodeFromString(RemoteData.serializer(), contentString)
+                    try {
+                        GLOBAL_CLIENT.get(URL_RELEASE_LATEST_API) {
+                            header(HttpHeaders.Accept, "application/vnd.github+json")
+                        }.safeBodyAsJson<GithubRelease>().toRemoteData()
+                    } catch (e: ClientRequestException) {
+                        if (e.response.status == HttpStatusCode.NotFound) NO_RELEASE_YET else throw e
+                    }
                 }
             }.getOrElse { e ->
-                if (Locale.getDefault().language == "zh") {
-                    runCatching {
-                        Logger.info(TAG, "Check for updates in the Chinese region.")
-                        //在中国地区，可能因为无法访问 Github API 导致获取更新信息失败
-                        withRetry(logTag = "LauncherUpgrade_Chinese", maxRetries = 2) {
-                            GLOBAL_CLIENT.get(LATEST_API_CHINESE_URL).safeBodyAsJson<RemoteData>()
-                        }
-                    }.getOrElse { e ->
-                        Logger.warning(TAG, "Failed to check for launcher upgrade!", e)
-                        null
-                    }
-                } else {
-                    Logger.warning(TAG, "Failed to check for launcher upgrade!", e)
-                    null
-                }
+                Logger.warning(TAG, "Failed to check for launcher upgrade!", e)
+                null
             }
         }
     }
@@ -234,7 +232,8 @@ class LauncherUpgradeViewModel: ViewModel() {
         onIsLatest: suspend () -> Unit = {}
     ) {
         val currentVersionCode = BuildConfig.VERSION_CODE
-        if (currentVersionCode < data.code) {
+        //dibandingkan berdasarkan nomor versi (tag rilis vs VERSION_NAME)
+        if (isNewerVersion(data.version, BuildConfig.VERSION_NAME)) {
             //启动器为旧版本
             when {
                 ignoreDismissedVersions && lastIgnored == data.code -> {
