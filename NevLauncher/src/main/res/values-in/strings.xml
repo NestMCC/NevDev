@@ -1612,4 +1612,7 @@
     <string name="storage_home_folder_later">Nanti</string>
     <string name="download_addon_version_file_count">%d file</string>
     <string name="download_addon_version_compatible">Kompatibel</string>
+    <string name="settings_launcher_auto_install_title">Unduh otomatis pengaya</string>
+    <string name="settings_launcher_auto_install_summary">Saat mengunduh mod, paket sumber daya, dan shader, versi game yang sedang dimainkan (termasuk Fabric) langsung terpilih, dependensi wajib ikut diunduh, dan unduhan langsung dimulai. Jika file tidak cocok dengan versi Anda, dialog pilihan tetap ditampilkan</string>
+    <string name="download_addon_auto_install_button">Unduh otomatis</string>
 </resources>

@@ -69,7 +69,7 @@ fun AddonInfoScreen(
     DownloadSingleOperation(
         operation = operation,
         changeOperation = { operation = it },
-        doInstall = { classes, version, gameVersions, dependencies ->
+        doInstall = { classes, version, gameVersions, dependencies, autoDependencies ->
             downloadSingleForVersions(
                 version = version,
                 versions = gameVersions,
@@ -79,7 +79,9 @@ fun AddonInfoScreen(
             downloadDependenciesForVersions(
                 requests = dependencies,
                 versions = gameVersions,
-                submitError = submitError
+                submitError = submitError,
+                autoFrom = if (autoDependencies) version else null,
+                autoClasses = classes
             )
         },
         onDependencyClicked = { platform, projectId, classes ->

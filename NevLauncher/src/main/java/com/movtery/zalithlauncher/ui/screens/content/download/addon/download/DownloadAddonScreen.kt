@@ -35,6 +35,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -64,6 +65,7 @@ import com.movtery.zalithlauncher.game.download.addon.favorites.FavoriteProjects
 import com.movtery.zalithlauncher.game.download.addon.platform.Platform
 import com.movtery.zalithlauncher.game.download.addon.platform.PlatformClasses
 import com.movtery.zalithlauncher.game.download.addon.platform.PlatformProject
+import com.movtery.zalithlauncher.game.download.addon.platform.PlatformReleaseType
 import com.movtery.zalithlauncher.game.download.addon.platform.PlatformVersion
 import com.movtery.zalithlauncher.game.download.addon.platform.cacheKey
 import com.movtery.zalithlauncher.game.download.addon.platform.getProject
@@ -470,6 +472,34 @@ private fun Versions(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    //pilih otomatis file terbaru yang cocok dengan versi game (dan Fabric) yang sedang dipakai
+                    val autoVersion = remember(versions.result, viewModel.classes) {
+                        if (viewModel.classes == PlatformClasses.MOD_PACK) {
+                            null
+                        } else {
+                            val candidates = versions.result
+                                .filter { it.isAdapt }
+                                .flatMap { it.versions }
+                                .distinctBy { it.platformId() }
+                                .sortedByDescending { it.platformDatePublished() }
+                            candidates.firstOrNull { it.platformReleaseType() == PlatformReleaseType.RELEASE }
+                                ?: candidates.firstOrNull { it.platformReleaseType() == PlatformReleaseType.BETA }
+                                ?: candidates.firstOrNull()
+                        }
+                    }
+                    if (autoVersion != null) {
+                        FilledTonalButton(
+                            onClick = { onItemClicked(autoVersion) },
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.download_addon_auto_install_button),
+                                style = MaterialTheme.typography.labelMedium,
+                                maxLines = 1
+                            )
+                        }
+                    }
+
                     CheckChip(
                         selected = viewModel.showOnlyMCRelease,
                         onClick = {

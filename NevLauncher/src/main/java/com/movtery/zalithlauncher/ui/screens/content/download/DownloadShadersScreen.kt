@@ -70,7 +70,7 @@ fun DownloadShadersScreen(
     DownloadSingleOperation(
         operation = operation,
         changeOperation = { operation = it },
-        doInstall = { classes, version, versions, dependencies ->
+        doInstall = { classes, version, versions, dependencies, autoDependencies ->
             downloadSingleForVersions(
                 version = version,
                 versions = versions,
@@ -80,7 +80,9 @@ fun DownloadShadersScreen(
             downloadDependenciesForVersions(
                 requests = dependencies,
                 versions = versions,
-                submitError = submitError
+                submitError = submitError,
+                autoFrom = if (autoDependencies) version else null,
+                autoClasses = classes
             )
         },
         onDependencyClicked = { platform, projectId, classes ->

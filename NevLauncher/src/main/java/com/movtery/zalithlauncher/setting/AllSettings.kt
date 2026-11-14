@@ -700,6 +700,12 @@ object AllSettings : SettingsRegistry() {
     val showSponsorship = boolSetting("showSponsorship", true)
 
     /**
+     * unduh otomatis: saat mengunduh mod/paket sumber daya/shader, versi game yang sedang dipakai
+     * langsung terpilih dan dependensi wajib ikut terunduh tanpa dialog pilihan
+     */
+    val autoInstallAddons = boolSetting("autoInstallAddons", true)
+
+    /**
      * 上次已展示结算报告的上月赞助者月份标识
      */
     val lastSponsorReportMonth = stringSetting("lastSponsorReportMonth", "")

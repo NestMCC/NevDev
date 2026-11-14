@@ -401,6 +401,23 @@ fun LauncherSettingsScreen(
                 }
             }
 
+            //unduh otomatis pengaya (mod, paket sumber daya, shader)
+            AnimatedItem { ctx ->
+                SettingsCardColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animated(ctx)
+                ) {
+                    SwitchSettingsCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        position = CardPosition.Single,
+                        unit = AllSettings.autoInstallAddons,
+                        title = stringResource(R.string.settings_launcher_auto_install_title),
+                        summary = stringResource(R.string.settings_launcher_auto_install_summary)
+                    )
+                }
+            }
+
             AnimatedItem { ctx ->
                 SettingsCardColumn(
                     modifier = Modifier

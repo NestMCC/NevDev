@@ -27,6 +27,7 @@ import com.movtery.zalithlauncher.game.download.addon.platform.PlatformClasses
 import com.movtery.zalithlauncher.game.download.addon.platform.PlatformDependencyType
 import com.movtery.zalithlauncher.game.download.addon.platform.PlatformDisplayLabel
 import com.movtery.zalithlauncher.game.download.addon.platform.PlatformProject
+import com.movtery.zalithlauncher.game.download.addon.platform.PlatformReleaseType
 import com.movtery.zalithlauncher.game.download.addon.platform.PlatformVersion
 import com.movtery.zalithlauncher.game.download.addon.platform.curseforge.models.CurseForgeModLoader
 import com.movtery.zalithlauncher.game.download.addon.platform.getProjectByVersion
@@ -82,24 +83,31 @@ class DependencyRequest(
 fun downloadDependenciesForVersions(
     requests: List<DependencyRequest>,
     versions: List<Version>,
-    submitError: (ErrorViewModel.ThrowableMessage) -> Unit
+    submitError: (ErrorViewModel.ThrowableMessage) -> Unit,
+    autoFrom: PlatformVersion? = null,
+    autoClasses: PlatformClasses = PlatformClasses.MOD
 ) {
-    if (requests.isEmpty() || versions.isEmpty()) return
+    if (versions.isEmpty()) return
+    if (requests.isEmpty() && autoFrom == null) return
 
     // 整理唯一任务id
     val distinctRequests = requests.distinctBy { "${it.platform.name}/${it.projectId}/${it.versionId.orEmpty()}" }
-    val taskId = distinctRequests
+    val taskId = (distinctRequests
         .map { "${it.projectId}@${it.versionId.orEmpty()}" }
-        .sorted()
+        .sorted() + listOfNotNull(autoFrom?.let { "auto:${it.platformId()}" }))
         .joinToString(",")
         .hashCode()
+    val platformName = (distinctRequests.firstOrNull()?.platform ?: autoFrom?.platform())?.name.orEmpty()
 
     TaskSystem.submitTask(
         Task.runTask(
-            id = "dependency/${distinctRequests.first().platform.name}/$taskId",
+            id = "dependency/$platformName/$taskId",
             task = { task ->
                 task.updateMessage(
-                    androidText(R.string.download_addon_loading_dep_project, distinctRequests.first().projectId)
+                    androidText(
+                        R.string.download_addon_loading_dep_project,
+                        distinctRequests.firstOrNull()?.projectId ?: autoFrom?.platformProjectId().orEmpty()
+                    )
                 )
 
                 val context = DependencyContext(
@@ -112,8 +120,17 @@ fun downloadDependenciesForVersions(
                     failures = DependencyFailures()
                 )
 
+                // 自动模式：直接读取主资源版本标注的必装依赖，无需用户在对话框中勾选
+                val allRequests = if (autoFrom == null) {
+                    distinctRequests
+                } else {
+                    val auto = resolveRequiredDependencies(autoFrom, autoClasses, context)
+                    (distinctRequests + auto)
+                        .distinctBy { "${it.platform.name}/${it.projectId}/${it.versionId.orEmpty()}" }
+                }
+
                 coroutineScope {
-                    distinctRequests.forEach { request ->
+                    allRequests.forEach { request ->
                         async { expand(request, versions, context) }
                     }
                 }
@@ -346,7 +363,7 @@ private suspend fun DependencyContext.resolve(
     }
 
     return targets
-        .groupBy { target -> allVersions.firstOrNull { it.isCompatibleWith(target, request.classes) } }
+        .groupBy { target -> allVersions.pickBestCompatible(target, request.classes) }
         .mapNotNull { (version, group) ->
             if (version == null) {
                 group.forEach {
@@ -360,12 +377,38 @@ private suspend fun DependencyContext.resolve(
 }
 
 /**
+ * 读取主资源版本标注的必装依赖，并转换为可安装的依赖项
+ * 失败时写日志并跳过该依赖，不影响主资源的安装
+ */
+private suspend fun resolveRequiredDependencies(
+    version: PlatformVersion,
+    fallbackClasses: PlatformClasses,
+    context: DependencyContext
+): List<DependencyRequest> {
+    val required = resolveOrNull("Failed to read the dependencies of: ${version.platformFileName()}") {
+        version.platformDependencies()
+    }?.filter { it.type == PlatformDependencyType.REQUIRED }.orEmpty()
+    if (required.isEmpty()) return emptyList()
+
+    return coroutineScope {
+        required.map { dependency ->
+            async { context.expandChild(dependency, fallbackClasses) }
+        }.mapNotNull { it.await() }
+    }
+}
+
+/**
  * 将发现的传递依赖转换为可安装的依赖项
  * 同一个项目在整张依赖图中只会被处理一次
  */
 private suspend fun DependencyContext.expandChild(
     dependency: PlatformVersion.PlatformDependency,
     parent: DependencyRequest
+): DependencyRequest? = expandChild(dependency, parent.classes)
+
+private suspend fun DependencyContext.expandChild(
+    dependency: PlatformVersion.PlatformDependency,
+    fallbackClasses: PlatformClasses
 ): DependencyRequest? = semaphore.withPermit {
     val projectId = dependency.projectId ?: run {
         val versionId = dependency.versionId ?: return@withPermit null
@@ -374,7 +417,7 @@ private suspend fun DependencyContext.expandChild(
         } ?: return@withPermit null
     }
 
-    val (classes, title) = resolveProject(dependency.platform, projectId, parent.classes)
+    val (classes, title) = resolveProject(dependency.platform, projectId, fallbackClasses)
     if (classes.versionFolder == VersionFolders.NONE) return@withPermit null
 
     DependencyRequest(
@@ -457,6 +500,39 @@ private suspend fun DependencyContext.isInstalled(
         }?.also { installedMemo[key] = it }
     }
     return projects?.contains(request.projectId) == true
+}
+
+/**
+ * 在已按发布时间倒序排列的版本中，挑选适配目标游戏版本的版本
+ * 优先稳定版（release），其次 beta，最后 alpha；同等级取最新
+ */
+private fun List<PlatformVersion>.pickBestCompatible(
+    target: Version,
+    classes: PlatformClasses
+): PlatformVersion? {
+    val compatible = filter { it.isCompatibleWith(target, classes) }
+    return compatible.firstOrNull { it.platformReleaseType() == PlatformReleaseType.RELEASE }
+        ?: compatible.firstOrNull { it.platformReleaseType() == PlatformReleaseType.BETA }
+        ?: compatible.firstOrNull()
+}
+
+/**
+ * 该资源版本是否可以不经询问、直接安装到该游戏版本
+ * 严格校验：必须能读取游戏版本信息；模组还必须有模组加载器（如 Fabric）且与资源标注的加载器一致
+ */
+fun PlatformVersion.isAutoInstallable(
+    target: Version,
+    classes: PlatformClasses
+): Boolean {
+    if (classes == PlatformClasses.MOD_PACK) return false
+    val info = target.getVersionInfo() ?: return false
+    if (info.minecraftVersion !in platformGameVersion()) return false
+    if (classes != PlatformClasses.MOD) return true
+
+    val targetLoaders = info.loaderInfos.mapNotNull { it.loader.toPlatformLoader(platform()) }
+    if (targetLoaders.isEmpty()) return false
+    val versionLoaders = platformLoaders()
+    return versionLoaders.isEmpty() || targetLoaders.any { it in versionLoaders }
 }
 
 /**

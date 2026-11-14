@@ -3226,4 +3226,7 @@
     <string name="donate_button">Donasi Sekarang</string>
     <string name="download_addon_version_file_count">%d files</string>
     <string name="download_addon_version_compatible">Compatible</string>
+    <string name="settings_launcher_auto_install_title">Auto download addons</string>
+    <string name="settings_launcher_auto_install_summary">When downloading mods, resource packs and shaders, the game version you are playing (including Fabric) is selected automatically, required dependencies are downloaded too, and the download starts right away. If a file does not match your version, the selection dialog is shown</string>
+    <string name="download_addon_auto_install_button">Auto download</string>
 </resources>

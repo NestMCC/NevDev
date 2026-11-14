@@ -74,6 +74,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.game.download.addon.DependencyRequest
+import com.movtery.zalithlauncher.game.download.addon.isAutoInstallable
+import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.game.download.addon.platform.Platform
 import com.movtery.zalithlauncher.game.download.addon.platform.PlatformClasses
 import com.movtery.zalithlauncher.game.download.addon.platform.PlatformDependencyType
@@ -128,7 +130,9 @@ sealed interface DownloadSingleOperation {
         val classes: PlatformClasses,
         val version: PlatformVersion,
         val versions: List<Version>,
-        val dependencies: List<DependencyRequest>
+        val dependencies: List<DependencyRequest>,
+        /** 自动模式：安装时由任务自行读取并安装主资源标注的必装依赖 */
+        val autoDependencies: Boolean = false
     ) : DownloadSingleOperation
 }
 
@@ -136,7 +140,7 @@ sealed interface DownloadSingleOperation {
 fun DownloadSingleOperation(
     operation: DownloadSingleOperation,
     changeOperation: (DownloadSingleOperation) -> Unit,
-    doInstall: (PlatformClasses, PlatformVersion, List<Version>, List<DependencyRequest>) -> Unit,
+    doInstall: (PlatformClasses, PlatformVersion, List<Version>, List<DependencyRequest>, autoDependencies: Boolean) -> Unit,
     installedProjects: Map<Platform, Set<String>> = emptyMap(),
     onDependencyClicked: (Platform, String, PlatformClasses) -> Unit = { _, _, _ -> }
 ) {
@@ -166,7 +170,27 @@ fun DownloadSingleOperation(
             val dependencyEntries = operation.dependencyEntries
             val classes = operation.classes
 
-            DownloadDialog(
+            // 自动模式：资源版本与当前游戏版本（含 Fabric 等加载器）匹配时，跳过对话框，直接选中当前版本并下载
+            val currentVersion by VersionsManager.currentVersion.collectAsStateWithLifecycle()
+            val autoTarget = currentVersion?.takeIf { target ->
+                AllSettings.autoInstallAddons.state &&
+                        target.isValid() &&
+                        operation.version.isAutoInstallable(target, classes)
+            }
+
+            if (autoTarget != null) {
+                LaunchedEffect(operation) {
+                    changeOperation(
+                        DownloadSingleOperation.Install(
+                            classes = classes,
+                            version = operation.version,
+                            versions = listOf(autoTarget),
+                            dependencies = emptyList(),
+                            autoDependencies = true
+                        )
+                    )
+                }
+            } else DownloadDialog(
                 dependencyEntries = dependencyEntries,
                 classes = classes,
                 installedProjects = installedProjects,
@@ -186,7 +210,7 @@ fun DownloadSingleOperation(
         }
         is DownloadSingleOperation.Install -> {
             LaunchedEffect(Unit) {
-                doInstall(operation.classes, operation.version, operation.versions, operation.dependencies)
+                doInstall(operation.classes, operation.version, operation.versions, operation.dependencies, operation.autoDependencies)
                 changeOperation(DownloadSingleOperation.None)
             }
         }
