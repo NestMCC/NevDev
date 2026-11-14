@@ -98,6 +98,7 @@ import com.movtery.zalithlauncher.game.version.installed.VersionsManager
 import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.setting.enums.ActionMenuSide
 import com.movtery.zalithlauncher.ui.base.BaseScreen
+import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
 import com.movtery.zalithlauncher.ui.components.AnimatedDirection
 import com.movtery.zalithlauncher.ui.components.BackgroundCard
 import com.movtery.zalithlauncher.ui.components.MarqueeText
@@ -177,7 +178,8 @@ fun LauncherScreen(
             val parentWidthPx = constraints.maxWidth.toFloat()
             dragState.parentWidthPx = parentWidthPx
             dragState.outerPaddingPx = with(LocalDensity.current) { ActionMenuOuterPadding.toPx() }
-            val isActionMenuTaller = maxHeight >= 600.dp
+            //Cyber: bilah perintah (akun, versi, Main) selalu mendatar di atas, grid kartu di bawahnya
+            val isActionMenuTaller = maxHeight >= 600.dp && !LocalNevStyle.current.cyber
             val menuWeight = if (isActionMenuTaller) ActionMenuWeight else ActionMenuCompactWeight
             val contentWeight = if (isActionMenuTaller) ContentWeight else ContentCompactWeight
             //紧凑模式：操作卡片横向铺满整行，内容区域放到卡片下方

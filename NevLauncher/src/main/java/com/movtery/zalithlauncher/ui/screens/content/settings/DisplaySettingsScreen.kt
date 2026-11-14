@@ -67,7 +67,9 @@ private class DesignTheme(
     val type: ColorThemeType,
     val nameRes: Int,
     val descRes: Int,
-    val swatch: List<Color>
+    val swatch: List<Color>,
+    /** Bila tidak null, memilih tema ini juga memasang gaya desain (bentuk + tata letak) miliknya. */
+    val style: DesignStyleType? = null
 )
 
 private val designThemes = listOf(
@@ -82,6 +84,13 @@ private val designThemes = listOf(
         nameRes = R.string.theme_color_cryogenic,
         descRes = R.string.settings_display_theme_cryogenic_desc,
         swatch = listOf(Color(0xFF08131E), Color(0xFF4DD8F0), Color(0xFF9CCBFF))
+    ),
+    DesignTheme(
+        type = ColorThemeType.CYBER,
+        nameRes = R.string.theme_color_cyber,
+        descRes = R.string.settings_display_theme_cyber_desc,
+        swatch = listOf(Color(0xFF050A12), Color(0xFF00E5FF), Color(0xFFA78BFF)),
+        style = DesignStyleType.CYBER
     )
 )
 
@@ -135,6 +144,14 @@ fun DisplaySettingsScreen(
                                         selected = selectedType == theme.type,
                                         onClick = {
                                             AllSettings.launcherColorTheme.save(theme.type)
+                                            val ownStyle = theme.style
+                                            if (ownStyle != null) {
+                                                //tema dengan gaya sendiri (Cyber): pasang gaya + tata letaknya
+                                                AllSettings.launcherDesignStyle.save(ownStyle)
+                                            } else if (AllSettings.launcherDesignStyle.state == DesignStyleType.CYBER) {
+                                                //pindah dari Cyber ke tema lain: kembali ke gaya klasik
+                                                AllSettings.launcherDesignStyle.save(DesignStyleType.NEV)
+                                            }
                                         }
                                     )
                                 }
@@ -154,6 +171,7 @@ fun DisplaySettingsScreen(
                             when (type) {
                                 DesignStyleType.NEV -> stringResource(R.string.settings_display_style_nev)
                                 DesignStyleType.CRYOGENIC -> stringResource(R.string.settings_display_style_cryogenic)
+                                DesignStyleType.CYBER -> stringResource(R.string.settings_display_style_cyber)
                             }
                         }
                     )

@@ -158,6 +158,8 @@
     <string name="settings_display_nav_side_start">Left</string>
     <string name="settings_display_nav_side_end">Right</string>
     <string name="theme_color_cyber">Cyber</string>
+    <string name="settings_display_theme_cyber_desc">Neon cyan and violet on near-black, HUD panels with a bottom dock.</string>
+    <string name="settings_display_style_cyber">Cyber (neon, HUD layout, bottom dock)</string>
     <!-- Title of the color picker dialog -->
     <string name="theme_color_picker_title">Color Picker</string>
     <!-- Button in the color picker dialog to edit the color as a hex code -->

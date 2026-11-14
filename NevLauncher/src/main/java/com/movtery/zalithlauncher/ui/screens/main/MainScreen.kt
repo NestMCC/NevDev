@@ -97,6 +97,9 @@ import com.movtery.zalithlauncher.ui.theme.NavRailSide
 import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.BorderStroke
 import com.movtery.zalithlauncher.ui.AndroidStringText
 import com.movtery.zalithlauncher.ui.androidText
@@ -189,12 +192,21 @@ fun MainScreen(
 
     val railSide = AllSettings.launcherNavRailSide.state
     val floatingRail = LocalNevStyle.current.floatingRail
+    //Cyber: menu navigasi berupa dock horizontal di bawah layar, bukan kolom samping
+    val bottomDock = LocalNevStyle.current.bottomDock
+    val hudStart = NevRed.GradientStart
+    val hudEnd = NevRed.GradientEnd
     val rail: @Composable () -> Unit = {
     SideRail(
-        modifier = Modifier
-            .fillMaxHeight()
-            .width(if (floatingRail) 92.dp else 84.dp),
-        floating = floatingRail,
+        modifier = if (bottomDock) {
+            Modifier.fillMaxWidth()
+        } else {
+            Modifier
+                .fillMaxHeight()
+                .width(if (floatingRail) 92.dp else 84.dp)
+        },
+        floating = floatingRail && !bottomDock,
+        dock = bottomDock,
         contentColor = onBackgroundColor(),
         inServerHubScreen = mainScreenKey is NormalNavKey.ServerHub,
         inMultiplayerScreen = mainScreenKey is NormalNavKey.Multiplayer,
@@ -244,7 +256,7 @@ fun MainScreen(
         contentColor = onBackgroundColor()
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
-        if (railSide == NavRailSide.START) rail()
+        if (railSide == NavRailSide.START && !bottomDock) rail()
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -253,7 +265,29 @@ fun MainScreen(
             TopBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp),
+                    .height(40.dp)
+                    .then(
+                        if (bottomDock) {
+                            //garis HUD neon di bawah bilah judul + penanda sudut
+                            Modifier.drawBehind {
+                                val y = size.height - 1.dp.toPx()
+                                drawLine(
+                                    brush = Brush.horizontalGradient(
+                                        listOf(hudStart, hudEnd, Color.Transparent)
+                                    ),
+                                    start = Offset(0f, y),
+                                    end = Offset(size.width, y),
+                                    strokeWidth = 1.5.dp.toPx()
+                                )
+                                drawLine(
+                                    color = hudStart,
+                                    start = Offset(0f, size.height),
+                                    end = Offset(0f, size.height - 14.dp.toPx()),
+                                    strokeWidth = 3.dp.toPx()
+                                )
+                            }
+                        } else Modifier
+                    ),
                 mainScreenKey = mainScreenKey,
                 inLauncherScreen = inLauncherScreen,
                 taskRunning = taskRunning,
@@ -296,8 +330,10 @@ fun MainScreen(
                     changeTasksExpandedState()
                 }
             }
+
+            if (bottomDock) rail()
         }
-        if (railSide == NavRailSide.END) rail()
+        if (railSide == NavRailSide.END && !bottomDock) rail()
         }
     }
 }
@@ -499,8 +535,9 @@ private fun SideRail(
     toDonateScreen: () -> Unit,
     openFileManager: () -> Unit,
     floating: Boolean = false,
+    dock: Boolean = false,
 ) {
-    val railItems: @Composable ColumnScope.() -> Unit = {
+    val railItems: @Composable () -> Unit = {
             SideRailItem(
                 selected = false,
                 painter = painterResource(R.drawable.ic_folder_filled),
@@ -540,7 +577,35 @@ private fun SideRail(
     }
 
     CompositionLocalProvider(LocalContentColor provides contentColor) {
-        if (floating) {
+        if (dock) {
+            //dock Cyber: panel potong-sudut bercahaya di bawah layar; bisa digeser bila layar sempit
+            val dockShape = nevShape(20.dp)
+            Box(
+                modifier = modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(
+                    modifier = Modifier
+                        .nevGlow(dockShape, 10.dp, 0.45f)
+                        .background(NevRed.Panel.copy(alpha = 0.92f), dockShape)
+                        .border(
+                            BorderStroke(
+                                1.dp,
+                                Brush.horizontalGradient(
+                                    listOf(NevRed.OutlineBright, NevRed.Outline, NevRed.OutlineBright)
+                                )
+                            ),
+                            dockShape
+                        )
+                        .horizontalScroll(rememberScrollState())
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    railItems()
+                }
+            }
+        } else if (floating) {
             //kapsul kaca melayang di tengah; label menu tetap tampil
             val capsule = nevShape(26.dp)
             Box(
@@ -563,7 +628,7 @@ private fun SideRail(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    content = railItems
+                    content = { railItems() }
                 )
             }
         } else {
@@ -573,7 +638,7 @@ private fun SideRail(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                content = railItems
+                content = { railItems() }
             )
         }
     }

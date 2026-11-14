@@ -163,7 +163,7 @@ internal fun CryoDialog(
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(
-                            text = "CRYO // SYSTEM",
+                            text = if (LocalNevStyle.current.cyber) "NEV // CYBER" else "CRYO // SYSTEM",
                             style = MaterialTheme.typography.labelSmall,
                             fontFamily = FontFamily.Monospace,
                             color = NevRed.GradientEnd

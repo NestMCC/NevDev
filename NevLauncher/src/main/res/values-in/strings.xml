@@ -137,6 +137,8 @@
     <string name="settings_display_nav_side_start">Kiri</string>
     <string name="settings_display_nav_side_end">Kanan</string>
     <string name="theme_color_cyber">Cyber</string>
+    <string name="settings_display_theme_cyber_desc">Cyan neon dan ungu di atas latar hampir hitam, panel HUD dengan dock di bawah.</string>
+    <string name="settings_display_style_cyber">Cyber (neon, tata letak HUD, dock bawah)</string>
     <string name="download_game_install_title">Menginstal Game</string>
     <string name="download_task_flow_label">ALUR UNDUHAN UTAMA</string>
     <string name="download_game_install_vanilla">Mengunduh Vanila %s</string>

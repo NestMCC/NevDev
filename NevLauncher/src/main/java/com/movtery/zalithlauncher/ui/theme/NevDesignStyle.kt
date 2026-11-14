@@ -35,7 +35,10 @@ enum class DesignStyleType {
     NEV,
 
     /** Sudut terpotong, panel kaca transparan, cahaya tepi lebih kuat. */
-    CRYOGENIC
+    CRYOGENIC,
+
+    /** Gaya Cyber: sudut terpotong diagonal terbalik, bingkai neon tipis, dock navigasi di bawah. */
+    CYBER
 }
 
 /** Sisi layar tempat menu navigasi utama diletakkan. */
@@ -59,7 +62,11 @@ data class NevStyle(
     /** true: tab, tombol, dan panel memakai sudut terpotong, bukan bulat. */
     val cutCorners: Boolean,
     /** true: menu navigasi utama berupa kapsul kaca melayang di tengah, bukan kolom penuh. */
-    val floatingRail: Boolean
+    val floatingRail: Boolean,
+    /** true: gaya Cyber (bentuk, label, dan tata letak sendiri). */
+    val cyber: Boolean = false,
+    /** true: menu navigasi utama berupa dock horizontal di bawah layar (tata letak Cyber). */
+    val bottomDock: Boolean = false
 )
 
 val NevClassicStyle = NevStyle(
@@ -84,28 +91,52 @@ val NevCryogenicStyle = NevStyle(
     floatingRail = true
 )
 
+val NevCyberStyle = NevStyle(
+    cardOuterScale = 0.35f,
+    cardInnerScale = 0.2f,
+    cardBorderWidth = 1.dp,
+    glowRadiusScale = 1.8f,
+    glowIntensityScale = 1.4f,
+    cardAlpha = 0.88f,
+    cutCorners = true,
+    floatingRail = false,
+    cyber = true,
+    bottomDock = true
+)
+
 fun nevStyleFor(type: DesignStyleType): NevStyle = when (type) {
     DesignStyleType.NEV -> NevClassicStyle
     DesignStyleType.CRYOGENIC -> NevCryogenicStyle
+    DesignStyleType.CYBER -> NevCyberStyle
 }
 
 val LocalNevStyle = compositionLocalOf { NevClassicStyle }
 
 /** Bentuk "pil": kapsul penuh pada gaya klasik, potongan diagonal pada gaya Cryogenic. */
 @Composable
-fun nevPillShape(): Shape =
-    if (LocalNevStyle.current.cutCorners) {
+fun nevPillShape(): Shape {
+    val style = LocalNevStyle.current
+    return if (style.cyber) {
+        //Cyber: potongan pada sisi diagonal yang berlawanan dengan Cryogenic
+        CutCornerShape(topStart = 0.dp, topEnd = 12.dp, bottomEnd = 0.dp, bottomStart = 12.dp)
+    } else if (style.cutCorners) {
         CutCornerShape(topStart = 16.dp, topEnd = 0.dp, bottomEnd = 16.dp, bottomStart = 0.dp)
     } else {
         RoundedCornerShape(50)
     }
+}
 
 /** Bentuk panel/tombol/tab dengan radius dasar [radius], menyesuaikan gaya aktif. */
 @Composable
-fun nevShape(radius: Dp): Shape =
-    if (LocalNevStyle.current.cutCorners) {
+fun nevShape(radius: Dp): Shape {
+    val style = LocalNevStyle.current
+    return if (style.cyber) {
+        val cut = radius * 0.5f
+        CutCornerShape(topStart = 0.dp, topEnd = cut, bottomEnd = 0.dp, bottomStart = cut)
+    } else if (style.cutCorners) {
         val cut = radius * 0.6f
         CutCornerShape(topStart = cut, topEnd = 0.dp, bottomEnd = cut, bottomStart = 0.dp)
     } else {
         RoundedCornerShape(radius)
     }
+}
