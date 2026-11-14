@@ -19,7 +19,15 @@ package com.movtery.zalithlauncher.ui.theme
 
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Shape
@@ -138,5 +146,70 @@ fun nevShape(radius: Dp): Shape {
         CutCornerShape(topStart = cut, topEnd = 0.dp, bottomEnd = cut, bottomStart = 0.dp)
     } else {
         RoundedCornerShape(radius)
+    }
+}
+
+/**
+ * Latar Cyber: garis grid tipis, scanline CRT, dan cahaya neon di dua sudut layar.
+ * Digambar di belakang seluruh isi layar.
+ */
+fun Modifier.cyberBackdrop(): Modifier = composed {
+    val c = MaterialTheme.colorScheme.primary
+    val c2 = MaterialTheme.colorScheme.tertiary
+    drawBehind {
+        val gridColor = c.copy(alpha = 0.07f)
+        val step = 36.dp.toPx()
+        var x = 0f
+        while (x < size.width) {
+            drawLine(gridColor, Offset(x, 0f), Offset(x, size.height), 1f)
+            x += step
+        }
+        var y = 0f
+        while (y < size.height) {
+            drawLine(gridColor, Offset(0f, y), Offset(size.width, y), 1f)
+            y += step
+        }
+        val scan = Color.Black.copy(alpha = 0.10f)
+        val scanStep = 6.dp.toPx()
+        var sy = 0f
+        while (sy < size.height) {
+            drawLine(scan, Offset(0f, sy), Offset(size.width, sy), 1f)
+            sy += scanStep
+        }
+        drawRect(
+            Brush.radialGradient(
+                listOf(c.copy(alpha = 0.18f), Color.Transparent),
+                center = Offset(size.width, 0f),
+                radius = size.maxDimension * 0.6f
+            )
+        )
+        drawRect(
+            Brush.radialGradient(
+                listOf(c2.copy(alpha = 0.14f), Color.Transparent),
+                center = Offset(0f, size.height),
+                radius = size.maxDimension * 0.5f
+            )
+        )
+    }
+}
+
+/** Bingkai HUD Cyber: penanda sudut neon di keempat sudut (cyan dan ungu bergantian). */
+fun Modifier.cyberFrame(): Modifier = composed {
+    val a = MaterialTheme.colorScheme.primary
+    val b = MaterialTheme.colorScheme.tertiary
+    drawWithContent {
+        drawContent()
+        val len = 14.dp.toPx()
+        val sw = 2.dp.toPx()
+        val w = size.width
+        val h = size.height
+        drawLine(a, Offset(0f, 0f), Offset(len, 0f), sw)
+        drawLine(a, Offset(0f, 0f), Offset(0f, len), sw)
+        drawLine(b, Offset(w, 0f), Offset(w - len, 0f), sw)
+        drawLine(b, Offset(w, 0f), Offset(w, len), sw)
+        drawLine(b, Offset(0f, h), Offset(len, h), sw)
+        drawLine(b, Offset(0f, h), Offset(0f, h - len), sw)
+        drawLine(a, Offset(w, h), Offset(w - len, h), sw)
+        drawLine(a, Offset(w, h), Offset(w, h - len), sw)
     }
 }

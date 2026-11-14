@@ -19,6 +19,7 @@
 package com.movtery.zalithlauncher.ui.screens.main
 
 import com.movtery.zalithlauncher.ui.theme.nevGlow
+import com.movtery.zalithlauncher.ui.theme.cyberBackdrop
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -255,7 +256,11 @@ fun MainScreen(
         color = backgroundColor,
         contentColor = onBackgroundColor()
     ) {
-        Row(modifier = Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(if (bottomDock) Modifier.cyberBackdrop() else Modifier)
+        ) {
         if (railSide == NavRailSide.START && !bottomDock) rail()
         Column(
             modifier = Modifier
@@ -446,8 +451,14 @@ private fun <E: TitledNavKey> TopBar(
                             val rest = name.substringAfter(' ', "").uppercase()
                             Text(
                                 text = buildAnnotatedString {
+                                    if (LocalNevStyle.current.cyber) {
+                                        withStyle(SpanStyle(color = NevRed.GradientEnd)) { append("> ") }
+                                    }
                                     withStyle(SpanStyle(color = NevRed.GradientStart)) { append(first) }
                                     if (rest.isNotEmpty()) append(" $rest")
+                                    if (LocalNevStyle.current.cyber) {
+                                        withStyle(SpanStyle(color = NevRed.GradientEnd)) { append("_") }
+                                    }
                                 },
                                 style = style,
                                 fontWeight = FontWeight.ExtraBold,
@@ -651,7 +662,13 @@ private fun SideRailItem(
     text: String,
     onClick: () -> Unit
 ) {
-    val tint = if (selected) NevRed.OnGradient else LocalContentColor.current
+    val cyber = LocalNevStyle.current.cyber
+    val neon = MaterialTheme.colorScheme.primary
+    val tint = when {
+        selected && cyber -> neon
+        selected -> NevRed.OnGradient
+        else -> LocalContentColor.current
+    }
     val selectedBrush = NevRed.GradientDiagonal
     val itemShape = nevShape(18.dp)
     //ikon di atas, label di bawah; item terpilih berlatar pil bergradasi
@@ -660,7 +677,24 @@ private fun SideRailItem(
             .width(72.dp)
             .then(if (selected) Modifier.nevGlow(itemShape, 10.dp, 0.9f) else Modifier)
             .clip(itemShape)
-            .then(if (selected) Modifier.background(selectedBrush) else Modifier)
+            .then(
+                when {
+                    //Cyber: item aktif = kotak neon berbingkai + garis terang di bawah, bukan blok gradasi
+                    selected && cyber -> Modifier
+                        .background(neon.copy(alpha = 0.14f))
+                        .border(1.dp, neon, itemShape)
+                        .drawBehind {
+                            drawLine(
+                                color = neon,
+                                start = Offset(size.width * 0.2f, size.height - 1.dp.toPx()),
+                                end = Offset(size.width * 0.8f, size.height - 1.dp.toPx()),
+                                strokeWidth = 3.dp.toPx()
+                            )
+                        }
+                    selected -> Modifier.background(selectedBrush)
+                    else -> Modifier
+                }
+            )
             .clickable(onClick = onClick)
             .padding(vertical = 8.dp, horizontal = 2.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -673,7 +707,7 @@ private fun SideRailItem(
             tint = tint
         )
         Text(
-            text = text,
+            text = if (cyber) text.uppercase() else text,
             style = MaterialTheme.typography.labelSmall,
             color = tint,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,

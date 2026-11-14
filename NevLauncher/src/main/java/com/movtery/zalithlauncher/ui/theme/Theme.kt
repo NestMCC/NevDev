@@ -22,6 +22,7 @@ import android.os.Build
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -851,7 +852,8 @@ fun NevLauncherTheme(
         MaterialExpressiveTheme(
             colorScheme = currentDisplayScheme,
             motionScheme = MotionScheme.expressive(),
-            typography = AppTypography,
+            shapes = if (nevStyle.cyber) CyberShapes else Shapes(),
+            typography = if (nevStyle.cyber) CyberTypography else AppTypography,
             content = content
         )
     }

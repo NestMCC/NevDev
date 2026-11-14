@@ -39,6 +39,7 @@ import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.ui.screens.content.elements.backgroundGlass
 import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder
+import com.movtery.zalithlauncher.ui.theme.cyberFrame
 import com.movtery.zalithlauncher.ui.theme.nevGlow
 import com.movtery.zalithlauncher.ui.theme.cardColor
 import com.movtery.zalithlauncher.ui.theme.cardTitleColor
@@ -77,7 +78,8 @@ fun BackgroundCard(
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
-        modifier = modifier.nevGlow(shape, 6.dp, 0.45f),
+        modifier = modifier.nevGlow(shape, 6.dp, 0.45f)
+            .then(if (LocalNevStyle.current.cyber) Modifier.cyberFrame() else Modifier),
         shape = shape,
         colors = colors,
         elevation = elevation,
@@ -112,7 +114,8 @@ fun BackgroundCard(
     content: @Composable @UiComposable ColumnScope.() -> Unit
 ) {
     Card(
-        modifier = modifier.nevGlow(shape, 6.dp, 0.45f),
+        modifier = modifier.nevGlow(shape, 6.dp, 0.45f)
+            .then(if (LocalNevStyle.current.cyber) Modifier.cyberFrame() else Modifier),
         shape = shape,
         colors = colors,
         elevation = elevation,
