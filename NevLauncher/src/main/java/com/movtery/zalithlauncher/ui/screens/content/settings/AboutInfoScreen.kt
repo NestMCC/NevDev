@@ -142,7 +142,14 @@ fun AboutInfoScreen(
                             modifier = Modifier.weight(1f),
                             name = "NestMC",
                             handle = "tiktok.com/@nest.mc",
-                            avatar = { NevAvatarInitials("NM") },
+                            avatar = {
+                                Image(
+                                    modifier = Modifier.fillMaxSize(),
+                                    painter = painterResource(R.drawable.img_avatar_nestmc),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop
+                                )
+                            },
                             onOpen = { openLink(URL_TIKTOK_NESTMC) }
                         )
                         NevTikTokCard(
@@ -662,24 +669,6 @@ private fun NevAboutCard(
                 Text(text = stringResource(R.string.upgrade_title))
             }
         }
-    }
-}
-
-/** Avatar bulat berisi inisial (gradasi tema) untuk akun tanpa foto profil. */
-@Composable
-private fun NevAvatarInitials(initials: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Brush.linearGradient(listOf(NevRed.GradientStart, NevRed.GradientEnd))),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = initials,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Black,
-            color = NevRed.OnGradient
-        )
     }
 }
 
