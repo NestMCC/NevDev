@@ -185,7 +185,8 @@ fun MainScreen(
     val mainScreenKey = screenBackStackModel.mainScreen.currentKey
     val inLauncherScreen = mainScreenKey == null || mainScreenKey is NormalNavKey.LauncherMain
     //beranda hero: layar penuh tanpa side rail; menu pindah jadi teks di bawah judul
-    val heroHome = AllSettings.launcherHeroHome.state && inLauncherScreen
+    val heroLayout = AllSettings.launcherHeroHome.state
+    val heroHome = heroLayout && inLauncherScreen
 
     val isBackgroundValid = LocalBackgroundViewModel.current?.isValid == true
     val launcherBackgroundOpacity = AllSettings.launcherBackgroundOpacity.state.toFloat() / 100f
@@ -268,7 +269,7 @@ fun MainScreen(
                 .fillMaxSize()
                 .then(if (bottomDock) Modifier.cyberBackdrop() else Modifier)
         ) {
-        if (railSide == NavRailSide.START && !bottomDock && !heroHome) rail()
+        if (railSide == NavRailSide.START && !bottomDock && !heroLayout) rail()
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -315,7 +316,23 @@ fun MainScreen(
                 },
             )
             }
-            if (!heroHome) topBar()
+            if (!heroHome) {
+                topBar()
+                if (heroLayout) {
+                    HeroTextNav(
+                        toServer = toServerHubScreen,
+                        toMultiplayer = toMultiplayerScreen,
+                        toDonate = toDonateScreen,
+                        toDownload = toDownloadScreen,
+                        toSettings = toSettingsScreen,
+                        inServer = mainScreenKey is NormalNavKey.ServerHub,
+                        inMultiplayer = mainScreenKey is NormalNavKey.Multiplayer,
+                        inDonate = mainScreenKey is NormalNavKey.Donate,
+                        inDownload = mainScreenKey is NestedNavKey.Download,
+                        inSettings = mainScreenKey is NestedNavKey.Settings
+                    )
+                }
+            }
 
             Box(
                 modifier = Modifier
@@ -338,13 +355,16 @@ fun MainScreen(
                     //beranda hero memenuhi layar; judul + menu teks menumpang di atasnya
                     Column(modifier = Modifier.align(Alignment.TopStart)) {
                         topBar()
-                        HeroTextNav(
-                            toServer = toServerHubScreen,
-                            toMultiplayer = toMultiplayerScreen,
-                            toDonate = toDonateScreen,
-                            toDownload = toDownloadScreen,
-                            toSettings = toSettingsScreen
-                        )
+                        //di atas latar foto/video: teks selalu putih
+                        CompositionLocalProvider(LocalContentColor provides Color.White) {
+                            HeroTextNav(
+                                toServer = toServerHubScreen,
+                                toMultiplayer = toMultiplayerScreen,
+                                toDonate = toDonateScreen,
+                                toDownload = toDownloadScreen,
+                                toSettings = toSettingsScreen
+                            )
+                        }
                     }
                 }
 
@@ -360,9 +380,9 @@ fun MainScreen(
                 }
             }
 
-            if (bottomDock && !heroHome) rail()
+            if (bottomDock && !heroLayout) rail()
         }
-        if (railSide == NavRailSide.END && !bottomDock && !heroHome) rail()
+        if (railSide == NavRailSide.END && !bottomDock && !heroLayout) rail()
         }
     }
 }
@@ -1168,14 +1188,20 @@ private fun HeroTextNav(
     toDonate: () -> Unit,
     toDownload: () -> Unit,
     toSettings: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    inServer: Boolean = false,
+    inMultiplayer: Boolean = false,
+    inDonate: Boolean = false,
+    inDownload: Boolean = false,
+    inSettings: Boolean = false
 ) {
+    class Item(val label: String, val selected: Boolean, val action: () -> Unit)
     val items = listOf(
-        stringResource(R.string.server_hub_title) to toServer,
-        stringResource(R.string.terracotta) to toMultiplayer,
-        stringResource(R.string.donate_menu) to toDonate,
-        stringResource(R.string.generic_download) to toDownload,
-        stringResource(R.string.generic_setting) to toSettings
+        Item(stringResource(R.string.server_hub_title), inServer, toServer),
+        Item(stringResource(R.string.terracotta), inMultiplayer, toMultiplayer),
+        Item(stringResource(R.string.donate_menu), inDonate, toDonate),
+        Item(stringResource(R.string.generic_download), inDownload, toDownload),
+        Item(stringResource(R.string.generic_setting), inSettings, toSettings)
     )
     androidx.compose.foundation.layout.Row(
         modifier = modifier
@@ -1183,13 +1209,13 @@ private fun HeroTextNav(
             .horizontalScroll(androidx.compose.foundation.rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        items.forEach { (label, action) ->
+        items.forEach { item ->
             Text(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
-                    .clickable(onClick = action)
+                    .clickable(onClick = { if (!item.selected) item.action() })
                     .padding(vertical = 6.dp),
-                text = label.uppercase(),
+                text = item.label.uppercase(),
                 style = MaterialTheme.typography.labelLarge.copy(
                     shadow = androidx.compose.ui.graphics.Shadow(
                         color = Color.Black.copy(alpha = 0.7f),
@@ -1198,7 +1224,7 @@ private fun HeroTextNav(
                 ),
                 fontWeight = FontWeight.SemiBold,
                 letterSpacing = 1.sp,
-                color = Color.White.copy(alpha = 0.92f),
+                color = if (item.selected) NevRed.GradientStart else LocalContentColor.current.copy(alpha = 0.92f),
                 maxLines = 1
             )
         }
