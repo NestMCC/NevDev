@@ -244,13 +244,6 @@ class MainActivity : BaseAppCompatActivity() {
             backgroundViewModel.seedDefaultBackground(applicationContext)
         }
 
-        //拉取当月赞助者数据
-        lifecycleScope.launch {
-            sponsorsViewModel.loadOnStart(
-                showLastMonth = GuideProgress.isPlayed(GuideKeys.Main) && !isImporting
-            )
-        }
-
         //错误信息展示
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -285,7 +278,7 @@ class MainActivity : BaseAppCompatActivity() {
                         checkUpdate()
                     }
                     is EventViewModel.Event.ShowSponsors -> {
-                        sponsorsViewModel.openDialog()
+                        //popup sponsor Zalith dihapus dari Nev Launcher
                     }
                     is EventViewModel.Event.KeepScreen -> {
                         keepScreen(event.on)
@@ -528,14 +521,6 @@ class MainActivity : BaseAppCompatActivity() {
                         AllSettings.lastIgnoredVersion.save(ver)
                     },
                     onLinkClick = { eventViewModel.sendEvent(EventViewModel.Event.OpenLink(it)) }
-                )
-
-                //当月赞助者对话框 / 上月赞助者结算报告
-                SponsorsDialog(
-                    viewModel = sponsorsViewModel,
-                    onSupportClick = {
-                        eventViewModel.sendEvent(EventViewModel.Event.OpenLink(URL_SUPPORT))
-                    }
                 )
 
                 //版本修改操作流程
