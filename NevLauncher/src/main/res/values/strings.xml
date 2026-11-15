@@ -2641,6 +2641,8 @@
     <string name="about_nev_version">Launcher Version %s</string>
     <string name="about_nev_developed">Developed by NestMC</string>
     <string name="about_nev_website">Nev Launcher Website</string>
+    <string name="about_tiktok_title">TikTok Profiles</string>
+    <string name="about_tiktok_open">Open profile</string>
     <string name="about_launcher_title">About Launcher</string>
     <!-- Line under the launcher name on the About page; %s is the version number -->
     <string name="about_launcher_version">Launcher Version: %s</string>

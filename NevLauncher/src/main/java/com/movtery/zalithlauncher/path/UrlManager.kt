@@ -56,6 +56,9 @@ const val URL_RELEASE_LATEST_API: String = "https://api.github.com/repos/$URL_RE
 const val URL_RELEASES_PAGE: String = "https://github.com/$URL_RELEASE_REPO/releases"
 /** Website resmi Nev Launcher (GitHub Pages). */
 const val URL_NEV_WEBSITE: String = "https://nestmcc.github.io/Nev-Launcher/"
+/** Profil TikTok NestMC dan Nev Launcher. */
+const val URL_TIKTOK_NESTMC: String = "https://www.tiktok.com/@nest.mc?_r=1&_t=ZS-9BQ9RNC1apG"
+const val URL_TIKTOK_NEV: String = "https://www.tiktok.com/@nev.launcher?_r=1&_t=ZS-9BQ9SxZCU2k"
 const val URL_PROJECT: String = "https://github.com/ZalithLauncher/ZalithLauncher2"
 const val URL_PROJECT_INFO: String = "https://api.github.com/repos/ZalithLauncher/Zalith-Info/contents/v2"
 const val URL_COMMUNITY: String = "https://github.com/ZalithLauncher/ZalithLauncher2/graphs/contributors"

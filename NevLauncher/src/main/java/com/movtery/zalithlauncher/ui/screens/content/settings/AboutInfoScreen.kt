@@ -18,6 +18,10 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.settings
 
+import com.movtery.zalithlauncher.path.URL_TIKTOK_NEV
+import com.movtery.zalithlauncher.path.URL_TIKTOK_NESTMC
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.Box
 import com.movtery.zalithlauncher.ui.theme.nevShape
 import com.movtery.zalithlauncher.ui.theme.nevGlow
 import com.movtery.zalithlauncher.ui.theme.cyberFrame
@@ -122,6 +126,39 @@ fun AboutInfoScreen(
                         onCheckUpdate = checkUpdate,
                         onOpenWebsite = { openLink(URL_NEV_WEBSITE) }
                     )
+                }
+            }
+
+            animatedItem { ctx ->
+                ChunkLayout(
+                    modifier = Modifier.animated(ctx),
+                    title = stringResource(R.string.about_tiktok_title)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        NevTikTokCard(
+                            modifier = Modifier.weight(1f),
+                            name = "NestMC",
+                            handle = "tiktok.com/@nest.mc",
+                            avatar = { NevAvatarInitials("NM") },
+                            onOpen = { openLink(URL_TIKTOK_NESTMC) }
+                        )
+                        NevTikTokCard(
+                            modifier = Modifier.weight(1f),
+                            name = "NevLauncher",
+                            handle = "tiktok.com/@nev.launcher",
+                            avatar = {
+                                Image(
+                                    modifier = Modifier.fillMaxSize(),
+                                    painter = painterResource(R.drawable.img_launcher),
+                                    contentDescription = null
+                                )
+                            },
+                            onOpen = { openLink(URL_TIKTOK_NEV) }
+                        )
+                    }
                 }
             }
 
@@ -624,6 +661,80 @@ private fun NevAboutCard(
             FilledTonalButton(onClick = onCheckUpdate) {
                 Text(text = stringResource(R.string.upgrade_title))
             }
+        }
+    }
+}
+
+/** Avatar bulat berisi inisial (gradasi tema) untuk akun tanpa foto profil. */
+@Composable
+private fun NevAvatarInitials(initials: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.linearGradient(listOf(NevRed.GradientStart, NevRed.GradientEnd))),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = initials,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Black,
+            color = NevRed.OnGradient
+        )
+    }
+}
+
+/** Kartu profil TikTok bergaya panel Nev: avatar, nama, @handle, dan tombol Buka profil. */
+@Composable
+private fun NevTikTokCard(
+    name: String,
+    handle: String,
+    avatar: @Composable () -> Unit,
+    onOpen: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val shape = nevShape(20.dp)
+    val cyber = LocalNevStyle.current.cyber
+    Row(
+        modifier = modifier
+            .nevGlow(shape, 8.dp, 0.4f)
+            .then(if (cyber) Modifier.cyberFrame() else Modifier)
+            .clip(shape)
+            .background(Brush.horizontalGradient(listOf(NevRed.PanelDeep, NevRed.Panel)))
+            .border(NevCardBorder, shape)
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(52.dp)
+                .clip(CircleShape)
+                .border(2.dp, NevRed.GradientStart, CircleShape)
+        ) {
+            avatar()
+        }
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = name,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1
+            )
+            Text(
+                text = handle,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.alpha(0.7f),
+                maxLines = 1
+            )
+        }
+        Button(onClick = onOpen) {
+            Icon(
+                modifier = Modifier.size(18.dp),
+                painter = painterResource(R.drawable.ic_link),
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(text = stringResource(R.string.about_tiktok_open), maxLines = 1)
         }
     }
 }
