@@ -18,6 +18,21 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.settings
 
+import com.movtery.zalithlauncher.ui.theme.nevShape
+import com.movtery.zalithlauncher.ui.theme.nevGlow
+import com.movtery.zalithlauncher.ui.theme.cyberFrame
+import com.movtery.zalithlauncher.ui.theme.NevRed
+import com.movtery.zalithlauncher.ui.theme.NevCardBorder
+import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
+import com.movtery.zalithlauncher.path.URL_NEV_WEBSITE
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -103,40 +118,10 @@ fun AboutInfoScreen(
                     modifier = Modifier.animated(ctx),
                     title = stringResource(R.string.about_launcher_title)
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        val launcherName = remember { launcherName() }
-
-                        ButtonIconItem(
-                            icon = painterResource(R.drawable.img_launcher),
-                            title = BuildKeys.LAUNCHER_NAME,
-                            text = stringResource(R.string.about_launcher_version, BuildConfig.VERSION_NAME),
-                            button = {
-                                Button(
-                                    onClick = checkUpdate
-                                ) {
-                                    Text(text = stringResource(R.string.upgrade_title))
-                                }
-                                Button(
-                                    onClick = { openLink(URL_PROJECT) }
-                                ) {
-                                    Text(text = stringResource(R.string.about_launcher_project_link))
-                                }
-                            }
-                        )
-
-                        ButtonIconItem(
-                            icon = painterResource(R.drawable.img_avatar_movtery),
-                            title = stringResource(R.string.about_launcher_author_movtery_title),
-                            text = stringResource(R.string.about_launcher_author_movtery_text, launcherName),
-                            button = {
-                                Button(
-                                    onClick = { openLink(URL_SUPPORT) }
-                                ) {
-                                    Text(text = stringResource(R.string.about_sponsor))
-                                }
-                            }
-                        )
-                    }
+                    NevAboutCard(
+                        onCheckUpdate = checkUpdate,
+                        onOpenWebsite = { openLink(URL_NEV_WEBSITE) }
+                    )
                 }
             }
 
@@ -562,6 +547,82 @@ private fun LibraryInfoItem(
                     painter = painterResource(R.drawable.ic_link),
                     contentDescription = null
                 )
+            }
+        }
+    }
+}
+
+/**
+ * Kartu identitas Nev Launcher: logo, nama, versi, pengembang, dan tombol website.
+ * Desain mengikuti panel launcher (gradasi panel, garis tepi, cahaya; Cyber: bingkai sudut neon).
+ */
+@Composable
+private fun NevAboutCard(
+    onCheckUpdate: () -> Unit,
+    onOpenWebsite: () -> Unit
+) {
+    val shape = nevShape(24.dp)
+    val cyber = LocalNevStyle.current.cyber
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .nevGlow(shape, 10.dp, 0.5f)
+            .then(if (cyber) Modifier.cyberFrame() else Modifier)
+            .clip(shape)
+            .background(Brush.horizontalGradient(listOf(NevRed.PanelDeep, NevRed.Panel)))
+            .border(NevCardBorder, shape)
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        Image(
+            modifier = Modifier.size(96.dp),
+            painter = painterResource(R.drawable.img_launcher),
+            contentDescription = null
+        )
+
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = "NEV LAUNCHER",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    brush = Brush.horizontalGradient(
+                        listOf(NevRed.GradientStart, NevRed.GradientEnd)
+                    ),
+                    letterSpacing = 3.sp,
+                    fontWeight = FontWeight.Black
+                )
+            )
+            Text(
+                text = stringResource(R.string.about_nev_version, BuildConfig.VERSION_NAME),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.alpha(0.8f)
+            )
+            Text(
+                text = stringResource(R.string.about_nev_developed),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = NevRed.GradientEnd
+            )
+        }
+
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(onClick = onOpenWebsite) {
+                Icon(
+                    modifier = Modifier.size(18.dp),
+                    painter = painterResource(R.drawable.ic_public),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = stringResource(R.string.about_nev_website))
+            }
+            FilledTonalButton(onClick = onCheckUpdate) {
+                Text(text = stringResource(R.string.upgrade_title))
             }
         }
     }

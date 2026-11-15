@@ -54,6 +54,8 @@ const val URL_MINECRAFT_PURCHASE = "https://www.xbox.com/games/store/minecraft-j
 const val URL_RELEASE_REPO: String = "NestMCC/Nev-Launcher"
 const val URL_RELEASE_LATEST_API: String = "https://api.github.com/repos/$URL_RELEASE_REPO/releases/latest"
 const val URL_RELEASES_PAGE: String = "https://github.com/$URL_RELEASE_REPO/releases"
+/** Website resmi Nev Launcher (GitHub Pages). */
+const val URL_NEV_WEBSITE: String = "https://nestmcc.github.io/Nev-Launcher/"
 const val URL_PROJECT: String = "https://github.com/ZalithLauncher/ZalithLauncher2"
 const val URL_PROJECT_INFO: String = "https://api.github.com/repos/ZalithLauncher/Zalith-Info/contents/v2"
 const val URL_COMMUNITY: String = "https://github.com/ZalithLauncher/ZalithLauncher2/graphs/contributors"

@@ -2638,6 +2638,9 @@
     <!-- Button in the unsaved-changes dialog to exit anyway; also a menu item to exit the editor directly -->
     <string name="control_editor_exit_confirm">Exit Directly</string>
     <!-- Section title on the About page describing the launcher itself -->
+    <string name="about_nev_version">Launcher Version %s</string>
+    <string name="about_nev_developed">Developed by NestMC</string>
+    <string name="about_nev_website">Nev Launcher Website</string>
     <string name="about_launcher_title">About Launcher</string>
     <!-- Line under the launcher name on the About page; %s is the version number -->
     <string name="about_launcher_version">Launcher Version: %s</string>
