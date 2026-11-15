@@ -606,6 +606,7 @@ fun Background(
                         videoUri = Uri.fromFile(viewModel.backgroundFile),
                         modifier = Modifier.fillMaxSize(),
                         refreshTrigger = viewModel.refreshTrigger,
+                        resizeMode = AllSettings.backgroundScale.state.resizeMode,
                         volume = AllSettings.videoBackgroundVolume.state / 100f
                     )
                 }
@@ -616,7 +617,7 @@ fun Background(
                             bitmap = blurred,
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
+                            contentScale = AllSettings.backgroundScale.state.contentScale
                         )
                     } else {
                         BackgroundImage(
@@ -685,6 +686,6 @@ private fun BackgroundImage(
         model = request,
         imageLoader = imageLoader,
         contentDescription = null,
-        contentScale = ContentScale.Crop
+        contentScale = AllSettings.backgroundScale.state.contentScale
     )
 }

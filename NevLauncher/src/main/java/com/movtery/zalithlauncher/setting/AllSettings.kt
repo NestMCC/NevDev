@@ -30,6 +30,7 @@ import com.movtery.zalithlauncher.game.version.installed.GraphicsApi
 import com.movtery.zalithlauncher.setting.enums.ActionMenuSide
 import com.movtery.zalithlauncher.setting.enums.AppLanguage
 import com.movtery.zalithlauncher.setting.enums.BackgroundBlur
+import com.movtery.zalithlauncher.setting.enums.BackgroundScale
 import com.movtery.zalithlauncher.setting.enums.DarkMode
 import com.movtery.zalithlauncher.setting.enums.FpsDisplayMode
 import com.movtery.zalithlauncher.setting.enums.GamepadInputMode
@@ -510,6 +511,9 @@ object AllSettings : SettingsRegistry() {
     /**
      * 启动器背景模糊效果类型
      */
+    /** Cara latar belakang mengisi layar: penuh (default), pas, atau potong */
+    val backgroundScale = enumSetting("backgroundScale", BackgroundScale.Stretch)
+
     val backgroundBlurType = enumSetting("backgroundBlurType", BackgroundBlur.Background)
 
     /**

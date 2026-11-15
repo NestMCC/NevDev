@@ -3269,4 +3269,10 @@
     <string name="hero_switch_version">Switch version</string>
     <string name="settings_display_hero_home_title">Hero home screen</string>
     <string name="settings_display_hero_home_summary">Full-bleed home with a large version title and a big Play button. Turn off to go back to the card-based home.</string>
+
+    <string name="settings_launcher_background_scale_title">Background size</string>
+    <string name="settings_launcher_background_scale_summary">Choose how the background image/video fills the screen.</string>
+    <string name="settings_launcher_background_scale_stretch">Full (not cropped)</string>
+    <string name="settings_launcher_background_scale_fit">Fit (original ratio)</string>
+    <string name="settings_launcher_background_scale_crop">Fill screen (edges cropped)</string>
 </resources>

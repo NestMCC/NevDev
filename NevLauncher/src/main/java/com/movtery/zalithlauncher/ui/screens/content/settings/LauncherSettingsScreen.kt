@@ -77,6 +77,7 @@ import com.movtery.zalithlauncher.coroutine.Task
 import com.movtery.zalithlauncher.coroutine.TaskSystem
 import com.movtery.zalithlauncher.path.PathManager
 import com.movtery.zalithlauncher.setting.AllSettings
+import com.movtery.zalithlauncher.setting.enums.BackgroundScale
 import com.movtery.zalithlauncher.setting.enums.AppLanguage
 import com.movtery.zalithlauncher.setting.enums.BackgroundBlur
 import com.movtery.zalithlauncher.setting.enums.DarkMode
@@ -266,6 +267,17 @@ fun LauncherSettingsScreen(
                             suffix = "%",
                             enabled = backgroundViewModel.isValid,
                             fineTuningControl = true
+                        )
+
+                        ListSettingsCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            position = CardPosition.Middle,
+                            unit = AllSettings.backgroundScale,
+                            items = BackgroundScale.entries,
+                            title = stringResource(R.string.settings_launcher_background_scale_title),
+                            summary = stringResource(R.string.settings_launcher_background_scale_summary),
+                            getItemText = { stringResource(it.textRes) },
+                            enabled = backgroundViewModel.isValid
                         )
 
                         IntSliderSettingsCard(

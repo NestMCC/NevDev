@@ -1655,4 +1655,10 @@
     <string name="hero_switch_version">Ganti versi</string>
     <string name="settings_display_hero_home_title">Beranda gaya hero</string>
     <string name="settings_display_hero_home_summary">Tampilan beranda penuh dengan judul versi besar dan tombol Main besar. Matikan untuk kembali ke beranda berisi kartu.</string>
+
+    <string name="settings_launcher_background_scale_title">Ukuran latar belakang</string>
+    <string name="settings_launcher_background_scale_summary">Atur cara gambar/video latar mengisi layar.</string>
+    <string name="settings_launcher_background_scale_stretch">Penuh (tidak terpotong)</string>
+    <string name="settings_launcher_background_scale_fit">Pas (rasio asli)</string>
+    <string name="settings_launcher_background_scale_crop">Isi layar (tepi terpotong)</string>
 </resources>
