@@ -58,6 +58,8 @@ const val URL_SUPPORT: String = "https://ifdian.net/a/MovTery"
 /** Halaman donasi Nev Launcher (NestMC) */
 const val URL_DONATE: String = "https://sociabuzz.com/nestmc/tribe"
 const val URL_EASYTIER: String = "https://easytier.cn/"
+/** Profil TikTok Nev Launcher */
+const val URL_TIKTOK_NEV: String = "https://tiktok.com/@nev.launcher"
 
 const val URL_GITHUB_RENDERER_PLUGINS = "https://github.com/ShirosakiMio/FCLRendererPlugin/releases/tag/Renderer"
 const val URL_GITHUB_DRIVER_PLUGINS = "https://github.com/FCL-Team/FCLDriverPlugin/releases/tag/Turnip"

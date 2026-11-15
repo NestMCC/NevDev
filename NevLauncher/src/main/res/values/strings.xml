@@ -2626,6 +2626,26 @@
     <string name="about_launcher_author_movtery_text">Author of %s</string>
     <!-- Button on the About page opening the project website -->
     <string name="about_launcher_project_link">Project Link</string>
+    <!-- Button in the About page header opening the launcher website (not available yet) -->
+    <string name="about_launcher_website">Website</string>
+    <!-- Small label above the title of the update card on the About page -->
+    <string name="about_update_system_label">SYSTEM // UPDATE</string>
+    <!-- Title of the update card on the About page -->
+    <string name="about_update_title">Launcher Update</string>
+    <!-- Description in the update card on the About page -->
+    <string name="about_update_summary">The launcher checks GitHub releases and notifies you when a new version is available.</string>
+    <!-- Switch label in the update card on the About page -->
+    <string name="about_update_auto_check">Check automatically when the launcher opens</string>
+    <!-- Button in the update card opening the releases page on GitHub -->
+    <string name="about_update_view_releases">View releases on GitHub</string>
+    <!-- Title of the TikTok profile card on the About page -->
+    <string name="about_tiktok_title">TikTok Profile</string>
+    <!-- Label inside the TikTok profile card on the About page -->
+    <string name="about_tiktok_label">Nev Launcher on TikTok:</string>
+    <!-- Name of the account shown in the TikTok profile card -->
+    <string name="about_tiktok_account_main">Main</string>
+    <!-- Button in the TikTok profile card opening the profile -->
+    <string name="about_tiktok_open_profile">Open profile</string>
     <!-- Button on the About page opening the sponsorship page; also the title of the sponsorship dialog -->
     <string name="about_sponsor">Sponsorship Support</string>
     <!-- Item title on the About page opening the monthly sponsors dialog -->

@@ -741,6 +741,16 @@
     <string name="about_launcher_author_movtery_title">MovTery</string>
     <string name="about_launcher_author_movtery_text">Pembuat %s</string>
     <string name="about_launcher_project_link">Link Project</string>
+    <string name="about_launcher_website">Situs</string>
+    <string name="about_update_system_label">SISTEM // PEMBARUAN</string>
+    <string name="about_update_title">Pembaruan Launcher</string>
+    <string name="about_update_summary">Launcher memeriksa rilis di GitHub dan memberi tahu kamu saat versi baru tersedia.</string>
+    <string name="about_update_auto_check">Periksa otomatis saat Launcher dibuka</string>
+    <string name="about_update_view_releases">Lihat rilis di GitHub</string>
+    <string name="about_tiktok_title">Profil TikTok</string>
+    <string name="about_tiktok_label">TikTok Nev Launcher:</string>
+    <string name="about_tiktok_account_main">Utama</string>
+    <string name="about_tiktok_open_profile">Buka profil</string>
     <string name="about_sponsor">Dukung Dengan Sponsor</string>
     <string name="about_acknowledgements_title">Ucapan Terima Kasih Kepada</string>
     <string name="about_acknowledgements_pojav_text">%s menggunakan backend peluncur dari PojavLauncher</string>

@@ -25,16 +25,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -63,8 +67,8 @@ import com.movtery.zalithlauncher.library.LibraryInfo
 import com.movtery.zalithlauncher.library.libraryData
 import com.movtery.zalithlauncher.path.URL_COMMUNITY
 import com.movtery.zalithlauncher.path.URL_MCMOD
-import com.movtery.zalithlauncher.path.URL_PROJECT
 import com.movtery.zalithlauncher.path.URL_SUPPORT
+import com.movtery.zalithlauncher.path.URL_TIKTOK_NEV
 import com.movtery.zalithlauncher.path.URL_WEBLATE
 import com.movtery.zalithlauncher.ui.base.BaseScreen
 import com.movtery.zalithlauncher.ui.components.AnimatedLazyColumn
@@ -111,15 +115,18 @@ fun AboutInfoScreen(
                             title = BuildKeys.LAUNCHER_NAME,
                             text = stringResource(R.string.about_launcher_version, BuildConfig.VERSION_NAME),
                             button = {
+                                //situs resmi belum tersedia, sementara hanya tampilan
                                 Button(
-                                    onClick = checkUpdate
+                                    onClick = {},
+                                    enabled = false
                                 ) {
-                                    Text(text = stringResource(R.string.upgrade_title))
-                                }
-                                Button(
-                                    onClick = { openLink(URL_PROJECT) }
-                                ) {
-                                    Text(text = stringResource(R.string.about_launcher_project_link))
+                                    Icon(
+                                        modifier = Modifier.size(18.dp),
+                                        painter = painterResource(R.drawable.ic_public),
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(text = stringResource(R.string.about_launcher_website))
                                 }
                             }
                         )
@@ -133,6 +140,49 @@ fun AboutInfoScreen(
                                     onClick = { openLink(URL_SUPPORT) }
                                 ) {
                                     Text(text = stringResource(R.string.about_sponsor))
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+
+            //pembaruan launcher (tampilan saja: periksa otomatis & rilis GitHub dinonaktifkan sementara)
+            animatedItem { ctx ->
+                UpdateCard(
+                    modifier = Modifier.animated(ctx),
+                    versionName = BuildConfig.VERSION_NAME,
+                    checkUpdate = checkUpdate
+                )
+            }
+
+            //profil TikTok
+            animatedItem { ctx ->
+                ChunkLayout(
+                    modifier = Modifier.animated(ctx),
+                    title = stringResource(R.string.about_tiktok_title)
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            text = stringResource(R.string.about_tiktok_label),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        ButtonIconItem(
+                            icon = painterResource(R.drawable.img_launcher),
+                            title = stringResource(R.string.about_tiktok_account_main),
+                            text = "@nev.launcher",
+                            button = {
+                                Button(
+                                    onClick = { openLink(URL_TIKTOK_NEV) }
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.size(18.dp),
+                                        painter = painterResource(R.drawable.ic_link),
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(text = stringResource(R.string.about_tiktok_open_profile))
                                 }
                             }
                         )
@@ -269,6 +319,97 @@ fun AboutInfoScreen(
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun UpdateCard(
+    modifier: Modifier = Modifier,
+    versionName: String,
+    checkUpdate: () -> Unit
+) {
+    ChunkLayout(
+        modifier = modifier,
+        title = stringResource(R.string.about_update_title)
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.about_update_system_label),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "r$versionName",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Text(
+                modifier = Modifier.alpha(0.7f),
+                text = stringResource(R.string.about_update_summary),
+                style = MaterialTheme.typography.bodySmall
+            )
+
+            //sementara dinonaktifkan, hanya tampilan
+            Surface(
+                color = itemColor(),
+                contentColor = onItemColor(),
+                shape = MaterialTheme.shapes.large
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .weight(1f)
+                            .alpha(0.6f),
+                        text = stringResource(R.string.about_update_auto_check),
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Switch(
+                        checked = true,
+                        onCheckedChange = null,
+                        enabled = false
+                    )
+                }
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = checkUpdate
+                ) {
+                    Icon(
+                        modifier = Modifier.size(18.dp),
+                        painter = painterResource(R.drawable.ic_refresh),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(text = stringResource(R.string.upgrade_title))
+                }
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = {},
+                    enabled = false
+                ) {
+                    Icon(
+                        modifier = Modifier.size(18.dp),
+                        painter = painterResource(R.drawable.ic_link),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(text = stringResource(R.string.about_update_view_releases))
                 }
             }
         }
