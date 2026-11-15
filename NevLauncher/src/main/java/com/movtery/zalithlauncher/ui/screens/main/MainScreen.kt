@@ -304,6 +304,7 @@ fun MainScreen(
                     ),
                 mainScreenKey = mainScreenKey,
                 inLauncherScreen = inLauncherScreen,
+                showHomeButton = !heroLayout,
                 taskRunning = taskRunning,
                 isTasksExpanded = isTaskMenuExpanded,
                 contentColor = onBackgroundColor(),
@@ -320,6 +321,7 @@ fun MainScreen(
                 topBar()
                 if (heroLayout) {
                     HeroTextNav(
+                        toHome = toMainScreen,
                         toServer = toServerHubScreen,
                         toMultiplayer = toMultiplayerScreen,
                         toDonate = toDonateScreen,
@@ -358,6 +360,8 @@ fun MainScreen(
                         //di atas latar foto/video: teks selalu putih
                         CompositionLocalProvider(LocalContentColor provides Color.White) {
                             HeroTextNav(
+                                toHome = toMainScreen,
+                                inHome = true,
                                 toServer = toServerHubScreen,
                                 toMultiplayer = toMultiplayerScreen,
                                 toDonate = toDonateScreen,
@@ -394,6 +398,7 @@ private fun <E: TitledNavKey> TopBar(
     taskRunning: Boolean,
     isTasksExpanded: Boolean,
     modifier: Modifier = Modifier,
+    showHomeButton: Boolean = true,
     contentColor: Color,
     onScreenBack: () -> Unit,
     toMainScreen: () -> Unit,
@@ -442,6 +447,7 @@ private fun <E: TitledNavKey> TopBar(
                             )
                         }
 
+                        if (showHomeButton) {
                         IconButton(
                             modifier = Modifier.fillMaxHeight(),
                             onClick = {
@@ -455,6 +461,7 @@ private fun <E: TitledNavKey> TopBar(
                                 painter = painterResource(R.drawable.ic_home_filled),
                                 contentDescription = stringResource(R.string.generic_main_menu)
                             )
+                        }
                         }
                     }
                 }
@@ -1183,12 +1190,14 @@ private fun TaskItem(
 /** Menu teks di bawah judul "NEV LAUNCHER" pada beranda hero (pengganti ikon side rail). */
 @Composable
 private fun HeroTextNav(
+    toHome: () -> Unit,
     toServer: () -> Unit,
     toMultiplayer: () -> Unit,
     toDonate: () -> Unit,
     toDownload: () -> Unit,
     toSettings: () -> Unit,
     modifier: Modifier = Modifier,
+    inHome: Boolean = false,
     inServer: Boolean = false,
     inMultiplayer: Boolean = false,
     inDonate: Boolean = false,
@@ -1197,6 +1206,7 @@ private fun HeroTextNav(
 ) {
     class Item(val label: String, val selected: Boolean, val action: () -> Unit)
     val items = listOf(
+        Item(stringResource(R.string.hero_nav_home), inHome, toHome),
         Item(stringResource(R.string.server_hub_title), inServer, toServer),
         Item(stringResource(R.string.terracotta), inMultiplayer, toMultiplayer),
         Item(stringResource(R.string.donate_menu), inDonate, toDonate),
