@@ -482,6 +482,9 @@ object AllSettings : SettingsRegistry() {
      */
     val launcherUiPanY = intSetting("launcherUiPanY", 0, -10000..10000)
 
+    /** Beranda bergaya hero (judul versi besar + tombol Main besar). Mati = beranda kartu lama. */
+    val launcherHeroHome = boolSetting("launcherHeroHome", true)
+
     /**
      * 主界面操作菜单的停泊侧
      */

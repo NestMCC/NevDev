@@ -23,6 +23,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.material3.Surface
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -166,6 +172,28 @@ fun LauncherScreen(
         LaunchedEffect(isVisible) {
             //屏幕切走时打断进行中的拖拽
             if (!isVisible) dragState.onDragCancel()
+        }
+
+        if (AllSettings.launcherHeroHome.state) {
+            HeroHome(
+                isVisible = isVisible,
+                onLaunchGame = onLaunchGame,
+                toAccountManageScreen = {
+                    backStackViewModel.mainScreen.navigateTo(
+                        screenKey = NormalNavKey.AccountManager(FirstLoginMenu.NONE)
+                    )
+                },
+                toVersionManageScreen = {
+                    backStackViewModel.mainScreen.removeAndNavigateTo(
+                        remove = NestedNavKey.VersionSettings::class,
+                        screenKey = NormalNavKey.VersionsManager
+                    )
+                },
+                toVersionSettingsScreen = {
+                    VersionsManager.currentVersion.value?.let { navigateToVersions(it) }
+                }
+            )
+            return@BaseScreen
         }
 
         BoxWithConstraints(
@@ -847,6 +875,305 @@ private fun VersionManagerLayout(
                             maxLines = 1
                         )
                     }
+                }
+            }
+        }
+    }
+}
+
+
+/**
+ * Beranda bergaya hero: judul versi besar di kiri bawah, tombol Main besar di kanan bawah,
+ * kartu akun kecil di pojok kanan atas. Seluruh latar peluncur tetap terlihat di belakangnya.
+ */
+@Composable
+private fun HeroHome(
+    isVisible: Boolean,
+    onLaunchGame: (Version?) -> Unit,
+    toAccountManageScreen: () -> Unit,
+    toVersionManageScreen: () -> Unit,
+    toVersionSettingsScreen: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val ctx = rememberAnimatedContext(isVisible = isVisible)
+    val account by AccountsManager.currentAccountFlow.collectAsStateWithLifecycle()
+    val refreshWardrobe by AccountsManager.refreshWardrobe.collectAsStateWithLifecycle()
+    val version by VersionsManager.currentVersion.collectAsStateWithLifecycle()
+    val isRefreshing by VersionsManager.isRefreshing.collectAsStateWithLifecycle()
+    val versions by VersionsManager.versions.collectAsStateWithLifecycle()
+    val ready = !isRefreshing && version?.isValid() == true
+    var showList by remember { mutableStateOf(false) }
+
+    val chipShape = MaterialTheme.shapes.small
+
+    @Composable
+    fun Chip(text: String, highlight: Boolean = false) {
+        Surface(
+            shape = chipShape,
+            color = Color.Black.copy(alpha = 0.45f),
+            border = BorderStroke(
+                1.dp,
+                if (highlight) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                else Color.White.copy(alpha = 0.18f)
+            )
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                if (highlight) {
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .clip(androidx.compose.foundation.shape.CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                    )
+                }
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 1.sp,
+                    color = Color.White.copy(alpha = 0.92f),
+                    maxLines = 1
+                )
+            }
+        }
+    }
+
+    Box(modifier = modifier.fillMaxSize()) {
+        //peredam gelap di bagian bawah supaya teks tetap terbaca di atas latar apa pun
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        0.35f to Color.Transparent,
+                        1f to Color.Black.copy(alpha = 0.78f)
+                    )
+                )
+        )
+
+        //kartu akun kecil, pojok kanan atas
+        Surface(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(12.dp)
+                .animated(ctx),
+            shape = MaterialTheme.shapes.large,
+            color = Color.Black.copy(alpha = 0.45f),
+            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.18f)),
+            onClick = toAccountManageScreen
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                account?.let {
+                    PlayerFace(account = it, avatarSize = 32.dp, refreshKey = refreshWardrobe)
+                } ?: Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(R.drawable.ic_add),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+                Column {
+                    Text(
+                        text = account?.username ?: stringResource(R.string.account_add_new_account),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = Color.White,
+                        maxLines = 1
+                    )
+                    account?.let {
+                        Text(
+                            text = getAccountTypeName(it),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color.White.copy(alpha = 0.7f),
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
+        }
+
+        //mini player musik (hanya tampil bila musik diaktifkan)
+        MusicMiniPlayer(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(12.dp)
+        )
+
+        //judul + info di kiri bawah
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .fillMaxWidth(0.62f)
+                .padding(start = 24.dp, bottom = 24.dp)
+                .animated(ctx),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Chip(
+                    text = stringResource(
+                        when {
+                            isRefreshing -> R.string.hero_status_loading
+                            ready -> R.string.hero_status_ready
+                            else -> R.string.hero_status_empty
+                        }
+                    ),
+                    highlight = ready
+                )
+                if (ready) {
+                    version?.getVersionInfo()?.let { info ->
+                        Chip(info.minecraftVersion)
+                        info.primaryLoader?.let { Chip(it.loader.displayName) }
+                    }
+                }
+            }
+
+            Box {
+                Row(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .clickable(enabled = versions.isNotEmpty()) { showList = true },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f, fill = false),
+                        text = if (ready) version!!.getVersionName() else stringResource(R.string.hero_empty_title),
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if (versions.size > 1) {
+                        Icon(
+                            modifier = Modifier.padding(start = 6.dp).size(28.dp),
+                            painter = painterResource(R.drawable.ic_keyboard_arrow_down),
+                            contentDescription = stringResource(R.string.hero_switch_version),
+                            tint = Color.White.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+                DropdownMenu(
+                    expanded = showList,
+                    onDismissRequest = { showList = false },
+                    modifier = Modifier.width(280.dp),
+                    shape = MaterialTheme.shapes.extraLarge
+                ) {
+                    versions.forEach { v ->
+                        DropdownMenuItem(
+                            text = {
+                                CommonVersionInfoLayout(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    version = v,
+                                    iconSize = 28.dp
+                                )
+                            },
+                            onClick = {
+                                if (version != v) VersionsManager.saveVersion(v)
+                                showList = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Text(
+                text = if (ready) {
+                    version!!.getVersionInfo()?.getInfoString() ?: version!!.getVersionSummary()
+                } else {
+                    stringResource(R.string.hero_empty_desc)
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White.copy(alpha = 0.78f),
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedButton(
+                    onClick = toVersionManageScreen,
+                    shape = MaterialTheme.shapes.small,
+                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.3f)),
+                    colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                        containerColor = Color.Black.copy(alpha = 0.4f),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(R.drawable.ic_folder_outlined),
+                        contentDescription = null
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 6.dp),
+                        text = stringResource(R.string.hero_open_folder),
+                        style = MaterialTheme.typography.labelMedium,
+                        letterSpacing = 1.sp
+                    )
+                }
+                IconButton(
+                    onClick = { VersionsManager.refresh("[HeroHome] manual refresh") },
+                    enabled = !isRefreshing
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_refresh),
+                        contentDescription = stringResource(R.string.hero_refresh),
+                        tint = Color.White
+                    )
+                }
+            }
+        }
+
+        //kanan bawah: pengaturan versi + tombol Main besar
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 24.dp, bottom = 28.dp)
+                .animated(ctx),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            if (ready) {
+                Surface(
+                    shape = MaterialTheme.shapes.medium,
+                    color = Color.Black.copy(alpha = 0.45f),
+                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.18f)),
+                    onClick = toVersionSettingsScreen
+                ) {
+                    Icon(
+                        modifier = Modifier.padding(14.dp).size(22.dp),
+                        painter = painterResource(R.drawable.ic_settings_filled),
+                        contentDescription = stringResource(R.string.versions_manage_settings),
+                        tint = Color.White
+                    )
+                }
+            }
+            NevGradientButton(onClick = { onLaunchGame(null) }) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 22.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(26.dp),
+                        painter = painterResource(R.drawable.ic_play_arrow_filled),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = stringResource(R.string.main_play).uppercase(),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 2.sp,
+                        maxLines = 1
+                    )
                 }
             }
         }

@@ -3258,4 +3258,15 @@
     <string name="music_prev">Previous</string>
     <string name="music_next">Next</string>
     <string name="music_play_pause">Play / pause</string>
+
+    <string name="hero_status_ready">READY TO PLAY</string>
+    <string name="hero_status_loading">LOADING VERSIONS…</string>
+    <string name="hero_status_empty">NO VERSION</string>
+    <string name="hero_open_folder">OPEN FOLDER</string>
+    <string name="hero_refresh">Reload versions</string>
+    <string name="hero_empty_title">No version yet</string>
+    <string name="hero_empty_desc">Download or install a Minecraft version to start playing.</string>
+    <string name="hero_switch_version">Switch version</string>
+    <string name="settings_display_hero_home_title">Hero home screen</string>
+    <string name="settings_display_hero_home_summary">Full-bleed home with a large version title and a big Play button. Turn off to go back to the card-based home.</string>
 </resources>

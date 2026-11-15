@@ -1644,4 +1644,15 @@
     <string name="music_prev">Sebelumnya</string>
     <string name="music_next">Berikutnya</string>
     <string name="music_play_pause">Putar / jeda</string>
+
+    <string name="hero_status_ready">SIAP MAIN</string>
+    <string name="hero_status_loading">MEMUAT VERSI…</string>
+    <string name="hero_status_empty">BELUM ADA VERSI</string>
+    <string name="hero_open_folder">BUKA FOLDER</string>
+    <string name="hero_refresh">Muat ulang versi</string>
+    <string name="hero_empty_title">Belum ada versi</string>
+    <string name="hero_empty_desc">Unduh atau pasang versi Minecraft untuk mulai bermain.</string>
+    <string name="hero_switch_version">Ganti versi</string>
+    <string name="settings_display_hero_home_title">Beranda gaya hero</string>
+    <string name="settings_display_hero_home_summary">Tampilan beranda penuh dengan judul versi besar dan tombol Main besar. Matikan untuk kembali ke beranda berisi kartu.</string>
 </resources>

@@ -55,6 +55,7 @@ import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.EnumSettin
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.ListSettingsCard
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.SettingsCard
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.SettingsCardColumn
+import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.SwitchSettingsCard
 import com.movtery.zalithlauncher.ui.theme.ColorThemeType
 import com.movtery.zalithlauncher.ui.theme.DesignStyleType
 import com.movtery.zalithlauncher.ui.theme.NavRailSide
@@ -174,6 +175,14 @@ fun DisplaySettingsScreen(
                                 DesignStyleType.CYBER -> stringResource(R.string.settings_display_style_cyber)
                             }
                         }
+                    )
+
+                    SwitchSettingsCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        position = CardPosition.Middle,
+                        unit = AllSettings.launcherHeroHome,
+                        title = stringResource(R.string.settings_display_hero_home_title),
+                        summary = stringResource(R.string.settings_display_hero_home_summary)
                     )
 
                     EnumSettingsCard(
