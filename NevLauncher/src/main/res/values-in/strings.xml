@@ -768,7 +768,10 @@
     <string name="about_launcher_author_movtery_text">Pembuat %s</string>
     <string name="about_launcher_project_link">Link Project</string>
     <string name="about_sponsor">Dukung Dengan Sponsor</string>
-    <string name="about_acknowledgements_title">Ucapan Terima Kasih Kepada</string>
+    <string name="about_acknowledgements_curseforge_text">%s menggunakan API CurseForge untuk mengunduh mod, modpack, shader, dan texture</string>
+    <string name="about_acknowledgements_elyby_text">%s mendukung login akun Ely.by sebagai pilihan akun selain Microsoft dan offline</string>
+    <string name="about_acknowledgements_laby_text">%s mengambil daftar jubah (cape) dari Laby.net untuk fitur lemari pakaian</string>
+    <string name="about_acknowledgements_title">Kontributor</string>
     <string name="about_acknowledgements_pojav_text">%s menggunakan backend peluncur dari PojavLauncher</string>
     <string name="about_acknowledgements_modrinth_text">%s memport preset animasi model pemain dari Modrinth</string>
     <string name="about_acknowledgements_pcl_text">%s merujuk bagian implementasi dari PCL2</string>

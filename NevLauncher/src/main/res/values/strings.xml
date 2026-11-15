@@ -2667,7 +2667,10 @@
     <!-- Summary of the last month sponsors settlement dialog; %s is the hardcoded launcher name -->
     <string name="sponsors_last_month_summary">Here are the sponsors who supported %s last month. Thanks for all your support!</string>
     <!-- Section title of the acknowledgements list on the About page -->
-    <string name="about_acknowledgements_title">Acknowledgements</string>
+    <string name="about_acknowledgements_curseforge_text">%s uses the CurseForge API to download mods, modpacks, shaders, and textures</string>
+    <string name="about_acknowledgements_elyby_text">%s supports Ely.by account login alongside Microsoft and offline accounts</string>
+    <string name="about_acknowledgements_laby_text">%s gets its cape list from Laby.net for the wardrobe feature</string>
+    <string name="about_acknowledgements_title">Contributors</string>
     <!-- Description of the PojavLauncher item in the acknowledgements; %s is the launcher name -->
     <string name="about_acknowledgements_pojav_text">%s uses the launch backend from PojavLauncher</string>
     <!-- Description of the Modrinth item in the acknowledgements; %s is the launcher name -->

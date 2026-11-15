@@ -254,6 +254,24 @@ fun AboutInfoScreen(
                             text = stringResource(R.string.about_acknowledgements_weblate_community_text),
                             openLink = { openLink(URL_WEBLATE) }
                         )
+                        LinkIconItem(
+                            icon = painterResource(R.drawable.img_platform_curseforge),
+                            title = "CurseForge",
+                            text = stringResource(R.string.about_acknowledgements_curseforge_text, BuildKeys.LAUNCHER_SHORT_NAME),
+                            openLink = { openLink("https://console.curseforge.com/?") }
+                        )
+                        LinkIconItem(
+                            icon = painterResource(R.drawable.img_avatar_elyby),
+                            title = "Ely.by",
+                            text = stringResource(R.string.about_acknowledgements_elyby_text, BuildKeys.LAUNCHER_SHORT_NAME),
+                            openLink = { openLink("https://ely.by/?lang=id") }
+                        )
+                        LinkIconItem(
+                            icon = painterResource(R.drawable.img_avatar_laby),
+                            title = "Laby.net",
+                            text = stringResource(R.string.about_acknowledgements_laby_text, BuildKeys.LAUNCHER_SHORT_NAME),
+                            openLink = { openLink("https://laby.net/capes") }
+                        )
                     }
                 }
             }
