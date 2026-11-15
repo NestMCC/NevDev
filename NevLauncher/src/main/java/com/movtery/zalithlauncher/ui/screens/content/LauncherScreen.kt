@@ -150,6 +150,7 @@ fun LauncherScreen(
     onLaunchGame: (Version?) -> Unit,
     onQuickPlayServer: (Version?, String) -> Unit,
     onOpenLink: (String) -> Unit,
+    onOpenFileManager: () -> Unit = {},
     startGuideOnce: (GuideKeys.Keys) -> Unit,
 ) {
     LaunchedEffect(Unit) {
@@ -183,12 +184,7 @@ fun LauncherScreen(
                         screenKey = NormalNavKey.AccountManager(FirstLoginMenu.NONE)
                     )
                 },
-                toVersionManageScreen = {
-                    backStackViewModel.mainScreen.removeAndNavigateTo(
-                        remove = NestedNavKey.VersionSettings::class,
-                        screenKey = NormalNavKey.VersionsManager
-                    )
-                },
+                onOpenFileManager = onOpenFileManager,
                 toVersionSettingsScreen = {
                     VersionsManager.currentVersion.value?.let { navigateToVersions(it) }
                 }
@@ -891,7 +887,7 @@ private fun HeroHome(
     isVisible: Boolean,
     onLaunchGame: (Version?) -> Unit,
     toAccountManageScreen: () -> Unit,
-    toVersionManageScreen: () -> Unit,
+    onOpenFileManager: () -> Unit,
     toVersionSettingsScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -959,7 +955,7 @@ private fun HeroHome(
         Surface(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(12.dp)
+                .padding(top = 48.dp, end = 12.dp)
                 .animated(ctx),
             shape = MaterialTheme.shapes.large,
             color = Color.Black.copy(alpha = 0.45f),
@@ -1001,8 +997,8 @@ private fun HeroHome(
         //mini player musik (hanya tampil bila musik diaktifkan)
         MusicMiniPlayer(
             modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(12.dp)
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 12.dp)
         )
 
         //judul + info di kiri bawah
@@ -1043,7 +1039,7 @@ private fun HeroHome(
                     Text(
                         modifier = Modifier.weight(1f, fill = false),
                         text = if (ready) version!!.getVersionName() else stringResource(R.string.hero_empty_title),
-                        style = MaterialTheme.typography.displaySmall,
+                        style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
                         maxLines = 2,
@@ -1083,13 +1079,11 @@ private fun HeroHome(
             }
 
             Text(
-                text = if (ready) {
-                    version!!.getVersionInfo()?.getInfoString() ?: version!!.getVersionSummary()
-                } else {
-                    stringResource(R.string.hero_empty_desc)
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.78f),
+                text = if (ready) "MINECRAFT JAVA" else stringResource(R.string.hero_empty_desc),
+                style = if (ready) MaterialTheme.typography.labelMedium else MaterialTheme.typography.bodyMedium,
+                letterSpacing = if (ready) 2.sp else 0.sp,
+                fontWeight = if (ready) FontWeight.SemiBold else null,
+                color = Color.White.copy(alpha = 0.7f),
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
@@ -1099,7 +1093,7 @@ private fun HeroHome(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedButton(
-                    onClick = toVersionManageScreen,
+                    onClick = onOpenFileManager,
                     shape = MaterialTheme.shapes.small,
                     border = BorderStroke(1.dp, Color.White.copy(alpha = 0.3f)),
                     colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(

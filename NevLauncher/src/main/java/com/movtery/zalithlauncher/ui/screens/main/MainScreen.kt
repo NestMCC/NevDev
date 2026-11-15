@@ -34,6 +34,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -183,6 +184,8 @@ fun MainScreen(
 
     val mainScreenKey = screenBackStackModel.mainScreen.currentKey
     val inLauncherScreen = mainScreenKey == null || mainScreenKey is NormalNavKey.LauncherMain
+    //beranda hero: layar penuh tanpa side rail; menu pindah jadi teks di bawah judul
+    val heroHome = AllSettings.launcherHeroHome.state && inLauncherScreen
 
     val isBackgroundValid = LocalBackgroundViewModel.current?.isValid == true
     val launcherBackgroundOpacity = AllSettings.launcherBackgroundOpacity.state.toFloat() / 100f
@@ -197,6 +200,38 @@ fun MainScreen(
     val bottomDock = LocalNevStyle.current.bottomDock
     val hudStart = NevRed.GradientStart
     val hudEnd = NevRed.GradientEnd
+    val toSettingsScreen: () -> Unit = {
+        screenBackStackModel.mainScreen.removeAndNavigateTo(
+            removes = screenBackStackModel.clearBeforeNavKeys,
+            screenKey = screenBackStackModel.settingsScreen
+        )
+    }
+    val toDownloadScreen: () -> Unit = { screenBackStackModel.navigateToDownload() }
+    val toServerHubScreen: () -> Unit = {
+        screenBackStackModel.mainScreen.removeAndNavigateTo(
+            removes = screenBackStackModel.clearBeforeNavKeys,
+            screenKey = NormalNavKey.ServerHub
+        )
+    }
+    val toMultiplayerScreen: () -> Unit = {
+        screenBackStackModel.mainScreen.removeAndNavigateTo(
+            removes = screenBackStackModel.clearBeforeNavKeys,
+            screenKey = NormalNavKey.Multiplayer
+        )
+    }
+    val toDonateScreen: () -> Unit = {
+        screenBackStackModel.mainScreen.removeAndNavigateTo(
+            removes = screenBackStackModel.clearBeforeNavKeys,
+            screenKey = NormalNavKey.Donate
+        )
+    }
+    val openFileManager: () -> Unit = {
+        eventViewModel.sendEvent(
+            EventViewModel.Event.OpenFileManager(
+                rootPath = PathManager.DIR_FILES_EXTERNAL.absolutePath
+            )
+        )
+    }
     val rail: @Composable () -> Unit = {
     SideRail(
         modifier = if (bottomDock) {
@@ -214,40 +249,12 @@ fun MainScreen(
         inDonateScreen = mainScreenKey is NormalNavKey.Donate,
         inDownloadScreen = mainScreenKey is NestedNavKey.Download,
         inSettingsScreen = mainScreenKey is NestedNavKey.Settings,
-        toSettingsScreen = {
-            screenBackStackModel.mainScreen.removeAndNavigateTo(
-                removes = screenBackStackModel.clearBeforeNavKeys,
-                screenKey = screenBackStackModel.settingsScreen
-            )
-        },
-        toDownloadScreen = {
-            screenBackStackModel.navigateToDownload()
-        },
-        toServerHubScreen = {
-            screenBackStackModel.mainScreen.removeAndNavigateTo(
-                removes = screenBackStackModel.clearBeforeNavKeys,
-                screenKey = NormalNavKey.ServerHub
-            )
-        },
-        toMultiplayerScreen = {
-            screenBackStackModel.mainScreen.removeAndNavigateTo(
-                removes = screenBackStackModel.clearBeforeNavKeys,
-                screenKey = NormalNavKey.Multiplayer
-            )
-        },
-        toDonateScreen = {
-            screenBackStackModel.mainScreen.removeAndNavigateTo(
-                removes = screenBackStackModel.clearBeforeNavKeys,
-                screenKey = NormalNavKey.Donate
-            )
-        },
-        openFileManager = {
-            eventViewModel.sendEvent(
-                EventViewModel.Event.OpenFileManager(
-                    rootPath = PathManager.DIR_FILES_EXTERNAL.absolutePath
-                )
-            )
-        }
+        toSettingsScreen = toSettingsScreen,
+        toDownloadScreen = toDownloadScreen,
+        toServerHubScreen = toServerHubScreen,
+        toMultiplayerScreen = toMultiplayerScreen,
+        toDonateScreen = toDonateScreen,
+        openFileManager = openFileManager
     )
     }
 
@@ -261,12 +268,13 @@ fun MainScreen(
                 .fillMaxSize()
                 .then(if (bottomDock) Modifier.cyberBackdrop() else Modifier)
         ) {
-        if (railSide == NavRailSide.START && !bottomDock) rail()
+        if (railSide == NavRailSide.START && !bottomDock && !heroHome) rail()
         Column(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
         ) {
+            val topBar: @Composable () -> Unit = {
             TopBar(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -306,6 +314,8 @@ fun MainScreen(
                     changeTasksExpandedState()
                 },
             )
+            }
+            if (!heroHome) topBar()
 
             Box(
                 modifier = Modifier
@@ -324,6 +334,20 @@ fun MainScreen(
                     )
                 }
 
+                if (heroHome) {
+                    //beranda hero memenuhi layar; judul + menu teks menumpang di atasnya
+                    Column(modifier = Modifier.align(Alignment.TopStart)) {
+                        topBar()
+                        HeroTextNav(
+                            toServer = toServerHubScreen,
+                            toMultiplayer = toMultiplayerScreen,
+                            toDonate = toDonateScreen,
+                            toDownload = toDownloadScreen,
+                            toSettings = toSettingsScreen
+                        )
+                    }
+                }
+
                 TaskMenu(
                     isExpanded = isTaskMenuExpanded,
                     modifier = Modifier
@@ -336,9 +360,9 @@ fun MainScreen(
                 }
             }
 
-            if (bottomDock) rail()
+            if (bottomDock && !heroHome) rail()
         }
-        if (railSide == NavRailSide.END && !bottomDock) rail()
+        if (railSide == NavRailSide.END && !bottomDock && !heroHome) rail()
         }
     }
 }
@@ -819,6 +843,13 @@ private fun NavigationUI(
                         onOpenLink = {
                             eventViewModel.sendEvent(EventViewModel.Event.OpenLink(it))
                         },
+                        onOpenFileManager = {
+                            eventViewModel.sendEvent(
+                                EventViewModel.Event.OpenFileManager(
+                                    rootPath = PathManager.DIR_FILES_EXTERNAL.absolutePath
+                                )
+                            )
+                        },
                         startGuideOnce = { keys ->
                             eventViewModel.sendStartGuideOnce(keys)
                         }
@@ -1125,6 +1156,51 @@ private fun TaskItem(
                     }
                 }
             }
+        }
+    }
+}
+
+/** Menu teks di bawah judul "NEV LAUNCHER" pada beranda hero (pengganti ikon side rail). */
+@Composable
+private fun HeroTextNav(
+    toServer: () -> Unit,
+    toMultiplayer: () -> Unit,
+    toDonate: () -> Unit,
+    toDownload: () -> Unit,
+    toSettings: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val items = listOf(
+        stringResource(R.string.server_hub_title) to toServer,
+        stringResource(R.string.terracotta) to toMultiplayer,
+        stringResource(R.string.donate_menu) to toDonate,
+        stringResource(R.string.generic_download) to toDownload,
+        stringResource(R.string.generic_setting) to toSettings
+    )
+    androidx.compose.foundation.layout.Row(
+        modifier = modifier
+            .padding(start = 16.dp, top = 4.dp)
+            .horizontalScroll(androidx.compose.foundation.rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        items.forEach { (label, action) ->
+            Text(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .clickable(onClick = action)
+                    .padding(vertical = 6.dp),
+                text = label.uppercase(),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    shadow = androidx.compose.ui.graphics.Shadow(
+                        color = Color.Black.copy(alpha = 0.7f),
+                        blurRadius = 6f
+                    )
+                ),
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.sp,
+                color = Color.White.copy(alpha = 0.92f),
+                maxLines = 1
+            )
         }
     }
 }
