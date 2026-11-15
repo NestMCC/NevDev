@@ -1628,4 +1628,20 @@
     <string name="settings_launcher_auto_install_title">Unduh otomatis pengaya</string>
     <string name="settings_launcher_auto_install_summary">Saat mengunduh mod, paket sumber daya, dan shader, versi game yang sedang dimainkan (termasuk Fabric) langsung terpilih, dependensi wajib ikut diunduh, dan unduhan langsung dimulai. Jika file tidak cocok dengan versi Anda, dialog pilihan tetap ditampilkan</string>
     <string name="download_addon_auto_install_button">Unduh otomatis</string>
+
+    <string name="settings_tab_music">Musik</string>
+    <string name="music_enable_title">Putar musik</string>
+    <string name="music_enable_summary">Putar musik latar di beranda launcher. Nonaktif secara bawaan.</string>
+    <string name="music_in_game_title">Putar di dalam game</string>
+    <string name="music_in_game_summary">Lanjutkan musik saat bermain. Matikan musik bawaan Minecraft (Opsi › Musik &amp; Suara) agar tidak tumpang tindih.</string>
+    <string name="music_volume_title">Volume musik</string>
+    <string name="music_now_playing">Sedang diputar</string>
+    <string name="music_none">Belum ada lagu</string>
+    <string name="music_playlist_title">Daftar putar</string>
+    <string name="music_playlist_summary">Lagu tema Minecraft dibaca dari aset game yang sudah diunduh. Tambahkan file musik sendiri (.ogg/.mp3/.wav/.m4a/.flac) ke folder: %1$s</string>
+    <string name="music_refresh">Pindai ulang</string>
+    <string name="music_empty_hint">Tidak ada lagu. Jalankan sekali versi Minecraft agar asetnya terunduh, atau taruh file musik di folder di atas.</string>
+    <string name="music_prev">Sebelumnya</string>
+    <string name="music_next">Berikutnya</string>
+    <string name="music_play_pause">Putar / jeda</string>
 </resources>

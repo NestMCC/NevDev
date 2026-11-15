@@ -163,6 +163,12 @@ object AllSettings : SettingsRegistry() {
      */
     val jvmArgs = stringSetting("jvmArgs", "")
 
+    /** Musik Nev Launcher: saklar utama, volume 0-100, putar juga di dalam game, id lagu terakhir */
+    val musicEnabled = boolSetting("musicEnabled", false)
+    val musicVolume = intSetting("musicVolume", 50, 0..100)
+    val musicInGame = boolSetting("musicInGame", true)
+    val musicTrackId = stringSetting("musicTrackId", "")
+
     /**
      * Render Distance Smooth：render distance tinggi tetap lancar
      * (simulation distance rendah, opsi video ringan, GC JVM dituning)

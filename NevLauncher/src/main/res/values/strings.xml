@@ -3242,4 +3242,20 @@
     <string name="settings_launcher_auto_install_title">Auto download addons</string>
     <string name="settings_launcher_auto_install_summary">When downloading mods, resource packs and shaders, the game version you are playing (including Fabric) is selected automatically, required dependencies are downloaded too, and the download starts right away. If a file does not match your version, the selection dialog is shown</string>
     <string name="download_addon_auto_install_button">Auto download</string>
+
+    <string name="settings_tab_music">Music</string>
+    <string name="music_enable_title">Play music</string>
+    <string name="music_enable_summary">Play background music on the launcher home screen. Off by default.</string>
+    <string name="music_in_game_title">Play in game</string>
+    <string name="music_in_game_summary">Keep the music going while playing. Turn off Minecraft\'s own music (Options › Music &amp; Sounds) to avoid overlap.</string>
+    <string name="music_volume_title">Music volume</string>
+    <string name="music_now_playing">Now playing</string>
+    <string name="music_none">No tracks yet</string>
+    <string name="music_playlist_title">Playlist</string>
+    <string name="music_playlist_summary">Minecraft theme tracks are read from the game assets you have already downloaded. Add your own music files (.ogg/.mp3/.wav/.m4a/.flac) to this folder: %1$s</string>
+    <string name="music_refresh">Rescan</string>
+    <string name="music_empty_hint">No tracks found. Run a Minecraft version once so its assets download, or put music files in the folder above.</string>
+    <string name="music_prev">Previous</string>
+    <string name="music_next">Next</string>
+    <string name="music_play_pause">Play / pause</string>
 </resources>

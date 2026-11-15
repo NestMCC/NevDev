@@ -55,6 +55,7 @@ import com.movtery.zalithlauncher.game.renderer.Renderers
 import com.movtery.zalithlauncher.game.version.installed.Version
 import com.movtery.zalithlauncher.game.version.installed.VersionsManager
 import com.movtery.zalithlauncher.notification.NotificationManager
+import com.movtery.zalithlauncher.music.MusicManager
 import com.movtery.zalithlauncher.path.PathManager
 import com.movtery.zalithlauncher.path.URL_SUPPORT
 import com.movtery.zalithlauncher.setting.AllSettings
@@ -801,6 +802,12 @@ class MainActivity : BaseAppCompatActivity() {
         super.onResume()
         ControlManager.checkDefaultAndRefresh(this@MainActivity)
         offerRestartForHomeStorage()
+        MusicManager.onForeground(inGame = false)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MusicManager.onBackground()
     }
 
     private var homeStorageRestartShown = false

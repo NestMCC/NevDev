@@ -118,6 +118,7 @@ import com.movtery.zalithlauncher.game.plugin.PluginLoader
 import com.movtery.zalithlauncher.game.renderer.Renderers
 import com.movtery.zalithlauncher.game.sdl.SdlBridge
 import com.movtery.zalithlauncher.game.version.installed.Version
+import com.movtery.zalithlauncher.music.MusicManager
 import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.setting.enums.ResolutionRule
 import com.movtery.zalithlauncher.terracotta.TerracottaVPNService
@@ -619,6 +620,7 @@ class VMActivity : BaseAppCompatActivity(), SurfaceTextureListener {
     override fun onResume() {
         super.onResume()
         withHandler { onResume() }
+        MusicManager.onForeground(inGame = true)
         CallbackBridge.nativeSetWindowAttrib(LwjglGlfwKeycode.GLFW_FOCUSED, 1)
         CallbackBridge.nativeSetWindowAttrib(LwjglGlfwKeycode.GLFW_HOVERED, 1)
 
@@ -637,6 +639,7 @@ class VMActivity : BaseAppCompatActivity(), SurfaceTextureListener {
         playTimeJob?.cancel()
         playTimeJob = null
         PlayTimeStats.stop()
+        MusicManager.onBackground()
         withHandler { onPause() }
         CallbackBridge.resetInputState()
         CallbackBridge.nativeSetWindowAttrib(LwjglGlfwKeycode.GLFW_FOCUSED, 0)
