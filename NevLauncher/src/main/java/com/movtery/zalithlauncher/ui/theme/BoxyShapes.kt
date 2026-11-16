@@ -65,3 +65,7 @@ val BoxyShapes = Shapes(
     large = BaseRoundedCornerShape(10.dp),
     extraLarge = BaseRoundedCornerShape(12.dp)
 )
+
+/** Pengganti CircleShape: tetap bulat di gaya lain, jadi kotak berlengkung tipis di mode hero. */
+val CircleShape: BaseRoundedCornerShape
+    get() = if (isBoxy()) BaseRoundedCornerShape(10.dp) else androidx.compose.foundation.shape.CircleShape

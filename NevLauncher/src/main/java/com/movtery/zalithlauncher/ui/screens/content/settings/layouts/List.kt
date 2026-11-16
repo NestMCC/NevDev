@@ -36,7 +36,7 @@ import androidx.compose.foundation.layout.size
 import com.movtery.zalithlauncher.ui.theme.NevRed
 import androidx.compose.ui.text.font.FontWeight
 import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
-import androidx.compose.foundation.shape.CircleShape
+import com.movtery.zalithlauncher.ui.theme.CircleShape
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background

@@ -22,7 +22,7 @@ import com.movtery.zalithlauncher.ui.theme.nevGlow
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.shape.CircleShape
+import com.movtery.zalithlauncher.ui.theme.CircleShape
 import androidx.compose.foundation.border
 import androidx.compose.foundation.BorderStroke
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder

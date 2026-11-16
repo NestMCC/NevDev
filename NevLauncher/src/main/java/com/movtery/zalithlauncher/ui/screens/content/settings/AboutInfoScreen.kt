@@ -20,7 +20,7 @@ package com.movtery.zalithlauncher.ui.screens.content.settings
 
 import com.movtery.zalithlauncher.path.URL_TIKTOK_NEV
 import com.movtery.zalithlauncher.path.URL_TIKTOK_NESTMC
-import androidx.compose.foundation.shape.CircleShape
+import com.movtery.zalithlauncher.ui.theme.CircleShape
 import androidx.compose.foundation.layout.Box
 import com.movtery.zalithlauncher.ui.theme.nevShape
 import com.movtery.zalithlauncher.ui.theme.nevGlow
