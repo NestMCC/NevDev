@@ -296,12 +296,6 @@ fun NevNumberedTab(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(
-                text = "%02d".format(number),
-                style = MaterialTheme.typography.labelMedium,
-                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
-                color = if (selected) NevRed.OnGradient.copy(alpha = 0.8f) else NevRed.GradientEnd
-            )
             androidx.compose.runtime.CompositionLocalProvider(
                 androidx.compose.material3.LocalContentColor provides
                         if (selected) NevRed.OnGradient else NevRed.OnPanel
@@ -483,12 +477,6 @@ fun NevPillTab(
                 }
             }
             Column {
-                Text(
-                    text = "%02d".format(number),
-                    style = MaterialTheme.typography.labelSmall,
-                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
-                    color = if (selected) NevRed.OnGradient.copy(alpha = 0.8f) else NevRed.GradientEnd
-                )
                 androidx.compose.runtime.CompositionLocalProvider(
                     androidx.compose.material3.LocalContentColor provides content
                 ) {

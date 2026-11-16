@@ -24,7 +24,7 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
 import androidx.compose.ui.graphics.Brush
 import com.movtery.zalithlauncher.ui.theme.NevRed
 import androidx.compose.foundation.layout.Arrangement

@@ -18,7 +18,7 @@
 
 package com.movtery.zalithlauncher.filemanager.ui.components
 
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Shape

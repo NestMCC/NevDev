@@ -27,7 +27,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.BorderStroke
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder
 import com.movtery.zalithlauncher.ui.theme.NevRed
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
 import androidx.compose.material3.MenuDefaults
 import android.content.Context
 import android.widget.Toast

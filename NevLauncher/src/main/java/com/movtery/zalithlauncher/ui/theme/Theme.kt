@@ -852,7 +852,7 @@ fun NevLauncherTheme(
         MaterialExpressiveTheme(
             colorScheme = currentDisplayScheme,
             motionScheme = MotionScheme.expressive(),
-            shapes = if (nevStyle.cyber) CyberShapes else Shapes(),
+            shapes = if (nevStyle.cyber) CyberShapes else if (isBoxy()) BoxyShapes else Shapes(),
             typography = if (nevStyle.cyber) CyberTypography else AppTypography,
             content = content
         )

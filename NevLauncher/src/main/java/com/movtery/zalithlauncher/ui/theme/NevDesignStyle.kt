@@ -129,6 +129,8 @@ fun nevPillShape(): Shape {
         CutCornerShape(topStart = 0.dp, topEnd = 12.dp, bottomEnd = 0.dp, bottomStart = 12.dp)
     } else if (style.cutCorners) {
         CutCornerShape(topStart = 16.dp, topEnd = 0.dp, bottomEnd = 16.dp, bottomStart = 0.dp)
+    } else if (isBoxy()) {
+        RoundedCornerShape(10.dp)
     } else {
         RoundedCornerShape(50)
     }
@@ -145,7 +147,7 @@ fun nevShape(radius: Dp): Shape {
         val cut = radius * 0.6f
         CutCornerShape(topStart = cut, topEnd = 0.dp, bottomEnd = cut, bottomStart = 0.dp)
     } else {
-        RoundedCornerShape(radius)
+        RoundedCornerShape(boxyRadius(radius))
     }
 }
 

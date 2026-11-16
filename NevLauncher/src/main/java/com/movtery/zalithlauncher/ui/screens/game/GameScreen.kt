@@ -65,7 +65,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip

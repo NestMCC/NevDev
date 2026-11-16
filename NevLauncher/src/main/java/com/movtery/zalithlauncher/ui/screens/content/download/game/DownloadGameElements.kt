@@ -29,7 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -491,14 +491,6 @@ fun AddonListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        if (number != null) {
-            Text(
-                text = "%02d".format(number),
-                style = MaterialTheme.typography.labelLarge,
-                fontFamily = FontFamily.Monospace,
-                color = NevRed.GradientEnd
-            )
-        }
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -565,14 +557,6 @@ private fun CryoAddonListItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            if (index != null) {
-                Text(
-                    text = "%02d".format(index + 1),
-                    style = MaterialTheme.typography.labelLarge,
-                    fontFamily = FontFamily.Monospace,
-                    color = NevRed.GradientEnd
-                )
-            }
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)

@@ -18,7 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.download.addon.elements
 
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
 import androidx.compose.foundation.BorderStroke
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder
 import com.movtery.zalithlauncher.ui.theme.NevRed

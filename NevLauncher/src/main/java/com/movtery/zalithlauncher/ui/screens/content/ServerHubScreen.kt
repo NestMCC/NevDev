@@ -24,7 +24,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import com.movtery.zalithlauncher.ui.theme.nevTextFieldColors
 import com.movtery.zalithlauncher.ui.theme.NevGradientButton
