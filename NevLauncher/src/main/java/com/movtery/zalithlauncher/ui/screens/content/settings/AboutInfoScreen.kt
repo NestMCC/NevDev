@@ -154,7 +154,7 @@ fun AboutInfoScreen(
                         )
                         NevTikTokCard(
                             modifier = Modifier.weight(1f),
-                            name = "NevLauncher",
+                            name = "Nev Launcher",
                             handle = "tiktok.com/@nev.launcher",
                             avatar = {
                                 Image(
