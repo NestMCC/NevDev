@@ -104,6 +104,7 @@ import com.movtery.zalithlauncher.ui.screens.NormalNavKey
 import com.movtery.zalithlauncher.ui.screens.TitledNavKey
 import com.movtery.zalithlauncher.ui.screens.content.elements.DisabledAlpha
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.CardPosition
+import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.ColorThemePickerCard
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.EnumSettingsCard
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.IntSliderSettingsCard
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.ListSettingsCard
@@ -164,36 +165,10 @@ fun LauncherSettingsScreen(
                         updateOperation = { customColorOperation = it }
                     )
 
-                    EnumSettingsCard(
+                    ColorThemePickerCard(
                         modifier = Modifier.fillMaxWidth(),
                         position = CardPosition.Top,
-                        unit = AllSettings.launcherColorTheme,
-                        title = stringResource(R.string.settings_launcher_color_theme_title),
-                        summary = stringResource(R.string.settings_launcher_color_theme_summary),
-                        entries = ColorThemeType.entries,
-                        getRadioEnable = { enum ->
-                            enum != ColorThemeType.DYNAMIC || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-                        },
-                        getRadioText = { enum ->
-                            when (enum) {
-                                ColorThemeType.DYNAMIC -> stringResource(R.string.theme_color_dynamic)
-                                ColorThemeType.EMBERMIRE -> stringResource(R.string.theme_color_embermire)
-                                ColorThemeType.VELVET_ROSE -> stringResource(R.string.theme_color_velvet_rose)
-                                ColorThemeType.MISTWAVE -> stringResource(R.string.theme_color_mistwave)
-                                ColorThemeType.GLACIER -> stringResource(R.string.theme_color_glacier)
-                                ColorThemeType.VERDANTFIELD -> stringResource(R.string.theme_color_verdant_field)
-                                ColorThemeType.URBAN_ASH -> stringResource(R.string.theme_color_urban_ash)
-                                ColorThemeType.VERDANT_DAWN -> stringResource(R.string.theme_color_verdant_dawn)
-                                ColorThemeType.NEV_LAVA -> stringResource(R.string.theme_color_nev_lava)
-                                ColorThemeType.CRYOGENIC -> stringResource(R.string.theme_color_cryogenic)
-                                ColorThemeType.CYBER -> stringResource(R.string.theme_color_cyber)
-                                ColorThemeType.CUSTOM -> stringResource(R.string.generic_custom)
-                            }
-                        },
-                        maxItemsInEachRow = 5,
-                        onRadioClick = { enum ->
-                            if (enum == ColorThemeType.CUSTOM) customColorOperation = CustomColorOperation.Dialog
-                        }
+                        onCustomClick = { customColorOperation = CustomColorOperation.Dialog }
                     )
 
                     ListSettingsCard(

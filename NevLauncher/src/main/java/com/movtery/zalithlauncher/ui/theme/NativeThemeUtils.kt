@@ -203,7 +203,7 @@ private fun getSeedColor(context: Context, darkTheme: Boolean): Int {
 
 private fun getPredefinedSeedColor(theme: ColorThemeType, darkTheme: Boolean): Int {
     return when (theme) {
-        ColorThemeType.EMBERMIRE -> if (darkTheme) 0xFFFFB598.toInt() else 0xFFA63A17.toInt()
+        ColorThemeType.EMBERMIRE -> 0xFFE2641F.toInt()
         ColorThemeType.VELVET_ROSE -> if (darkTheme) 0xFFF9B2D2.toInt() else 0xFF723D57.toInt()
         ColorThemeType.MISTWAVE -> if (darkTheme) 0xFFCEF3F9.toInt() else 0xFF426469.toInt()
         ColorThemeType.GLACIER -> if (darkTheme) 0xFF73D2FB.toInt() else 0xFF006684.toInt()
@@ -213,7 +213,7 @@ private fun getPredefinedSeedColor(theme: ColorThemeType, darkTheme: Boolean): I
         ColorThemeType.NEV_LAVA -> if (darkTheme) 0xFFFF5A3D.toInt() else 0xFFB3201A.toInt()
         ColorThemeType.CRYOGENIC -> if (darkTheme) 0xFF4DD8F0.toInt() else 0xFF006879.toInt()
         ColorThemeType.CYBER -> if (darkTheme) 0xFF00E5FF.toInt() else 0xFF00697A.toInt()
-        else -> 0xFFA63A17.toInt()
+        else -> seedThemeOf(theme)?.seed?.toArgb() ?: 0xFFE2641F.toInt()
     }
 }
 

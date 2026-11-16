@@ -772,14 +772,14 @@ fun NevLauncherTheme(
 
     val context = LocalContext.current
 
-    val targetColorScheme = remember(darkTheme, dynamicColor, colorTheme, customColor, customPaletteStyle) {
+    val targetColorScheme = remember(darkTheme, colorTheme, customColor, customPaletteStyle) {
         when {
-            dynamicColor && colorTheme == ColorThemeType.DYNAMIC && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            colorTheme == ColorThemeType.DYNAMIC && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                 if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
             }
 
             darkTheme -> when (colorTheme) {
-                ColorThemeType.EMBERMIRE -> embermireDark
+                ColorThemeType.EMBERMIRE -> customDark(Color(0xFFE2641F), PaletteStyle.TonalSpot)
                 ColorThemeType.VELVET_ROSE -> velvetRoseDark
                 ColorThemeType.MISTWAVE -> mistwaveDark
                 ColorThemeType.GLACIER -> glacierDark
@@ -793,11 +793,11 @@ fun NevLauncherTheme(
                     color = customColor,
                     style = customPaletteStyle
                 )
-                else -> embermireDark
+                else -> seedThemeOf(colorTheme)?.let { customDark(it.seed, it.style) } ?: embermireDark
             }
 
             else -> when (colorTheme) {
-                ColorThemeType.EMBERMIRE -> embermireLight
+                ColorThemeType.EMBERMIRE -> customLight(Color(0xFFE2641F), PaletteStyle.TonalSpot)
                 ColorThemeType.VELVET_ROSE -> velvetRoseLight
                 ColorThemeType.MISTWAVE -> mistwaveLight
                 ColorThemeType.GLACIER -> glacierLight
@@ -811,7 +811,7 @@ fun NevLauncherTheme(
                     color = customColor,
                     style = customPaletteStyle
                 )
-                else -> embermireLight
+                else -> seedThemeOf(colorTheme)?.let { customLight(it.seed, it.style) } ?: embermireLight
             }
         }
     }
