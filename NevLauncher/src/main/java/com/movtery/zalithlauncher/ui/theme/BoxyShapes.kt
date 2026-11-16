@@ -18,7 +18,6 @@
 
 package com.movtery.zalithlauncher.ui.theme
 
-import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceIn
@@ -41,9 +40,9 @@ fun isBoxy(): Boolean =
 fun boxyRadius(size: Dp): Dp =
     if (!isBoxy() || size <= 0.dp) size else (size * 0.4f).coerceIn(4.dp, 10.dp)
 
-fun RoundedCornerShape(size: Dp): CornerBasedShape = BaseRoundedCornerShape(boxyRadius(size))
+fun RoundedCornerShape(size: Dp): BaseRoundedCornerShape = BaseRoundedCornerShape(boxyRadius(size))
 
-fun RoundedCornerShape(percent: Int): CornerBasedShape =
+fun RoundedCornerShape(percent: Int): BaseRoundedCornerShape =
     if (isBoxy() && percent >= 25) BaseRoundedCornerShape(10.dp) else BaseRoundedCornerShape(percent)
 
 fun RoundedCornerShape(
@@ -51,7 +50,7 @@ fun RoundedCornerShape(
     topEnd: Dp,
     bottomEnd: Dp,
     bottomStart: Dp
-): CornerBasedShape = BaseRoundedCornerShape(
+): BaseRoundedCornerShape = BaseRoundedCornerShape(
     topStart = boxyRadius(topStart),
     topEnd = boxyRadius(topEnd),
     bottomEnd = boxyRadius(bottomEnd),
