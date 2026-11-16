@@ -1662,4 +1662,5 @@
     <string name="settings_launcher_background_scale_fit">Pas (rasio asli)</string>
     <string name="settings_launcher_background_scale_crop">Isi layar (tepi terpotong)</string>
     <string name="hero_nav_home">Beranda</string>
+    <string name="account_active_badge">AKTIF</string>
 </resources>

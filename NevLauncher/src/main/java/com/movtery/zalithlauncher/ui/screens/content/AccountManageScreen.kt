@@ -18,6 +18,23 @@
 
 package com.movtery.zalithlauncher.ui.screens.content
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
+import com.movtery.zalithlauncher.ui.theme.NevRed
+import com.movtery.zalithlauncher.ui.theme.NevGradientButton
+import com.movtery.zalithlauncher.ui.theme.nevShape
+import com.movtery.zalithlauncher.ui.theme.nevPillShape
+import com.movtery.zalithlauncher.ui.screens.content.elements.AccountRowCard
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -303,25 +320,111 @@ private fun ActionsLayout(
                     ?.inputStream()?.use { it.readBytes() }
             }
         }
-        PetModelView(
+        val frameColor = NevRed.GradientStart
+        Box(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clip(nevShape(22.dp))
+                .background(NevRed.PanelDeep.copy(alpha = 0.85f))
+                .border(1.dp, frameColor.copy(alpha = 0.4f), nevShape(22.dp))
+                .drawBehind {
+                    //penanda sudut ala HUD + cincin pijakan di bawah model
+                    val len = 22.dp.toPx()
+                    val m = 10.dp.toPx()
+                    val w = 3.dp.toPx()
+                    fun corner(x: Float, y: Float, dx: Float, dy: Float) {
+                        drawLine(frameColor, Offset(x, y), Offset(x + dx * len, y), w)
+                        drawLine(frameColor, Offset(x, y), Offset(x, y + dy * len), w)
+                    }
+                    corner(m, m, 1f, 1f)
+                    corner(size.width - m, m, -1f, 1f)
+                    corner(m, size.height - m, 1f, -1f)
+                    corner(size.width - m, size.height - m, -1f, -1f)
+                    val cx = size.width / 2f
+                    val cy = size.height - 34.dp.toPx()
+                    for (r in listOf(70.dp.toPx(), 50.dp.toPx())) {
+                        drawOval(
+                            color = frameColor.copy(alpha = 0.5f),
+                            topLeft = Offset(cx - r, cy - r * 0.22f),
+                            size = Size(r * 2, r * 0.44f),
+                            style = Stroke(width = 1.5.dp.toPx())
+                        )
+                    }
+                }
+        ) {
+        PetModelView(
+            modifier = Modifier.fillMaxSize(),
             skin = skinBytes,
             cape = capeBytes,
             arm = armModel,
             yaw = Math.toRadians(35.0).toFloat()
         )
+        }
+
+        Spacer(Modifier.height(12.dp))
 
         //添加账号
-        ScalingActionButton(
-            modifier = Modifier
-                .fillMaxWidth(),
+        NevGradientButton(
+            modifier = Modifier.fillMaxWidth(),
             onClick = {
                 actions.onIntent(AccountManageIntent.UpdateLoginMenuOp(LoginMenuOperation.Login))
             }
         ) {
-            MarqueeText(text = stringResource(R.string.account_add_new_account))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    painter = painterResource(R.drawable.ic_add),
+                    contentDescription = null
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.account_add_new_account),
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
+                )
+            }
+        }
+
+        //Lemari Pakaian: buka dialog skin/jubah untuk akun aktif
+        val canWardrobe = currentAccount != null &&
+                currentAccount.isSkinChangeAllowed() && !currentAccount.isAuthServerAccount()
+        Spacer(Modifier.height(10.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(nevPillShape())
+                .border(1.dp, NevRed.GradientStart.copy(alpha = if (canWardrobe) 0.5f else 0.2f), nevPillShape())
+                .clickable(enabled = canWardrobe) {
+                    currentAccount?.let {
+                        actions.onIntent(
+                            AccountManageIntent.UpdateAccountSkinOp(AccountSkinOperation.ChangeSkin(it))
+                        )
+                    }
+                }
+                .padding(vertical = 13.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier.size(20.dp),
+                painter = painterResource(R.drawable.ic_checkroom),
+                contentDescription = null,
+                tint = NevRed.GradientStart.copy(alpha = if (canWardrobe) 1f else 0.4f)
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = stringResource(R.string.account_wardrobe),
+                fontWeight = FontWeight.SemiBold,
+                color = NevRed.OnPanel.copy(alpha = if (canWardrobe) 1f else 0.4f),
+                maxLines = 1
+            )
         }
     }
 }
@@ -682,10 +785,7 @@ private fun AccountsLayout(
         actions = actions
     )
 
-    BackgroundCard(
-        modifier = modifier.animated(ctx),
-        shape = MaterialTheme.shapes.extraLarge
-    ) {
+    Box(modifier = modifier.animated(ctx)) {
         if (accounts.isNotEmpty()) {
             val scrollState = rememberLazyListState()
             LazyColumn(
@@ -694,43 +794,26 @@ private fun AccountsLayout(
                     .nonInteractiveScrollbar(
                         state = scrollState.scrollIndicatorState!!,
                         orientation = Orientation.Vertical,
-                    )
-                    .clip(MaterialTheme.shapes.extraLarge),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                    ),
+                contentPadding = PaddingValues(vertical = 2.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 state = scrollState,
             ) {
                 items(accounts, key = { it.uniqueUUID }) { account ->
-                    AccountItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp),
+                    AccountRowCard(
+                        modifier = Modifier.fillMaxWidth(),
                         currentAccount = currentAccount,
                         account = account,
                         onSelected = { AccountsManager.setCurrentAccount(it) },
-                        openChangeSkinDialog = {
-                            if (!account.isAuthServerAccount()) {
-                                actions.onIntent(
-                                    AccountManageIntent.UpdateAccountSkinOp(
-                                        AccountSkinOperation.ChangeSkin(account)
-                                    )
-                                )
-                            }
-                        },
                         onRefreshClick = {
-                            actions.onIntent(
-                                AccountManageIntent.RefreshAccount(
-                                    account
-                                )
-                            )
+                            actions.onIntent(AccountManageIntent.RefreshAccount(account))
                         },
                         onCopyUUID = {
                             copyText(COPY_LABEL_ACCOUNT_UUID, account.profileId, context, true)
                         },
                         onDeleteClick = {
                             actions.onIntent(
-                                AccountManageIntent.UpdateAccountOp(
-                                    AccountOperation.Delete(account)
-                                )
+                                AccountManageIntent.UpdateAccountOp(AccountOperation.Delete(account))
                             )
                         }
                     )

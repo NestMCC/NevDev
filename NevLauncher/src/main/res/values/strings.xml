@@ -3276,4 +3276,5 @@
     <string name="settings_launcher_background_scale_fit">Fit (original ratio)</string>
     <string name="settings_launcher_background_scale_crop">Fill screen (edges cropped)</string>
     <string name="hero_nav_home">Home</string>
+    <string name="account_active_badge">ACTIVE</string>
 </resources>
