@@ -340,7 +340,9 @@ private fun <E> SuggestionsText(
             onDismissRequest = {
                 focusManager.clearFocus(false)
             },
-            shape = RoundedCornerShape(
+            shape = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) {
+                com.movtery.zalithlauncher.ui.theme.RoundedCornerShape(10.dp)
+            } else RoundedCornerShape(
                 topStart = 0.dp, topEnd = 0.dp,
                 bottomStart = 24.0.dp, bottomEnd = 24.0.dp,
             ),

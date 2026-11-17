@@ -356,7 +356,12 @@ private fun <T> FilterDropdown(
                 contentDescription = null
             )
         }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
+            shape = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) com.movtery.zalithlauncher.ui.theme.RoundedCornerShape(10.dp) else androidx.compose.material3.MenuDefaults.shape
+        ) {
             options.forEach { (text, value) ->
                 DropdownMenuItem(
                     text = { Text(text) },
