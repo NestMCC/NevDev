@@ -3332,4 +3332,5 @@
     <string name="backup_world_kind_exit">On exit</string>
     <string name="backup_world_kind_auto">Periodic</string>
     <string name="backup_world_kind_manual">Manual</string>
+    <string name="hero_manage_versions">Manage all versions</string>
 </resources>

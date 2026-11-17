@@ -187,6 +187,12 @@ fun LauncherScreen(
                 onOpenFileManager = onOpenFileManager,
                 toVersionSettingsScreen = {
                     VersionsManager.currentVersion.value?.let { navigateToVersions(it) }
+                },
+                toVersionManageScreen = {
+                    backStackViewModel.mainScreen.removeAndNavigateTo(
+                        remove = NestedNavKey.VersionSettings::class,
+                        screenKey = NormalNavKey.VersionsManager
+                    )
                 }
             )
             return@BaseScreen
@@ -889,6 +895,7 @@ private fun HeroHome(
     toAccountManageScreen: () -> Unit,
     onOpenFileManager: () -> Unit,
     toVersionSettingsScreen: () -> Unit,
+    toVersionManageScreen: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val ctx = rememberAnimatedContext(isVisible = isVisible)
@@ -1033,7 +1040,7 @@ private fun HeroHome(
                 Row(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.medium)
-                        .clickable(enabled = versions.isNotEmpty()) { showList = true },
+                        .clickable { showList = true },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -1045,7 +1052,7 @@ private fun HeroHome(
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
-                    if (versions.size > 1) {
+                    if (versions.isNotEmpty()) {
                         Icon(
                             modifier = Modifier.padding(start = 6.dp).size(28.dp),
                             painter = painterResource(R.drawable.ic_keyboard_arrow_down),
@@ -1075,6 +1082,20 @@ private fun HeroHome(
                             }
                         )
                     }
+                    androidx.compose.material3.HorizontalDivider()
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(R.string.hero_manage_versions),
+                                fontWeight = FontWeight.SemiBold,
+                                color = NevRed.GradientStart
+                            )
+                        },
+                        onClick = {
+                            showList = false
+                            toVersionManageScreen()
+                        }
+                    )
                 }
             }
 

@@ -1718,4 +1718,5 @@
     <string name="backup_world_kind_exit">Saat keluar</string>
     <string name="backup_world_kind_auto">Berkala</string>
     <string name="backup_world_kind_manual">Manual</string>
+    <string name="hero_manage_versions">Kelola semua versi</string>
 </resources>
