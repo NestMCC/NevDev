@@ -951,6 +951,7 @@ private fun ServerItem(
                     val isLoading = ot is ServerData.Operation.Loading
 
                     DropdownMenu(
+                        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                         expanded = expanded,
                         shape = MaterialTheme.shapes.large,
                         shadowElevation = 3.dp,

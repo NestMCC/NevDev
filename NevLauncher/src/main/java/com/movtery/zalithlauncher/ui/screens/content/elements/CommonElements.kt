@@ -172,6 +172,7 @@ fun SortByDropdownMenu(
     onToggleSortOrder: () -> Unit
 ) {
     DropdownMenu(
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         expanded = expanded,
         onDismissRequest = onClose,
         shape = MaterialTheme.shapes.large

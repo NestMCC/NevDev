@@ -1098,6 +1098,7 @@ private fun InputMagnifierContent(
                     )
                 }
                 DropdownMenu(
+                    border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                     expanded = menuExpanded,
                     onDismissRequest = { menuExpanded = false },
                     shape = MaterialTheme.shapes.large,

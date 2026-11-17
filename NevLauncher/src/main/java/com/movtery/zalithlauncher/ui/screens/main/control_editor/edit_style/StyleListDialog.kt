@@ -236,6 +236,7 @@ private fun StyleItem(
             }
 
             DropdownMenu(
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 expanded = menuExpanded,
                 shape = MaterialTheme.shapes.large,
                 shadowElevation = 3.dp,

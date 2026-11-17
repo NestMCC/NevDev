@@ -520,6 +520,7 @@ private fun VersionsContent(
             val menuAnchorHeight = menuAnchorBounds?.height ?: 0f
 
             DropdownMenu(
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 expanded = showList && menuAnchor != null,
                 onDismissRequest = { showList = false },
                 modifier = Modifier.width(260.dp),
@@ -1063,6 +1064,7 @@ private fun HeroHome(
                     }
                 }
                 DropdownMenu(
+                    border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                     expanded = showList,
                     onDismissRequest = { showList = false },
                     modifier = Modifier.width(280.dp),

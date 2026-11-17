@@ -117,6 +117,7 @@ fun StatefulDropdownMenuFollowGlobal(
                 }
 
                 DropdownMenu(
+                    border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     shape = MaterialTheme.shapes.large,

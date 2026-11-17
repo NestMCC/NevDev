@@ -251,6 +251,7 @@ private fun ErrorScreenPortrait(
                         }
 
                         DropdownMenu(
+                            border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
