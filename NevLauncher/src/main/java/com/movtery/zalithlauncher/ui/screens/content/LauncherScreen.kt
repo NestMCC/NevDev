@@ -977,8 +977,9 @@ private fun HeroHome(
         //kemajuan pemasangan komponen launcher (otomatis, di latar belakang)
         ComponentInstallCard(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 96.dp, start = 24.dp, end = 24.dp)
+                .align(Alignment.BottomCenter)
+                //di atas mini player musik bila musik aktif
+                .padding(bottom = if (AllSettings.musicEnabled.state) 84.dp else 16.dp, start = 24.dp, end = 24.dp)
         )
 
         //kartu akun kecil, pojok kanan atas
@@ -1232,7 +1233,7 @@ private fun ComponentInstallCard(modifier: Modifier = Modifier) {
     androidx.compose.animation.AnimatedVisibility(visible = !ready && progress.second > 0, modifier = modifier) {
         val accent = NevRed.GradientStart
         Surface(
-            modifier = Modifier.widthIn(max = 520.dp).fillMaxWidth(),
+            modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth(),
             shape = nevShape(16.dp),
             color = Color.Black.copy(alpha = 0.6f),
             border = BorderStroke(1.dp, accent.copy(alpha = 0.6f))
