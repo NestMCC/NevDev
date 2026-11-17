@@ -111,6 +111,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import com.movtery.zalithlauncher.ui.theme.nevShape
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -1624,9 +1626,10 @@ fun ChangeSkinDialog(
                     .padding(all = 6.dp)
                     .heightIn(min = (maxHeight * 0.85f).coerceAtMost(rememberDialogMaxHeight()))
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight())),
-                shape = MaterialTheme.shapes.extraLarge,
-                color = cardColor(false),
-                contentColor = onCardColor(),
+                shape = nevShape(22.dp),
+                color = NevRed.PanelDeep,
+                contentColor = NevRed.OnPanel,
+                border = NevCardBorder,
                 shadowElevation = 6.dp
             ) {
                 Column(
@@ -1669,7 +1672,7 @@ fun ChangeSkinDialog(
                             //更换皮肤：选择皮肤图片文件
                             when (skinState) {
                                 ChangeSkin.None, ChangeSkin.ResetSkin -> {
-                                    InfoLayoutTextItem(
+                                    SkinActionRow(
                                         modifier = Modifier.fillMaxWidth(),
                                         title = stringResource(R.string.account_change_skin),
                                         icon = {
@@ -1742,7 +1745,7 @@ fun ChangeSkinDialog(
 
                             //akun offline: impor cape PNG ke perpustakaan cape
                             if (account.isLocalAccount()) {
-                                InfoLayoutTextItem(
+                                SkinActionRow(
                                     modifier = Modifier.fillMaxWidth(),
                                     title = stringResource(R.string.account_change_cape_import),
                                     icon = {
@@ -1760,7 +1763,7 @@ fun ChangeSkinDialog(
 
                             //akun Microsoft (cape yang dimiliki) dan akun offline (perpustakaan cape) bisa ganti cape
                             if (account.isMicrosoftAccount() || account.isLocalAccount()) {
-                                InfoLayoutTextItem(
+                                SkinActionRow(
                                     modifier = Modifier.fillMaxWidth(),
                                     title = if (isFetchingCapes) {
                                         stringResource(R.string.account_change_cape_fetch_all)
@@ -1790,7 +1793,7 @@ fun ChangeSkinDialog(
 
                             //离线账号重置皮肤
                             if (account.isLocalAccount() && account.hasSkinFile && skinState != ChangeSkin.ResetSkin) {
-                                InfoLayoutTextItem(
+                                SkinActionRow(
                                     modifier = Modifier.fillMaxWidth(),
                                     title = stringResource(R.string.generic_reset),
                                     icon = {
@@ -1812,11 +1815,16 @@ fun ChangeSkinDialog(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        FilledTonalButton(
+                        androidx.compose.material3.OutlinedButton(
                             modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(50),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, NevRed.GradientStart.copy(alpha = 0.7f)),
+                            colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                                contentColor = NevRed.GradientStart
+                            ),
                             onClick = onDismissRequest
                         ) {
-                            Text(text = stringResource(R.string.generic_cancel))
+                            Text(text = stringResource(R.string.generic_cancel), fontWeight = FontWeight.SemiBold)
                         }
 
                         val canConfirm = skinState != ChangeSkin.None || capeState != ChangeCape.None
@@ -2281,4 +2289,46 @@ private fun getSkinAvatar(
         avatarPaint
     )
     return avatar
+}
+
+
+/** Baris aksi gaya Nev untuk dialog skin/cape: kotak berbingkai, ikon beraksen tema. */
+@Composable
+private fun SkinActionRow(
+    title: String,
+    icon: @Composable () -> Unit,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    val accent = NevRed.GradientStart
+    Surface(
+        modifier = modifier,
+        shape = nevShape(16.dp),
+        color = NevRed.Panel.copy(alpha = 0.9f),
+        contentColor = if (enabled) NevRed.OnPanel else NevRed.Muted,
+        border = androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = if (enabled) 0.45f else 0.15f)),
+        enabled = enabled,
+        onClick = onClick
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            androidx.compose.runtime.CompositionLocalProvider(
+                androidx.compose.material3.LocalContentColor provides accent
+            ) { icon() }
+        }
+    }
 }
