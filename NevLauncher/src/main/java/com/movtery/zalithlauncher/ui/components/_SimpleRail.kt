@@ -88,6 +88,7 @@ fun TextRailItem(
         label = "SelectionAnimation"
     )
 
+    val boxy = com.movtery.zalithlauncher.ui.theme.isBoxy()
     Box(
         modifier = modifier
             .clip(shape)
@@ -111,7 +112,10 @@ fun TextRailItem(
                 brush = backgroundBrush,
                 topLeft = Offset(left, 0f),
                 size = Size(currentWidth, size.height),
-                cornerRadius = CornerRadius(size.height / 2, size.height / 2)
+                cornerRadius = if (boxy) {
+                    val r = minOf(8.dp.toPx(), size.height / 2)
+                    CornerRadius(r, r)
+                } else CornerRadius(size.height / 2, size.height / 2)
             )
         }
 

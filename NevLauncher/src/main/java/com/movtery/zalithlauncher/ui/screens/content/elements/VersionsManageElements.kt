@@ -703,6 +703,10 @@ fun VersionItemLayout(
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
+        border = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) {
+            if (selected) androidx.compose.foundation.BorderStroke(1.5.dp, com.movtery.zalithlauncher.ui.theme.NevRed.Gradient)
+            else com.movtery.zalithlauncher.ui.theme.NevCardBorder
+        } else null,
         onClick = {
             if (selected) return@Surface
             onSelected()
