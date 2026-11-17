@@ -60,6 +60,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 /** Tab "Backup" di Kelola Versi › Dunia: pengaturan + daftar cadangan world. */
 @Composable
 fun WorldBackupScreen(
