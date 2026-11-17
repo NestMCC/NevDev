@@ -1722,4 +1722,6 @@
     <string name="components_installing">Memasang komponen launcher…</string>
     <string name="components_failed">Sebagian komponen gagal dipasang</string>
     <string name="components_wait_toast">Komponen launcher masih dipasang. Mohon tunggu sebentar.</string>
+    <string name="welcome_screen_intro_primary">Selamat datang di %1$s, peluncur pihak ketiga untuk Minecraft: Java Edition yang dirancang untuk perangkat Android.</string>
+    <string name="welcome_screen_intro_core">Didukung oleh PojavLauncher, aplikasi ini menyediakan pengalaman peluncuran dan pengelolaan game yang modern.</string>
 </resources>
