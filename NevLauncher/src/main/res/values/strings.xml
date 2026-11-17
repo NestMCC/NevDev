@@ -3333,4 +3333,7 @@
     <string name="backup_world_kind_auto">Periodic</string>
     <string name="backup_world_kind_manual">Manual</string>
     <string name="hero_manage_versions">Manage all versions</string>
+    <string name="components_installing">Installing launcher components…</string>
+    <string name="components_failed">Some components failed to install</string>
+    <string name="components_wait_toast">Launcher components are still being installed. Please wait.</string>
 </resources>

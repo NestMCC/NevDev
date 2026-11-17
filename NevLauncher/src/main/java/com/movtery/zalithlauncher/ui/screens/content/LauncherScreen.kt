@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -115,6 +116,7 @@ import com.movtery.zalithlauncher.ui.components.rememberAnimatedContext
 import com.movtery.zalithlauncher.ui.guide.GuideKeys
 import com.movtery.zalithlauncher.ui.screens.NestedNavKey
 import com.movtery.zalithlauncher.ui.theme.NevRed
+import com.movtery.zalithlauncher.ui.theme.nevShape
 import com.movtery.zalithlauncher.ui.screens.NormalNavKey
 import com.movtery.zalithlauncher.ui.screens.content.elements.CommonVersionInfoLayout
 import com.movtery.zalithlauncher.ui.screens.content.elements.PlayerFace
@@ -154,6 +156,18 @@ fun LauncherScreen(
     onOpenFileManager: () -> Unit = {},
     startGuideOnce: (GuideKeys.Keys) -> Unit,
 ) {
+    //game baru boleh dijalankan setelah komponen launcher selesai dipasang
+    val installerReady by com.movtery.zalithlauncher.components.ComponentInstaller.ready.collectAsStateWithLifecycle()
+    val launchContext = androidx.compose.ui.platform.LocalContext.current
+    val onLaunchGame: (Version?) -> Unit = { v ->
+        if (installerReady) onLaunchGame(v) else {
+            android.widget.Toast.makeText(
+                launchContext,
+                launchContext.getString(R.string.components_wait_toast),
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
     LaunchedEffect(Unit) {
         //发起新手引导
         startGuideOnce(GuideKeys.Main)
@@ -960,6 +974,13 @@ private fun HeroHome(
                 )
         )
 
+        //kemajuan pemasangan komponen launcher (otomatis, di latar belakang)
+        ComponentInstallCard(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 96.dp, start = 24.dp, end = 24.dp)
+        )
+
         //kartu akun kecil, pojok kanan atas
         Surface(
             modifier = Modifier
@@ -1190,6 +1211,73 @@ private fun HeroHome(
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 2.sp,
+                        maxLines = 1
+                    )
+                }
+            }
+        }
+    }
+}
+
+/** Kartu kemajuan pemasangan komponen; hilang sendiri setelah semuanya terpasang. */
+@Composable
+private fun ComponentInstallCard(modifier: Modifier = Modifier) {
+    val installer = com.movtery.zalithlauncher.components.ComponentInstaller
+    val ready by installer.ready.collectAsStateWithLifecycle()
+    val running by installer.running.collectAsStateWithLifecycle()
+    val failed by installer.failed.collectAsStateWithLifecycle()
+    val progress by installer.progress.collectAsStateWithLifecycle()
+    val current by installer.currentName.collectAsStateWithLifecycle()
+
+    androidx.compose.animation.AnimatedVisibility(visible = !ready && progress.second > 0, modifier = modifier) {
+        val accent = NevRed.GradientStart
+        Surface(
+            modifier = Modifier.widthIn(max = 520.dp).fillMaxWidth(),
+            shape = nevShape(16.dp),
+            color = Color.Black.copy(alpha = 0.6f),
+            border = BorderStroke(1.dp, accent.copy(alpha = 0.6f))
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = when {
+                            failed && !running -> stringResource(R.string.components_failed)
+                            else -> stringResource(R.string.components_installing)
+                        },
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Text(
+                        text = "${progress.first} / ${progress.second}",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = accent,
+                        fontWeight = FontWeight.Bold
+                    )
+                    if (failed && !running) {
+                        androidx.compose.material3.TextButton(onClick = { installer.start() }) {
+                            Text(stringResource(R.string.generic_retry), color = accent)
+                        }
+                    }
+                }
+                androidx.compose.material3.LinearProgressIndicator(
+                    progress = { if (progress.second == 0) 0f else progress.first / progress.second.toFloat() },
+                    modifier = Modifier.fillMaxWidth(),
+                    color = accent,
+                    trackColor = Color.White.copy(alpha = 0.15f)
+                )
+                current?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White.copy(alpha = 0.7f),
                         maxLines = 1
                     )
                 }

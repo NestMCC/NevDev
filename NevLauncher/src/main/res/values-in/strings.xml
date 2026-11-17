@@ -1719,4 +1719,7 @@
     <string name="backup_world_kind_auto">Berkala</string>
     <string name="backup_world_kind_manual">Manual</string>
     <string name="hero_manage_versions">Kelola semua versi</string>
+    <string name="components_installing">Memasang komponen launcher…</string>
+    <string name="components_failed">Sebagian komponen gagal dipasang</string>
+    <string name="components_wait_toast">Komponen launcher masih dipasang. Mohon tunggu sebentar.</string>
 </resources>

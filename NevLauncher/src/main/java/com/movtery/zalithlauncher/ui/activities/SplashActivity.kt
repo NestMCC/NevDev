@@ -83,8 +83,7 @@ private const val ACCEPTED_AGREEMENT_VERSION_KEY = "acceptedAgreementVersion"
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : BaseAppCompatActivity() {
-    private val unpackItems: MutableList<InstallableItem> = ArrayList()
-    private val finishedTaskCount = AtomicInteger(0)
+    private val unpackItems: List<InstallableItem> get() = com.movtery.zalithlauncher.components.ComponentInstaller.items
     private var unpackJob: Job? = null
 
     private var pendingImportIntent: Intent? = null
@@ -203,36 +202,7 @@ class SplashActivity : BaseAppCompatActivity() {
     }
 
     private fun initUnpackItems() {
-        Components.entries.forEach { component ->
-            val task = UnpackComponentsTask(this@SplashActivity, component)
-            unpackItems.add(
-                InstallableItem(
-                    component.displayName,
-                    getString(component.summary),
-                    task
-                )
-            )
-        }
-        Jre.entries.forEach { jre ->
-            val task = UnpackJreTask(this@SplashActivity, jre)
-            if (!task.isCheckFailed()) {
-                unpackItems.add(
-                    InstallableItem(
-                        jre.jreName,
-                        getString(jre.summary),
-                        task
-                    )
-                )
-            }
-        }
-        unpackItems.add(
-            InstallableItem(
-                "JNA",
-                getString(R.string.unpack_screen_jna),
-                UnpackJnaTask(this@SplashActivity)
-            )
-        )
-        unpackItems.sort()
+        com.movtery.zalithlauncher.components.ComponentInstaller.init(applicationContext)
     }
 
     private suspend fun checkAllTask() {
@@ -241,13 +211,7 @@ class SplashActivity : BaseAppCompatActivity() {
             Logger.info(TAG, "The launcher contains the runtime environment: $filePath")
         }
 
-        unpackItems.forEach { item ->
-            val state = item.task.checkState()
-            item.updateState(state)
-            if (state == InstallableItem.State.FINISHED) {
-                finishedTaskCount.incrementAndGet()
-            }
-        }
+        com.movtery.zalithlauncher.components.ComponentInstaller.checkAll()
     }
 
     private fun listAssetsPath(root: String): List<String> {
@@ -274,44 +238,10 @@ class SplashActivity : BaseAppCompatActivity() {
         }
     }
 
+    /** Pemasangan komponen berjalan di latar belakang; langsung masuk ke beranda. */
     private fun startAllTask() {
-        if (unpackJob?.isActive == true) return
-        switchScreen(SplashOperation.Unpacking)
-
-        unpackJob = lifecycleScope.launch {
-            val jobs = unpackItems
-                .filter {
-                    val state = it.state.value
-                    state == InstallableItem.State.NOT_STARTED ||
-                    state == InstallableItem.State.PENDING ||
-                    state == InstallableItem.State.FAILED
-                }
-                .map { item ->
-                    launch(Dispatchers.IO) {
-                        item.updateState(InstallableItem.State.RUNNING)
-                        item.task.updateMessage(null)
-                        try {
-                            item.task.run()
-                            finishedTaskCount.incrementAndGet()
-                            item.updateState(InstallableItem.State.FINISHED)
-                        } catch (e: CancellationException) {
-                            throw e
-                        } catch (e: Exception) {
-                            Logger.error(TAG, "Failed to install component: ${item.name}", e)
-                            item.task.updateMessage(e.message ?: e.javaClass.simpleName)
-                            item.updateState(InstallableItem.State.FAILED)
-                        }
-                    }
-                }
-            jobs.joinAll()
-            if (areAllTasksFinished()) {
-                AllSettings.javaRuntime.apply {
-                    //检查并设置默认的Java环境
-                    if (getValue().isEmpty()) save(Jre.JRE_8.jreName)
-                }
-                finishSplash()
-            }
-        }
+        com.movtery.zalithlauncher.components.ComponentInstaller.start()
+        finishSplash()
     }
 
     private fun finishSplash() {
@@ -327,29 +257,23 @@ class SplashActivity : BaseAppCompatActivity() {
     }
 
     private fun checkTasksToMain() {
-        fun run(): Boolean {
-            if (!areAllTasksFinished()) return false
-
-            Logger.info(TAG, "All content that needs to be extracted is already the latest version!")
-
-            if (isImportIntent(intent) && !isLauncherIntent(intent)) {
-                val success = handleImportIntent(intent)
-                if (success) {
-                    finish()
-                    return true
-                }
-            }
-
-            swapToMain()
-            return true
-        }
-
-        val screen = if (run()) {
-            SplashOperation.Loading
+        //komponen yang belum terpasang dipasang otomatis di latar belakang, kemajuannya tampil di beranda
+        if (!areAllTasksFinished()) {
+            com.movtery.zalithlauncher.components.ComponentInstaller.start()
         } else {
-            SplashOperation.Unpacking
+            Logger.info(TAG, "All content that needs to be extracted is already the latest version!")
         }
-        switchScreen(screen)
+
+        if (isImportIntent(intent) && !isLauncherIntent(intent)) {
+            if (handleImportIntent(intent)) {
+                finish()
+                switchScreen(SplashOperation.Loading)
+                return
+            }
+        }
+
+        swapToMain()
+        switchScreen(SplashOperation.Loading)
     }
 
     private fun swapToMain() {
@@ -420,6 +344,6 @@ class SplashActivity : BaseAppCompatActivity() {
     }
 
     private fun areAllTasksFinished(): Boolean {
-        return finishedTaskCount.get() >= unpackItems.size
+        return com.movtery.zalithlauncher.components.ComponentInstaller.areAllFinished()
     }
 }
