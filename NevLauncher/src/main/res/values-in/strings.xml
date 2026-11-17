@@ -1696,4 +1696,26 @@
     <string name="theme_seed_berry">Beri</string>
     <string name="settings_display_control_theme_title">Warna kontrol ikut tema</string>
     <string name="settings_display_control_theme_summary">Tombol kontrol bawaan (merah/oranye) mengikuti tema warna launcher. Tombol dengan warna kustom tidak diubah.</string>
+    <string name="backup_world_title">Backup</string>
+    <string name="backup_world_on_exit_title">Cadangkan saat keluar world</string>
+    <string name="backup_world_on_exit_summary">Otomatis mencadangkan world yang baru dimainkan begitu kamu keluar dari world.</string>
+    <string name="backup_world_periodic_title">Cadangkan saat bermain</string>
+    <string name="backup_world_periodic_summary">Mencadangkan world yang sedang aktif secara berkala selama bermain (hanya jika ada perubahan).</string>
+    <string name="backup_world_interval_title">Selang pencadangan</string>
+    <string name="backup_world_minutes">menit</string>
+    <string name="backup_world_max_title">Jumlah cadangan per world</string>
+    <string name="backup_world_max_summary">Cadangan terlama dihapus lebih dulu. 0 = tanpa batas.</string>
+    <string name="backup_world_now">Cadangkan semua world sekarang</string>
+    <string name="backup_world_working">Memproses…</string>
+    <string name="backup_world_done">%1$d world dicadangkan</string>
+    <string name="backup_world_empty">Belum ada cadangan. Cadangan muncul di sini setelah kamu keluar dari world atau menekan tombol di atas.</string>
+    <string name="backup_world_restore_title">Pulihkan</string>
+    <string name="backup_world_restore_message">Pulihkan \"%1$s\" dari cadangan ini? World yang sekarang tidak dihapus, hanya diganti nama dengan akhiran _sebelum-pulih.</string>
+    <string name="backup_world_restore_ok">World dipulihkan</string>
+    <string name="backup_world_restore_fail">Gagal memulihkan</string>
+    <string name="backup_world_delete_title">Hapus cadangan</string>
+    <string name="backup_world_delete_message">Hapus berkas cadangan ini secara permanen?</string>
+    <string name="backup_world_kind_exit">Saat keluar</string>
+    <string name="backup_world_kind_auto">Berkala</string>
+    <string name="backup_world_kind_manual">Manual</string>
 </resources>

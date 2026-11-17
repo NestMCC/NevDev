@@ -165,6 +165,7 @@ private val settingItems = listOf(
     CategoryItem(NormalNavKey.Versions.ModifyVersion, { CategoryIcon(R.drawable.ic_edit_outlined, R.string.versions_modify_version) }, R.string.versions_modify_version),
     CategoryItem(NormalNavKey.Versions.ModsManager, { CategoryIcon(R.drawable.ic_extension_outlined, R.string.mods_manage) }, R.string.mods_manage, division = true),
     CategoryItem(NormalNavKey.Versions.SavesManager, { CategoryIcon(R.drawable.ic_public, R.string.saves_manage) }, R.string.saves_manage),
+    CategoryItem(NormalNavKey.Versions.WorldBackup, { CategoryIcon(R.drawable.ic_archive_filled, R.string.backup_world_title) }, R.string.backup_world_title),
     CategoryItem(NormalNavKey.Versions.ResourcePackManager, { CategoryIcon(R.drawable.ic_format_paint_outlined, R.string.resource_pack_manage) }, R.string.resource_pack_manage),
     CategoryItem(NormalNavKey.Versions.ShadersManager, { CategoryIcon(R.drawable.ic_lightbulb, R.string.shader_pack_manage) }, R.string.shader_pack_manage),
     CategoryItem(NormalNavKey.Versions.ScreenshotsManager, { CategoryIcon(R.drawable.ic_photo_library_outlined, R.string.screenshots_manage) }, R.string.screenshots_manage),
@@ -338,6 +339,14 @@ private fun NavigationUI(
                             )
                         },
                         submitError = submitError
+                    )
+                }
+                entry<NormalNavKey.Versions.WorldBackup> {
+                    com.movtery.zalithlauncher.ui.screens.content.versions.WorldBackupScreen(
+                        mainScreenKey = mainScreenKey,
+                        versionsScreenKey = versionsScreenKey,
+                        version = version,
+                        backToMainScreen = backToMainScreen
                     )
                 }
                 entry<NormalNavKey.Versions.ResourcePackManager> {

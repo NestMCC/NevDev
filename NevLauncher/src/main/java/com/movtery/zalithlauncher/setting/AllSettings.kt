@@ -170,6 +170,15 @@ object AllSettings : SettingsRegistry() {
     val musicInGame = boolSetting("musicInGame", true)
     val musicTrackId = stringSetting("musicTrackId", "")
 
+    /** Cadangan world otomatis saat keluar dari world */
+    val worldBackupOnExit = boolSetting("worldBackupOnExit", true)
+    /** Cadangan world berkala saat sedang bermain */
+    val worldBackupPeriodic = boolSetting("worldBackupPeriodic", true)
+    /** Selang cadangan berkala (menit) */
+    val worldBackupIntervalMin = intSetting("worldBackupIntervalMin", 30, 5..240)
+    /** Jumlah cadangan maksimal per world (0 = tanpa batas) */
+    val worldBackupMax = intSetting("worldBackupMax", 10, 0..100)
+
     /**
      * Render Distance Smooth：render distance tinggi tetap lancar
      * (simulation distance rendah, opsi video ringan, GC JVM dituning)

@@ -499,6 +499,11 @@ class VMActivity : BaseAppCompatActivity(), SurfaceTextureListener {
         if (!logFile.exists() && !logFile.createNewFile()) throw IOException("Failed to create a new log file")
         LoggerBridge.start(logFile.absolutePath)
 
+        //cadangan world otomatis (saat keluar world & berkala)
+        (vmViewModel.session.launcher as? GameLauncher)?.let { gl ->
+            com.movtery.zalithlauncher.game.backup.WorldBackupManager.startWatching(lifecycleScope, gl.version, logFile)
+        }
+
         //错误信息展示
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

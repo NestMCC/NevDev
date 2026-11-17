@@ -90,7 +90,7 @@ class GameLauncher(
     private var configuredRenderer: RendererLaunchConfig? = null
     private val offlineServer = OfflineYggdrasilServer(0)
 
-    private val version = config.version
+    val version = config.version
     private val usingAccount = if (version.offlineAccountLogin) {
         //使用临时离线账号启动游戏
         config.account.copy(

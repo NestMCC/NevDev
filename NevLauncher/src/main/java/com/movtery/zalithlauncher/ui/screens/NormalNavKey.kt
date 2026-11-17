@@ -149,6 +149,10 @@ sealed interface NormalNavKey : TitledNavKey {
         @Serializable data object SavesManager : Versions {
             @Contextual override var title: AndroidStringText = androidText(R.string.saves_manage)
         }
+        /** Cadangan world */
+        @Serializable data object WorldBackup : Versions {
+            @Contextual override var title: AndroidStringText = androidText(R.string.backup_world_title)
+        }
         /** 资源包管理屏幕 */
         @Serializable data object ResourcePackManager : Versions {
             @Contextual override var title: AndroidStringText = androidText(R.string.resource_pack_manage)

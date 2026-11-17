@@ -3310,4 +3310,26 @@
     <string name="theme_seed_berry">Berry</string>
     <string name="settings_display_control_theme_title">Control colors follow theme</string>
     <string name="settings_display_control_theme_summary">Recolors the default red/orange control buttons to match the launcher color theme. Custom-colored buttons are left alone.</string>
+    <string name="backup_world_title">Backup</string>
+    <string name="backup_world_on_exit_title">Back up when leaving a world</string>
+    <string name="backup_world_on_exit_summary">Automatically back up the world you just played after you exit it.</string>
+    <string name="backup_world_periodic_title">Back up while playing</string>
+    <string name="backup_world_periodic_summary">Periodically back up the active world during play (only if it changed).</string>
+    <string name="backup_world_interval_title">Backup interval</string>
+    <string name="backup_world_minutes">min</string>
+    <string name="backup_world_max_title">Backups kept per world</string>
+    <string name="backup_world_max_summary">Oldest backups are deleted first. 0 = unlimited.</string>
+    <string name="backup_world_now">Back up all worlds now</string>
+    <string name="backup_world_working">Working…</string>
+    <string name="backup_world_done">%1$d world(s) backed up</string>
+    <string name="backup_world_empty">No backups yet. They will appear here after you leave a world or tap the button above.</string>
+    <string name="backup_world_restore_title">Restore</string>
+    <string name="backup_world_restore_message">Restore \"%1$s\" from this backup? The current world is kept and renamed with the suffix _sebelum-pulih.</string>
+    <string name="backup_world_restore_ok">World restored</string>
+    <string name="backup_world_restore_fail">Restore failed</string>
+    <string name="backup_world_delete_title">Delete backup</string>
+    <string name="backup_world_delete_message">Delete this backup file permanently?</string>
+    <string name="backup_world_kind_exit">On exit</string>
+    <string name="backup_world_kind_auto">Periodic</string>
+    <string name="backup_world_kind_manual">Manual</string>
 </resources>
