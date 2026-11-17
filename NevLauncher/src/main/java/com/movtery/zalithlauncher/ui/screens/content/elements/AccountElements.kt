@@ -70,11 +70,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import com.movtery.zalithlauncher.ui.theme.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FilledTonalButton
+import com.movtery.zalithlauncher.ui.theme.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialExpressiveTheme
@@ -343,6 +343,7 @@ fun AccountItem(
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         onClick = {
             if (selected || !enabled) return@Surface
             onSelected(account)
@@ -766,6 +767,7 @@ fun MicrosoftLoginMethodDialog(
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp
@@ -876,6 +878,7 @@ fun LocalLoginDialog(
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp
@@ -1039,7 +1042,7 @@ fun LocalLoginDialog(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        androidx.compose.material3.OutlinedButton(
+                        com.movtery.zalithlauncher.ui.theme.OutlinedButton(
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(50),
                             border = androidx.compose.foundation.BorderStroke(1.5.dp, NevRed.OutlineBright),
@@ -1111,6 +1114,7 @@ fun OtherServerLoginDialog(
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp
@@ -1322,6 +1326,7 @@ fun OtherAccountReloginDialog(
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp
@@ -1815,7 +1820,7 @@ fun ChangeSkinDialog(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        androidx.compose.material3.OutlinedButton(
+                        com.movtery.zalithlauncher.ui.theme.OutlinedButton(
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(50),
                             border = androidx.compose.foundation.BorderStroke(1.dp, NevRed.GradientStart.copy(alpha = 0.7f)),

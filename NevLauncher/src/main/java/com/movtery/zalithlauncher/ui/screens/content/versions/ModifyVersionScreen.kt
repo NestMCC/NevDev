@@ -32,7 +32,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
+import com.movtery.zalithlauncher.ui.theme.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -751,6 +751,7 @@ private fun MCVersionRow(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = cardColor(),
         contentColor = onCardColor()
     ) {
@@ -815,6 +816,7 @@ private fun ModifyTipItem(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = color,
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer
     ) {

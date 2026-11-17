@@ -547,6 +547,7 @@ private fun VersionItemLayout(
         modifier = modifier.graphicsLayer(scaleY = scale.value, scaleX = scale.value),
         onClick = onClick,
         shape = shape,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = color,
         contentColor = contentColor
     ) {

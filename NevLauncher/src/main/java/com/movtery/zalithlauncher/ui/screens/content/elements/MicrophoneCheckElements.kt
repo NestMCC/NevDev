@@ -35,7 +35,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
-import androidx.compose.material3.Button
+import com.movtery.zalithlauncher.ui.theme.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -159,6 +159,7 @@ fun MicrophoneCheckDialog(
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp

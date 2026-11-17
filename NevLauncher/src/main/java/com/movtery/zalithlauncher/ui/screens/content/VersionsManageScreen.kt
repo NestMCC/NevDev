@@ -608,6 +608,7 @@ private fun VersionsLayout(
                             color = cardColor,
                             contentColor = onCardColor(),
                             shape = MaterialTheme.shapes.large,
+                            border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                         ) {
                             Row(
                                 modifier = Modifier
@@ -640,6 +641,7 @@ private fun VersionsLayout(
                             color = cardColor,
                             contentColor = onCardColor(),
                             shape = MaterialTheme.shapes.large,
+                            border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                         ) {
                             val scrollState = rememberScrollState()
                             Row(

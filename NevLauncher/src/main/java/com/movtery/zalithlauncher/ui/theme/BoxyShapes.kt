@@ -69,3 +69,7 @@ val BoxyShapes = Shapes(
 /** Pengganti CircleShape: tetap bulat di gaya lain, jadi kotak berlengkung tipis di mode hero. */
 val CircleShape: BaseRoundedCornerShape
     get() = if (isBoxy()) BaseRoundedCornerShape(10.dp) else androidx.compose.foundation.shape.CircleShape
+
+/** Garis tepi untuk permukaan (Surface) di gaya kotak; null di gaya lain. */
+@androidx.compose.runtime.Composable
+fun boxyBorder(): androidx.compose.foundation.BorderStroke? = if (isBoxy()) NevCardBorder else null

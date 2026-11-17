@@ -80,6 +80,7 @@ fun StyleConflictDialog(
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(dialogMxHeight))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp

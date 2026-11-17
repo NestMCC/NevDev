@@ -45,7 +45,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import com.movtery.zalithlauncher.ui.theme.CircleShape
 import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
-import androidx.compose.material3.Button
+import com.movtery.zalithlauncher.ui.theme.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -387,6 +387,7 @@ fun TitleTaskFlowDialog(
                         } else Modifier
                     ),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp

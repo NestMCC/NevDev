@@ -1079,6 +1079,7 @@ private fun InputMagnifierContent(
     Surface(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = Color.Black.copy(alpha = 0.65f),
         contentColor = Color.White
     ) {

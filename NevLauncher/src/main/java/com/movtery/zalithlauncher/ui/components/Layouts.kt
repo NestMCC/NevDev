@@ -78,6 +78,7 @@ fun ScalingLabel(
     Surface(
         modifier = modifier.graphicsLayer(scaleY = scale.value, scaleX = scale.value),
         shape = shape,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = color,
         contentColor = contentColor
     ) {
@@ -131,6 +132,7 @@ fun ScalingLabel(
     Surface(
         modifier = modifier.graphicsLayer(scaleY = scale.value, scaleX = scale.value),
         shape = shape,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = color,
         contentColor = contentColor,
         onClick = onClick

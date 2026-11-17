@@ -504,6 +504,7 @@ private fun AccountRefreshFailedDialog(
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp

@@ -46,9 +46,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import com.movtery.zalithlauncher.ui.theme.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.FilledTonalButton
+import com.movtery.zalithlauncher.ui.theme.FilledTonalButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -278,6 +278,7 @@ fun SimpleEditDialog(
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp
@@ -355,6 +356,7 @@ fun SimpleEditDialog(
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp
@@ -549,6 +551,7 @@ fun <T> SimpleListDialog(
                     .heightIn(max = (maxHeight - 6.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 3.dp
@@ -647,6 +650,7 @@ fun ProgressDialog(
     Dialog(onDismissRequest = {}) {
         Surface(
             shape = MaterialTheme.shapes.extraLarge,
+            border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
             color = cardColor(false),
             contentColor = onCardColor(),
             shadowElevation = 6.dp
@@ -689,7 +693,7 @@ fun NevAlertDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         val corner = 28.dp
-        val shape = androidx.compose.foundation.shape.RoundedCornerShape(corner)
+        val shape = com.movtery.zalithlauncher.ui.theme.RoundedCornerShape(corner)
         val bracket = NevRed.GradientEnd
         androidx.compose.foundation.layout.Box(
             modifier = Modifier
@@ -711,8 +715,8 @@ fun NevAlertDialog(
                     androidx.compose.foundation.layout.Box(
                         modifier = Modifier
                             .size(60.dp)
-                            .androidx_border(androidx.compose.foundation.shape.RoundedCornerShape(18.dp), 1.5.dp, NevRed.OutlineBright)
-                            .androidx_fill(androidx.compose.foundation.shape.RoundedCornerShape(18.dp), NevRed.PanelDeep),
+                            .androidx_border(com.movtery.zalithlauncher.ui.theme.RoundedCornerShape(18.dp), 1.5.dp, NevRed.OutlineBright)
+                            .androidx_fill(com.movtery.zalithlauncher.ui.theme.RoundedCornerShape(18.dp), NevRed.PanelDeep),
                         contentAlignment = Alignment.Center
                     ) {
                         androidx.compose.material3.Icon(
@@ -798,7 +802,7 @@ private fun NevOutlineButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp)
+    val shape = com.movtery.zalithlauncher.ui.theme.RoundedCornerShape(20.dp)
     Surface(
         onClick = onClick,
         modifier = modifier,

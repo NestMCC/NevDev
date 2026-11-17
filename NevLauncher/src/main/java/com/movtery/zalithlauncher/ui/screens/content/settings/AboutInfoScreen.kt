@@ -32,7 +32,7 @@ import com.movtery.zalithlauncher.path.URL_NEV_WEBSITE
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.material3.FilledTonalButton
+import com.movtery.zalithlauncher.ui.theme.FilledTonalButton
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.border
@@ -49,7 +49,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
-import androidx.compose.material3.Button
+import com.movtery.zalithlauncher.ui.theme.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -356,6 +356,7 @@ private fun LinkIconItem(
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         onClick = {}
     ) {
         Row(
@@ -439,6 +440,7 @@ private fun ButtonIconItem(
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         onClick = {}
     ) {
         Row(
@@ -488,6 +490,7 @@ private fun PluginInfoItem(
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         onClick = {}
     ) {
         val context = LocalContext.current
@@ -562,6 +565,7 @@ private fun LibraryInfoItem(
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         onClick = {}
     ) {
         Row(

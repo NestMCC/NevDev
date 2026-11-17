@@ -123,6 +123,7 @@ fun FavoriteIdentifier(
             color = color,
             contentColor = contentColor,
             shape = shape,
+            border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
             onClick = onClick
         ) {
             Row(

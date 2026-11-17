@@ -387,6 +387,7 @@ private fun JoystickLauncherEventDialog(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.extraLarge,
+            border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
             color = cardColor(false),
             contentColor = onCardColor(),
             tonalElevation = 3.dp
@@ -520,6 +521,7 @@ private fun JoystickKeyEventDialog(
                     .heightIn(max = (maxHeight - 6.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 3.dp

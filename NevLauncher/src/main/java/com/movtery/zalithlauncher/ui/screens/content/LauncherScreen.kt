@@ -23,7 +23,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.OutlinedButton
+import com.movtery.zalithlauncher.ui.theme.OutlinedButton
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.style.TextOverflow

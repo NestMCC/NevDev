@@ -1120,6 +1120,7 @@ private fun TaskItem(
     Surface(
         modifier = modifier,
         shape = shape,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = color,
         contentColor = contentColor,
     ) {

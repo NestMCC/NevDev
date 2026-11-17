@@ -162,6 +162,7 @@ fun <E> InfoLayoutListItem(
     Surface(
         modifier = modifier,
         shape = MaterialTheme.shapes.large,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = color,
         contentColor = contentColor,
     ) {

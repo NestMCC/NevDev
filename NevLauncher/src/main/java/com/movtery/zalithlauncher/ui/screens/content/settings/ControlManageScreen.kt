@@ -43,9 +43,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
+import com.movtery.zalithlauncher.ui.theme.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledTonalButton
+import com.movtery.zalithlauncher.ui.theme.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -584,6 +584,7 @@ private fun ControlLayoutItem(
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         onClick = {
             if (selected) return@Surface
             onSelected()
@@ -856,6 +857,7 @@ private fun ControlInfoItem(
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         onClick = onEdit
     ) {
         Row(
@@ -929,6 +931,7 @@ private fun CreateNewLayoutDialog(
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
                     .wrapContentHeight(),
                 shape = MaterialTheme.shapes.extraLarge,
+                border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                 color = cardColor(false),
                 contentColor = onCardColor(),
                 shadowElevation = 6.dp

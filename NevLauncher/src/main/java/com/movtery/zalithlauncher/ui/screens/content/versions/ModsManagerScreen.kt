@@ -1449,6 +1449,7 @@ private fun WarningItem(
             .graphicsLayer(scaleY = scale.value, scaleX = scale.value),
         onClick = {},
         shape = shape,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = itemColor,
         contentColor = itemContentColor,
     ) {

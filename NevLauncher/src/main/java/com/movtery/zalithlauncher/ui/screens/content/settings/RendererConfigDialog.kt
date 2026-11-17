@@ -39,9 +39,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
+import com.movtery.zalithlauncher.ui.theme.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.FilledTonalButton
+import com.movtery.zalithlauncher.ui.theme.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -246,6 +246,7 @@ private fun DialogItemLayout(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = rememberSettingsCardShape(position),
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = itemColor(false),
         contentColor = onItemColor()
     ) {

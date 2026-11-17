@@ -304,6 +304,7 @@ private fun AdjustingBar(
             .padding(all = 3.dp)
             .barGuard(),
         shape = CircleShape,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = MaterialTheme.colorScheme.surfaceContainerHighest,
         contentColor = MaterialTheme.colorScheme.onSurface,
         shadowElevation = 3.dp

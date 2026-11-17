@@ -41,9 +41,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
-import androidx.compose.material3.Button
+import com.movtery.zalithlauncher.ui.theme.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.FilledTonalButton
+import com.movtery.zalithlauncher.ui.theme.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -306,6 +306,7 @@ private fun DownloadDialog(
                         .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
                         .wrapContentHeight(),
                     shape = MaterialTheme.shapes.extraLarge,
+                    border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
                     color = cardColor(false),
                     contentColor = onCardColor(),
                     shadowElevation = 6.dp
@@ -492,6 +493,7 @@ private fun SelectVersionListItem(
     Surface(
         modifier = modifier,
         shape = shape,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = color,
         contentColor = contentColor,
         onClick = {
@@ -608,6 +610,7 @@ private fun AddonUnavailableDependencyItem(
     Surface(
         modifier = modifier,
         shape = shape,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = color,
         contentColor = contentColor,
     ) {
@@ -685,6 +688,7 @@ private fun AddonVersionDependencyItem(
         modifier = modifier,
         onClick = onClick,
         shape = shape,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         color = color,
         contentColor = contentColor,
     ) {
