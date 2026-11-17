@@ -82,7 +82,7 @@ fun ScalingActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = ButtonDefaults.shape,
+    shape: Shape? = null,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
     border: BorderStroke? = null,
@@ -96,6 +96,10 @@ fun ScalingActionButton(
         animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         label = "ButtonScale"
     )
+    //gaya kotak: tombol bawaan (pil penuh) diganti kotak berlengkung tipis
+    val resolvedShape: Shape = shape ?: if (com.movtery.zalithlauncher.ui.theme.isBoxy()) {
+        com.movtery.zalithlauncher.ui.theme.RoundedCornerShape(12.dp)
+    } else ButtonDefaults.shape
 
     Button(
         onClick = onClick,
@@ -104,7 +108,7 @@ fun ScalingActionButton(
             scaleY = scale.value
         },
         enabled = enabled,
-        shape = shape,
+        shape = resolvedShape,
         colors = colors,
         elevation = elevation,
         border = border,
