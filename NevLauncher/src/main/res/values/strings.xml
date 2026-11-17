@@ -3308,4 +3308,6 @@
     <string name="theme_seed_aqua">Aqua</string>
     <string name="theme_seed_sunflower">Sunflower</string>
     <string name="theme_seed_berry">Berry</string>
+    <string name="settings_display_control_theme_title">Control colors follow theme</string>
+    <string name="settings_display_control_theme_summary">Recolors the default red/orange control buttons to match the launcher color theme. Custom-colored buttons are left alone.</string>
 </resources>

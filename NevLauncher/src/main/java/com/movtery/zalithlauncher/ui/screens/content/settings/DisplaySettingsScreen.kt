@@ -185,6 +185,14 @@ fun DisplaySettingsScreen(
                         summary = stringResource(R.string.settings_display_hero_home_summary)
                     )
 
+                    SwitchSettingsCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        position = CardPosition.Middle,
+                        unit = AllSettings.controlFollowTheme,
+                        title = stringResource(R.string.settings_display_control_theme_title),
+                        summary = stringResource(R.string.settings_display_control_theme_summary)
+                    )
+
                     EnumSettingsCard(
                         modifier = Modifier.fillMaxWidth(),
                         position = CardPosition.Middle,

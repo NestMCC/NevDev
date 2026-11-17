@@ -1694,4 +1694,6 @@
     <string name="theme_seed_aqua">Aqua</string>
     <string name="theme_seed_sunflower">Bunga Matahari</string>
     <string name="theme_seed_berry">Beri</string>
+    <string name="settings_display_control_theme_title">Warna kontrol ikut tema</string>
+    <string name="settings_display_control_theme_summary">Tombol kontrol bawaan (merah/oranye) mengikuti tema warna launcher. Tombol dengan warna kustom tidak diubah.</string>
 </resources>

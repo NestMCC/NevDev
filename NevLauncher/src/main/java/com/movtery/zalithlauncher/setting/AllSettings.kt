@@ -471,6 +471,9 @@ object AllSettings : SettingsRegistry() {
     /** Beranda bergaya hero (judul versi besar + tombol Main besar). Mati = beranda kartu lama. */
     val launcherHeroHome = boolSetting("launcherHeroHome", true)
 
+    /** Warna tombol kontrol (merah/oranye bawaan Nev) mengikuti tema warna launcher */
+    val controlFollowTheme = boolSetting("controlFollowTheme", true)
+
     /**
      * 主界面操作菜单的停泊侧
      */

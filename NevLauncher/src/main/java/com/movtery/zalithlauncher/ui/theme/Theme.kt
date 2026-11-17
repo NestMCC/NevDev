@@ -847,7 +847,9 @@ fun NevLauncherTheme(
         LocalBackgroundViewModel provides backgroundViewModel,
         LocalFestivals provides festivals,
         LocalDensity provides scaledDensity,
-        LocalNevStyle provides nevStyle
+        LocalNevStyle provides nevStyle,
+        com.movtery.layer_controller.utils.LocalControlAccent provides
+            (if (AllSettings.controlFollowTheme.state) currentDisplayScheme.primary else null)
     ) {
         MaterialExpressiveTheme(
             colorScheme = currentDisplayScheme,

@@ -415,15 +415,24 @@ internal fun Modifier.buttonStyle(
     val alpha = remember(themeStyle, isPressed, themeStyle.pressedAlpha, themeStyle.alpha) {
         if (isPressed) themeStyle.pressedAlpha else themeStyle.alpha
     }
-    val backgroundColor = remember(themeStyle, isPressed, themeStyle.pressedBackgroundColor, themeStyle.backgroundColor) {
-        if (isPressed) themeStyle.pressedBackgroundColor else themeStyle.backgroundColor
+    val accent = LocalControlAccent.current
+    val backgroundColor = remember(themeStyle, isPressed, themeStyle.pressedBackgroundColor, themeStyle.backgroundColor, accent) {
+        if (isPressed) {
+            themeStyle.pressedBackgroundColor.let { if (accent != null) it.themedPressedBackground(accent) else it }
+        } else {
+            themeStyle.backgroundColor.let { if (accent != null) it.themedBackground(accent) else it }
+        }
     }
     val borderWidth = remember(themeStyle, isPressed, themeStyle.pressedBorderWidth, themeStyle.borderWidth) {
         val value = if (isPressed) themeStyle.pressedBorderWidth else themeStyle.borderWidth
         if (value == 0) (-1).dp else value.dp
     }
-    val borderColor = remember(themeStyle, isPressed, themeStyle.pressedBorderColor, themeStyle.borderColor) {
-        if (isPressed) themeStyle.pressedBorderColor else themeStyle.borderColor
+    val borderColor = remember(themeStyle, isPressed, themeStyle.pressedBorderColor, themeStyle.borderColor, accent) {
+        if (isPressed) {
+            themeStyle.pressedBorderColor.let { if (accent != null) it.themedPressedBorder(accent) else it }
+        } else {
+            themeStyle.borderColor.let { if (accent != null) it.themedBorder(accent) else it }
+        }
     }
     val borderRadius = remember(themeStyle, isPressed, themeStyle.pressedBorderRadius, themeStyle.borderRadius) {
         if (isPressed) themeStyle.pressedBorderRadius.toAndroidShape() else themeStyle.borderRadius.toAndroidShape()
