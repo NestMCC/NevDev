@@ -60,6 +60,8 @@ import androidx.compose.ui.unit.dp
 import com.movtery.layer_controller.data.JoystickDirection
 import com.movtery.layer_controller.event.EventHandler
 import com.movtery.layer_controller.observable.DefaultObservableJoystickStyle
+import com.movtery.layer_controller.utils.themedBackground
+import com.movtery.layer_controller.utils.themedBorder
 import com.movtery.layer_controller.observable.ObservableControlLayer
 import com.movtery.layer_controller.observable.ObservableJoystickData
 import com.movtery.layer_controller.observable.ObservableJoystickData.Companion.calculateDirection
@@ -116,23 +118,24 @@ internal fun JoystickWidgetRenderer(
     //graphicsLayer(alpha = alpha, clip = false)也一样
     //这里暂时只能统一修改颜色的alpha
     val alpha = themeConfig.alpha
-    val currentBackgroundColor = remember(themeConfig.backgroundColor, alpha) {
-        themeConfig.backgroundColor.applyAlpha(alpha)
+    val controlAccent = com.movtery.layer_controller.utils.LocalControlAccent.current
+    val currentBackgroundColor = remember(themeConfig.backgroundColor, alpha, controlAccent) {
+        themeConfig.backgroundColor.let { c -> controlAccent?.let { c.themedBackground(it) } ?: c }.applyAlpha(alpha)
     }
-    val currentJoystickColor = remember(themeConfig.joystickColor, alpha) {
-        themeConfig.joystickColor.applyAlpha(alpha)
+    val currentJoystickColor = remember(themeConfig.joystickColor, alpha, controlAccent) {
+        themeConfig.joystickColor.let { c -> controlAccent?.let { c.themedBorder(it) } ?: c }.applyAlpha(alpha)
     }
-    val currentJoystickCanLockColor = remember(themeConfig.joystickCanLockColor, alpha) {
-        themeConfig.joystickCanLockColor.applyAlpha(alpha)
+    val currentJoystickCanLockColor = remember(themeConfig.joystickCanLockColor, alpha, controlAccent) {
+        themeConfig.joystickCanLockColor.let { c -> controlAccent?.let { c.themedBorder(it) } ?: c }.applyAlpha(alpha)
     }
-    val currentJoystickLockedColor = remember(themeConfig.joystickLockedColor, alpha) {
-        themeConfig.joystickLockedColor.applyAlpha(alpha)
+    val currentJoystickLockedColor = remember(themeConfig.joystickLockedColor, alpha, controlAccent) {
+        themeConfig.joystickLockedColor.let { c -> controlAccent?.let { c.themedBorder(it) } ?: c }.applyAlpha(alpha)
     }
-    val currentLockMarkColor = remember(themeConfig.lockMarkColor, alpha) {
-        themeConfig.lockMarkColor.applyAlpha(alpha)
+    val currentLockMarkColor = remember(themeConfig.lockMarkColor, alpha, controlAccent) {
+        themeConfig.lockMarkColor.let { c -> controlAccent?.let { c.themedBorder(it) } ?: c }.applyAlpha(alpha)
     }
-    val currentBorderColor = remember(themeConfig.borderColor, alpha) {
-        themeConfig.borderColor.applyAlpha(alpha)
+    val currentBorderColor = remember(themeConfig.borderColor, alpha, controlAccent) {
+        themeConfig.borderColor.let { c -> controlAccent?.let { c.themedBorder(it) } ?: c }.applyAlpha(alpha)
     }
 
     // 形状
@@ -486,23 +489,24 @@ fun JoystickStyleWidget(
             lastDragPosition.y < -lockThresholdPx
     }
 
-    val currentBackgroundColor = remember(theme.backgroundColor, theme.alpha) {
-        theme.backgroundColor.applyAlpha(theme.alpha)
+    val controlAccent = com.movtery.layer_controller.utils.LocalControlAccent.current
+    val currentBackgroundColor = remember(theme.backgroundColor, theme.alpha, controlAccent) {
+        theme.backgroundColor.let { c -> controlAccent?.let { c.themedBackground(it) } ?: c }.applyAlpha(theme.alpha)
     }
-    val currentJoystickColor = remember(theme.joystickColor, theme.alpha) {
-        theme.joystickColor.applyAlpha(theme.alpha)
+    val currentJoystickColor = remember(theme.joystickColor, theme.alpha, controlAccent) {
+        theme.joystickColor.let { c -> controlAccent?.let { c.themedBorder(it) } ?: c }.applyAlpha(theme.alpha)
     }
-    val currentJoystickCanLockColor = remember(theme.joystickCanLockColor, theme.alpha) {
-        theme.joystickCanLockColor.applyAlpha(theme.alpha)
+    val currentJoystickCanLockColor = remember(theme.joystickCanLockColor, theme.alpha, controlAccent) {
+        theme.joystickCanLockColor.let { c -> controlAccent?.let { c.themedBorder(it) } ?: c }.applyAlpha(theme.alpha)
     }
-    val currentJoystickLockedColor = remember(theme.joystickLockedColor, theme.alpha) {
-        theme.joystickLockedColor.applyAlpha(theme.alpha)
+    val currentJoystickLockedColor = remember(theme.joystickLockedColor, theme.alpha, controlAccent) {
+        theme.joystickLockedColor.let { c -> controlAccent?.let { c.themedBorder(it) } ?: c }.applyAlpha(theme.alpha)
     }
-    val currentLockMarkColor = remember(theme.lockMarkColor, theme.alpha) {
-        theme.lockMarkColor.applyAlpha(theme.alpha)
+    val currentLockMarkColor = remember(theme.lockMarkColor, theme.alpha, controlAccent) {
+        theme.lockMarkColor.let { c -> controlAccent?.let { c.themedBorder(it) } ?: c }.applyAlpha(theme.alpha)
     }
-    val currentBorderColor = remember(theme.borderColor, theme.alpha) {
-        theme.borderColor.applyAlpha(theme.alpha)
+    val currentBorderColor = remember(theme.borderColor, theme.alpha, controlAccent) {
+        theme.borderColor.let { c -> controlAccent?.let { c.themedBorder(it) } ?: c }.applyAlpha(theme.alpha)
     }
 
     Box(
