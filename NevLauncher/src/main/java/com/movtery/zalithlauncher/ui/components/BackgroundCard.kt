@@ -47,7 +47,8 @@ import com.movtery.zalithlauncher.ui.theme.onCardColor
 
 /** Menerapkan opasitas panel dari gaya desain aktif (kaca pada gaya Cryogenic). */
 @Composable
-private fun Color.styledAlpha(): Color = copy(alpha = alpha * LocalNevStyle.current.cardAlpha)
+private fun Color.styledAlpha(): Color =
+    if (com.movtery.zalithlauncher.ui.theme.isBoxy()) this else copy(alpha = alpha * LocalNevStyle.current.cardAlpha)
 
 @Composable
 private fun flatCardElevation() = CardDefaults.cardElevation(
