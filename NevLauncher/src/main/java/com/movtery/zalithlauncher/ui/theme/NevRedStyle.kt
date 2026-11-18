@@ -438,6 +438,50 @@ fun NevPillTab(
     icon: @Composable () -> Unit,
     label: @Composable () -> Unit
 ) {
+    if (isBoxy()) {
+        //gaya kotak: chip kotak berlengkung tipis, ikon + teks sebaris, semua bergaris tepi
+        val chipShape = nevShape(10.dp)
+        val content = if (selected) NevRed.OnGradient else NevRed.OnPanel
+        Surface(
+            onClick = onClick,
+            modifier = modifier.semantics { role = Role.Tab },
+            shape = chipShape,
+            color = Color.Transparent,
+            border = BorderStroke(
+                1.dp,
+                if (selected) NevRed.OutlineBright else NevRed.Outline
+            )
+        ) {
+            Row(
+                modifier = Modifier
+                    .background(
+                        if (selected) NevRed.Gradient
+                        else androidx.compose.ui.graphics.SolidColor(NevRed.Panel.copy(alpha = 0.8f))
+                    )
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                androidx.compose.runtime.CompositionLocalProvider(
+                    androidx.compose.material3.LocalContentColor provides
+                            if (selected) content else NevRed.Muted
+                ) {
+                    Box(modifier = Modifier.size(20.dp), contentAlignment = Alignment.Center) { icon() }
+                }
+                androidx.compose.runtime.CompositionLocalProvider(
+                    androidx.compose.material3.LocalContentColor provides content
+                ) {
+                    androidx.compose.material3.ProvideTextStyle(
+                        MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                    ) {
+                        label()
+                    }
+                }
+            }
+        }
+        return
+    }
+
     val shape = nevPillShape()
     Surface(
         onClick = onClick,
@@ -497,6 +541,11 @@ fun NevPillBar(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+    if (isBoxy()) {
+        //gaya kotak: tanpa kapsul pembungkus, chip berdiri sendiri
+        Box(modifier = modifier) { content() }
+        return
+    }
     val shape = nevPillShape()
     Box(
         modifier = modifier
