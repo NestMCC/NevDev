@@ -42,7 +42,10 @@ fun onBackgroundColor(): Color = MaterialTheme.colorScheme.onSurfaceVariant
 @Composable
 fun cardColor(
     influencedByBackground: Boolean = true
-): Color = influencedByBackgroundColor(
+): Color = if (isBoxy()) {
+    //gaya kotak: kartu gelap pekat (tidak tembus latar), seperti di halaman Unduh
+    NevRed.PanelDeep.copy(alpha = 0.95f)
+} else influencedByBackgroundColor(
     color = MaterialTheme.colorScheme.surfaceBright,
     enabled = influencedByBackground
 )
@@ -65,6 +68,7 @@ fun itemColor(
     influencedByBackground: Boolean = true,
     isDark: Boolean = isLauncherInDarkTheme()
 ): Color {
+    if (isBoxy()) return NevRed.Panel.copy(alpha = 0.95f)
     return influencedByBackgroundColor(
         color = if (isDark) {
             MaterialTheme.colorScheme.surfaceVariant
