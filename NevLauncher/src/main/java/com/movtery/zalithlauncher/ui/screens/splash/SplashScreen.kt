@@ -18,19 +18,27 @@
 
 package com.movtery.zalithlauncher.ui.screens.splash
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.LinearWavyProgressIndicator
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.sp
+import com.movtery.zalithlauncher.ui.screens.content.elements.NevWordmark
+import com.movtery.zalithlauncher.ui.screens.content.elements.nevLoadingBackground
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
@@ -133,24 +141,35 @@ private fun LoadingScreen(
     ) { isVisible ->
         val ctx = rememberAnimatedContext(isVisible = isVisible)
 
+        val accent = MaterialTheme.colorScheme.primary
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .animated(ctx, from = AnimatedDirection.Bottom),
-            contentAlignment = Alignment.Center
+                .background(nevLoadingBackground(accent))
+                .animated(ctx, from = AnimatedDirection.Bottom)
         ) {
+            NevWordmark(modifier = Modifier.align(Alignment.Center), accent = accent)
+
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(horizontal = 32.dp, vertical = 28.dp)
+                    .widthIn(max = 420.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Image(
-                    modifier = Modifier.size(58.dp),
-                    painter = painterResource(R.drawable.img_launcher),
-                    contentDescription = stringResource(R.string.generic_loading)
+                Text(
+                    text = stringResource(R.string.game_loading_text),
+                    color = Color.White.copy(alpha = 0.75f),
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 12.sp
                 )
-                LinearWavyProgressIndicator(
-                    modifier = Modifier.width(128.dp),
-                    wavelength = 32.dp
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp),
+                    color = accent,
+                    trackColor = Color.White.copy(alpha = 0.12f)
                 )
             }
         }

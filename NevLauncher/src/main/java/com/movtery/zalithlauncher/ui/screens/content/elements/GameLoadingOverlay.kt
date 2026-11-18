@@ -69,8 +69,6 @@ fun GameLoadingOverlay(
 
     val scheme = MaterialTheme.colorScheme
     val accent = scheme.primary
-    val deep = lerp(Color.Black, accent, 0.28f)
-    val face = lerp(Color.White, accent, 0.12f)
 
     Dialog(
         onDismissRequest = {},
@@ -84,46 +82,9 @@ fun GameLoadingOverlay(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.radialGradient(
-                        listOf(lerp(Color(0xFF0B0B14), accent, 0.18f), Color(0xFF07070D))
-                    )
-                )
+                .background(nevLoadingBackground(accent))
         ) {
-            Column(
-                modifier = Modifier.align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                //wordmark: lapisan bayangan bergeser = efek ekstrusi 3D
-                Box(contentAlignment = Alignment.Center) {
-                    for (d in 6 downTo 1) {
-                        WordmarkText(
-                            modifier = Modifier.offset(x = d.dp, y = d.dp),
-                            color = lerp(Color.Black, deep, 1f - d / 8f)
-                        )
-                    }
-                    WordmarkText(color = face)
-                }
-
-                //pelat tagline
-                Box(
-                    modifier = Modifier
-                        .clip(BaseRoundedCornerShape(4.dp))
-                        .background(Color(0xFF14141F))
-                        .border(2.dp, accent, BaseRoundedCornerShape(4.dp))
-                        .padding(horizontal = 18.dp, vertical = 6.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.game_loading_tagline),
-                        color = Color.White,
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 13.sp,
-                        letterSpacing = 3.sp
-                    )
-                }
-            }
+            NevWordmark(modifier = Modifier.align(Alignment.Center), accent = accent)
 
             //bar progres + teks di bawah
             Column(
@@ -198,4 +159,47 @@ private fun WordmarkText(color: Color, modifier: Modifier = Modifier) {
         letterSpacing = 2.sp,
         maxLines = 1
     )
+}
+
+/** Latar gelap bergradasi untuk layar loading bermerek. */
+@Composable
+fun nevLoadingBackground(accent: Color): Brush =
+    Brush.radialGradient(listOf(lerp(Color(0xFF0B0B14), accent, 0.18f), Color(0xFF07070D)))
+
+/** Wordmark "NEV LAUNCHER" bergaya blok 3D + pelat tagline. */
+@Composable
+fun NevWordmark(modifier: Modifier = Modifier, accent: Color = MaterialTheme.colorScheme.primary) {
+    val deep = lerp(Color.Black, accent, 0.28f)
+    val face = lerp(Color.White, accent, 0.12f)
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            for (d in 6 downTo 1) {
+                WordmarkText(
+                    modifier = Modifier.offset(x = d.dp, y = d.dp),
+                    color = lerp(Color.Black, deep, 1f - d / 8f)
+                )
+            }
+            WordmarkText(color = face)
+        }
+        Box(
+            modifier = Modifier
+                .clip(BaseRoundedCornerShape(4.dp))
+                .background(Color(0xFF14141F))
+                .border(2.dp, accent, BaseRoundedCornerShape(4.dp))
+                .padding(horizontal = 18.dp, vertical = 6.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.game_loading_tagline),
+                color = Color.White,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold,
+                fontSize = 13.sp,
+                letterSpacing = 3.sp
+            )
+        }
+    }
 }
