@@ -843,6 +843,19 @@ fun NevLauncherTheme(
         Density(baseDensity.density * uiScale, baseDensity.fontScale)
     }
 
+    //satu animasi putar bersama untuk garis tepi semua tombol Liquid (hanya berjalan bila fitur aktif)
+    val liquidOn = AllSettings.controlLiquid.state
+    val liquidSpin: androidx.compose.runtime.State<Float>? = if (liquidOn) {
+        androidx.compose.animation.core.rememberInfiniteTransition(label = "liquidSpin").animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec = androidx.compose.animation.core.infiniteRepeatable(
+                androidx.compose.animation.core.tween(5000, easing = androidx.compose.animation.core.LinearEasing)
+            ),
+            label = "liquidSpinAngle"
+        )
+    } else null
+
     CompositionLocalProvider(
         LocalBackgroundViewModel provides backgroundViewModel,
         LocalFestivals provides festivals,
@@ -850,7 +863,8 @@ fun NevLauncherTheme(
         LocalNevStyle provides nevStyle,
         com.movtery.layer_controller.utils.LocalControlAccent provides
             (if (AllSettings.controlFollowTheme.state) currentDisplayScheme.primary else null),
-        com.movtery.layer_controller.utils.LocalControlLiquid provides AllSettings.controlLiquid.state
+        com.movtery.layer_controller.utils.LocalControlLiquid provides liquidOn,
+        com.movtery.layer_controller.utils.LocalLiquidSpin provides liquidSpin
     ) {
         MaterialExpressiveTheme(
             colorScheme = currentDisplayScheme,

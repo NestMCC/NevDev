@@ -91,7 +91,8 @@ class ZLApplication : Application(), SingletonImageLoader.Factory {
         runCatching {
             Fishnet.init(this, PathManager.DIR_NATIVE_LOGS.absolutePath)
 
-            MMKV.initialize(this)
+            val mmkvRoot = MMKV.initialize(this)
+            com.movtery.zalithlauncher.setting.SettingsGuard.run(this, mmkvRoot)
             loadAllSettings(this)
 
             Logger.initialize(this)

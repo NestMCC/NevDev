@@ -10,7 +10,6 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -23,6 +22,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -37,6 +37,9 @@ import kotlin.math.sin
 
 /** Efek "Liquid" tombol kontrol aktif/nonaktif (diatur dari pengaturan launcher). */
 val LocalControlLiquid = staticCompositionLocalOf { false }
+
+/** Sudut putar (derajat) garis tepi berputar; dibagi ke semua tombol agar hanya ada satu animasi. */
+val LocalLiquidSpin = staticCompositionLocalOf<State<Float>?> { null }
 
 private val DefaultLiquidColor = Color(0xFF5AC8FA)
 
@@ -84,11 +87,19 @@ internal fun Modifier.liquidGlass(
 
     val path = remember { Path() }
     val glass = remember {
-        Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.16f), Color.White.copy(alpha = 0.04f)))
+        Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.42f), Color.White.copy(alpha = 0.16f)))
     }
-    val rim = remember {
-        Brush.linearGradient(listOf(Color.White.copy(alpha = 0.6f), Color.White.copy(alpha = 0.12f)))
+    val spin = LocalLiquidSpin.current
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val strokePx = with(density) { 1.6.dp.toPx() }
+    val rimColors = remember(liquid) {
+        listOf(
+            Color.White.copy(alpha = 0.18f), Color.White.copy(alpha = 0.18f),
+            Color.White.copy(alpha = 0.98f), liquid.copy(alpha = 0.9f),
+            Color.White.copy(alpha = 0.18f), Color.White.copy(alpha = 0.18f)
+        )
     }
+    val rimStops = remember { listOf(0f, 0.15f, 0.32f, 0.42f, 0.6f, 1f) }
 
     return this
         .graphicsLayer {
@@ -139,5 +150,17 @@ internal fun Modifier.liquidGlass(
                 strokeWidth = 1.5f
             )
         }
-        .border(1.dp, rim, shape)
+        .drawWithContent {
+            drawContent()
+            //garis tepi: gradasi sapuan yang berputar pelan
+            val angle = spin?.value ?: 0f
+            val c = center
+            val shader = androidx.compose.ui.graphics.SweepGradientShader(c, rimColors, rimStops)
+            shader.setLocalMatrix(android.graphics.Matrix().apply { postRotate(angle, c.x, c.y) })
+            drawOutline(
+                outline = shape.createOutline(size, layoutDirection, this),
+                brush = androidx.compose.ui.graphics.ShaderBrush(shader),
+                style = androidx.compose.ui.graphics.drawscope.Stroke(width = strokePx)
+            )
+        }
 }
