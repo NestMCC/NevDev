@@ -409,8 +409,7 @@ class MainActivity : BaseAppCompatActivity() {
                     val flow = launchFlow
                     if (flow != null) {
                         val launchTasks by flow.tasksFlow.collectAsStateWithLifecycle()
-                        TitleTaskFlowDialog(
-                            title = stringResource(R.string.main_launch_game),
+                        com.movtery.zalithlauncher.ui.screens.content.elements.GameLoadingOverlay(
                             tasks = launchTasks,
                             onCancel = {
                                 launchGameViewModel.cancel()

@@ -1760,4 +1760,6 @@
     <string name="crash_ai_suspect_detail">File ini paling sering muncul di log. Jika berupa mod, coba hapus atau perbarui.</string>
     <string name="crash_ai_unknown_title">Penyebab umum tidak ditemukan</string>
     <string name="crash_ai_unknown_detail">Tidak ada pola umum yang cocok. Baris error terakhir ditampilkan di bawah; kamu bisa mencoba analisis AI.</string>
+    <string name="game_loading_tagline">MINECRAFT JAVA EDITION</string>
+    <string name="game_loading_text">Memuat</string>
 </resources>
