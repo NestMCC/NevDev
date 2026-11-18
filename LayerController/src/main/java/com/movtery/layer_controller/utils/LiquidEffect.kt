@@ -22,7 +22,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.drawscope.drawOutline
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -87,6 +87,7 @@ internal fun Modifier.liquidGlass(
     } else remember { mutableStateOf(0f) }
 
     val path = remember { Path() }
+    val rimPath = remember { Path() }
     val glass = remember {
         Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.42f), Color.White.copy(alpha = 0.16f)))
     }
@@ -158,8 +159,15 @@ internal fun Modifier.liquidGlass(
             val c = center
             val shader = androidx.compose.ui.graphics.SweepGradientShader(c, rimColors, rimStops)
             shader.setLocalMatrix(android.graphics.Matrix().apply { postRotate(angle, c.x, c.y) })
-            drawOutline(
-                outline = shape.createOutline(size, layoutDirection, this),
+            val outline = shape.createOutline(size, layoutDirection, this)
+            rimPath.rewind()
+            when (outline) {
+                is Outline.Rounded -> rimPath.addRoundRect(outline.roundRect)
+                is Outline.Rectangle -> rimPath.addRect(outline.rect)
+                is Outline.Generic -> rimPath.addPath(outline.path)
+            }
+            drawPath(
+                path = rimPath,
                 brush = androidx.compose.ui.graphics.ShaderBrush(shader),
                 style = androidx.compose.ui.graphics.drawscope.Stroke(width = strokePx)
             )
