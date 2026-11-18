@@ -3374,4 +3374,6 @@
     <string name="crash_ai_unknown_detail">No common pattern was found. The last error line is shown below; you can try the AI analysis.</string>
     <string name="game_loading_tagline">MINECRAFT JAVA EDITION</string>
     <string name="game_loading_text">Loading</string>
+    <string name="settings_display_control_liquid_title">Liquid control buttons</string>
+    <string name="settings_display_control_liquid_summary">Glass-clear control buttons; pressing makes a wave of liquid rise with a soft squish. Lightweight: the animation only runs while a button is pressed.</string>
 </resources>

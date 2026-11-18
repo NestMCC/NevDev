@@ -193,6 +193,14 @@ fun DisplaySettingsScreen(
                         summary = stringResource(R.string.settings_display_control_theme_summary)
                     )
 
+                    SwitchSettingsCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        position = CardPosition.Middle,
+                        unit = AllSettings.controlLiquid,
+                        title = stringResource(R.string.settings_display_control_liquid_title),
+                        summary = stringResource(R.string.settings_display_control_liquid_summary)
+                    )
+
                     EnumSettingsCard(
                         modifier = Modifier.fillMaxWidth(),
                         position = CardPosition.Middle,

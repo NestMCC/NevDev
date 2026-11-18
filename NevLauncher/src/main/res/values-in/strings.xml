@@ -1762,4 +1762,6 @@
     <string name="crash_ai_unknown_detail">Tidak ada pola umum yang cocok. Baris error terakhir ditampilkan di bawah; kamu bisa mencoba analisis AI.</string>
     <string name="game_loading_tagline">MINECRAFT JAVA EDITION</string>
     <string name="game_loading_text">Memuat</string>
+    <string name="settings_display_control_liquid_title">Tombol kontrol Liquid</string>
+    <string name="settings_display_control_liquid_summary">Tombol kontrol bening seperti kaca; saat ditekan muncul gelombang cairan yang naik dan tombol sedikit mengenyal. Ringan: animasi hanya berjalan saat tombol ditekan.</string>
 </resources>

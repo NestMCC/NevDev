@@ -46,7 +46,9 @@ import com.movtery.layer_controller.observable.ObservableWidget
 import com.movtery.layer_controller.utils.buttonContentColorAsState
 import com.movtery.layer_controller.utils.buttonFontSizeAsState
 import com.movtery.layer_controller.utils.buttonSize
+import com.movtery.layer_controller.utils.LocalControlLiquid
 import com.movtery.layer_controller.utils.buttonStyle
+import com.movtery.layer_controller.utils.liquidGlass
 import com.movtery.layer_controller.utils.editMode
 import com.movtery.layer_controller.utils.snap.GuideLine
 import com.movtery.layer_controller.utils.snap.SnapMode
@@ -102,14 +104,14 @@ internal fun TextButton(
             ?: DefaultObservableButtonStyle
 
         val locale = LocalConfiguration.current.locales[0]
+        val liquidEnabled = LocalControlLiquid.current && !isEditMode
 
         Box(
             modifier = Modifier
                 .buttonSize(data, screenSize)
-                .buttonStyle(
-                    style = style,
-                    isDark = isDark,
-                    isPressed = isPressed
+                .then(
+                    if (liquidEnabled) Modifier.liquidGlass(style = style, isDark = isDark, isPressed = isPressed)
+                    else Modifier.buttonStyle(style = style, isDark = isDark, isPressed = isPressed)
                 )
                 .editMode(
                     isEditMode = isEditMode,

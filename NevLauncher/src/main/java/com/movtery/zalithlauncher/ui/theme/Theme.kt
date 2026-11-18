@@ -849,7 +849,8 @@ fun NevLauncherTheme(
         LocalDensity provides scaledDensity,
         LocalNevStyle provides nevStyle,
         com.movtery.layer_controller.utils.LocalControlAccent provides
-            (if (AllSettings.controlFollowTheme.state) currentDisplayScheme.primary else null)
+            (if (AllSettings.controlFollowTheme.state) currentDisplayScheme.primary else null),
+        com.movtery.layer_controller.utils.LocalControlLiquid provides AllSettings.controlLiquid.state
     ) {
         MaterialExpressiveTheme(
             colorScheme = currentDisplayScheme,

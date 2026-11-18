@@ -489,6 +489,9 @@ object AllSettings : SettingsRegistry() {
     /** Warna tombol kontrol (merah/oranye bawaan Nev) mengikuti tema warna launcher */
     val controlFollowTheme = boolSetting("controlFollowTheme", true)
 
+    /** Tombol kontrol bergaya kaca dengan animasi cairan saat ditekan */
+    val controlLiquid = boolSetting("controlLiquid", false)
+
     /**
      * 主界面操作菜单的停泊侧
      */
