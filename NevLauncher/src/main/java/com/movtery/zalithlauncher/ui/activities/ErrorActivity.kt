@@ -130,6 +130,14 @@ class ErrorActivity : BaseAppCompatActivity() {
 
         setContent {
             NevLauncherTheme {
+                var showAnalysis by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                if (showAnalysis) {
+                    com.movtery.zalithlauncher.ui.components.CrashAnalysisDialog(
+                        logFile = logFile,
+                        context = errorMessage.message,
+                        onDismiss = { showAnalysis = false }
+                    )
+                }
                 ShareLinkOperation(
                     operation = viewModel.operation,
                     onChange = { viewModel.operation = it },
@@ -160,6 +168,7 @@ class ErrorActivity : BaseAppCompatActivity() {
                         onUploadClick = {
                             viewModel.operation = ShareLinkOperation.Tip
                         },
+                        onAnalyzeClick = if (logExists) ({ showAnalysis = true }) else null,
                         onRestartClick = {
                             ProcessPhoenix.triggerRebirth(this@ErrorActivity)
                         },

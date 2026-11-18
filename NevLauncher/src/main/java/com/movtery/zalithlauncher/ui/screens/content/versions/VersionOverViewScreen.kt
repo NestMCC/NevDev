@@ -327,6 +327,15 @@ private fun VersionManagementLayout(
         logFile.exists()
     }
 
+    var showAnalysis by remember { mutableStateOf(false) }
+    if (showAnalysis) {
+        com.movtery.zalithlauncher.ui.components.CrashAnalysisDialog(
+            logFile = logFile,
+            context = "Minecraft ${version.getVersionName()}",
+            onDismiss = { showAnalysis = false }
+        )
+    }
+
     VersionChunkBackground(
         modifier = modifier,
         paddingValues = PaddingValues(all = 8.dp)
@@ -378,6 +387,15 @@ private fun VersionManagementLayout(
                 ) {
                     Text(
                         text = stringResource(R.string.versions_overview_log)
+                    )
+                }
+                OutlinedButton(
+                    modifier = Modifier.padding(end = 12.dp),
+                    enabled = logExists,
+                    onClick = { showAnalysis = true }
+                ) {
+                    Text(
+                        text = stringResource(R.string.crash_ai_button)
                     )
                 }
                 OutlinedButton(

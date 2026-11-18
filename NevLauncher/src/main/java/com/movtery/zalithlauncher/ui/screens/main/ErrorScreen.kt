@@ -75,6 +75,7 @@ fun ErrorScreen(
     canRestart: Boolean = true,
     onShareLogsClick: () -> Unit = {},
     onUploadClick: () -> Unit = {},
+    onAnalyzeClick: (() -> Unit)? = null,
     onRestartClick: () -> Unit = {},
     onExitClick: () -> Unit = {},
     onOrientationChanged: (Int) -> Unit = {},
@@ -92,6 +93,7 @@ fun ErrorScreen(
             canRestart = canRestart,
             onShareLogsClick = onShareLogsClick,
             onUploadClick = onUploadClick,
+            onAnalyzeClick = onAnalyzeClick,
             onRestartClick = onRestartClick,
             onExitClick = onExitClick,
             onRotateClick = {
@@ -107,6 +109,7 @@ fun ErrorScreen(
             canRestart = canRestart,
             onShareLogsClick = onShareLogsClick,
             onUploadClick = onUploadClick,
+            onAnalyzeClick = onAnalyzeClick,
             onRestartClick = onRestartClick,
             onExitClick = onExitClick,
             onRotateClick = {
@@ -128,6 +131,7 @@ private fun ErrorScreenLandscape(
     canRestart: Boolean,
     onShareLogsClick: () -> Unit,
     onUploadClick: () -> Unit,
+    onAnalyzeClick: (() -> Unit)?,
     onRestartClick: () -> Unit,
     onExitClick: () -> Unit,
     onRotateClick: () -> Unit,
@@ -191,6 +195,7 @@ private fun ErrorScreenLandscape(
                 canRestart = canRestart,
                 onShareLogsClick = onShareLogsClick,
                 onUploadClick = onUploadClick,
+                onAnalyzeClick = onAnalyzeClick,
                 onRestartClick = onRestartClick,
                 onExitClick = onExitClick
             )
@@ -209,6 +214,7 @@ private fun ErrorScreenPortrait(
     canRestart: Boolean,
     onShareLogsClick: () -> Unit,
     onUploadClick: () -> Unit,
+    onAnalyzeClick: (() -> Unit)?,
     onRestartClick: () -> Unit,
     onExitClick: () -> Unit,
     onRotateClick: () -> Unit,
@@ -255,6 +261,15 @@ private fun ErrorScreenPortrait(
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
+                            if (onAnalyzeClick != null) {
+                                DropdownMenuItem(
+                                    text = { MarqueeText(text = stringResource(R.string.crash_ai_button)) },
+                                    onClick = {
+                                        showMenu = false
+                                        onAnalyzeClick()
+                                    }
+                                )
+                            }
                             if (canUpload) {
                                 DropdownMenuItem(
                                     text = {
@@ -369,6 +384,7 @@ private fun ActionLayout(
     canRestart: Boolean,
     onShareLogsClick: () -> Unit = {},
     onUploadClick: () -> Unit = {},
+    onAnalyzeClick: (() -> Unit)? = null,
     onRestartClick: () -> Unit = {},
     onExitClick: () -> Unit = {}
 ) {
@@ -389,6 +405,14 @@ private fun ActionLayout(
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Bottom)
         ) {
+            if (onAnalyzeClick != null) {
+                ScalingActionButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = onAnalyzeClick
+                ) {
+                    MarqueeText(text = stringResource(R.string.crash_ai_button))
+                }
+            }
             if (canUpload) {
                 ScalingActionButton(
                     modifier = Modifier.fillMaxWidth(),

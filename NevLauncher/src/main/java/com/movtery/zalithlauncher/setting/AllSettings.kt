@@ -170,6 +170,12 @@ object AllSettings : SettingsRegistry() {
     val musicInGame = boolSetting("musicInGame", true)
     val musicTrackId = stringSetting("musicTrackId", "")
 
+    /** Analisis crash dengan AI: API key milik pengguna, hanya disimpan di perangkat */
+    val aiCrashApiKey = stringSetting("aiCrashApiKey", "")
+    val aiCrashProvider = enumSetting("aiCrashProvider", com.movtery.zalithlauncher.setting.enums.AiProvider.ANTHROPIC)
+    val aiCrashModel = stringSetting("aiCrashModel", "")
+    val aiCrashBaseUrl = stringSetting("aiCrashBaseUrl", "")
+
     /** Cadangan world otomatis saat keluar dari world */
     val worldBackupOnExit = boolSetting("worldBackupOnExit", true)
     /** Cadangan world berkala saat sedang bermain */
