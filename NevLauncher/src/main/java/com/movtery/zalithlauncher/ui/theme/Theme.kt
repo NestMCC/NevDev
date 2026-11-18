@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.theme
 
+import androidx.compose.animation.core.animateFloat
 import android.os.Build
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialExpressiveTheme
