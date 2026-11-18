@@ -32,6 +32,9 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -155,13 +158,15 @@ fun ResultListLayout(
                 val page = searchState.page
 
                 val listState = rememberLazyListState()
+                val gridState = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
+                val boxyGrid = com.movtery.zalithlauncher.ui.theme.isBoxy()
                 val maxCollapsePx = with(LocalDensity.current) { controllerHeight.toPx() }
 
                 //计算缩放比例，滑动偏移限制在0 ~ maxCollapsePx之间
                 val fraction by remember {
                     derivedStateOf {
-                        val index = listState.firstVisibleItemIndex
-                        val offset = listState.firstVisibleItemScrollOffset.toFloat()
+                        val index = if (boxyGrid) gridState.firstVisibleItemIndex else listState.firstVisibleItemIndex
+                        val offset = (if (boxyGrid) gridState.firstVisibleItemScrollOffset else listState.firstVisibleItemScrollOffset).toFloat()
 
                         when {
                             index > 0 -> 1f
@@ -174,6 +179,7 @@ fun ResultListLayout(
                     ResultList(
                         modifier = Modifier.fillMaxSize(),
                         state = listState,
+                        gridState = gridState,
                         contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 60.dp, bottom = 6.dp),
                         classes = classes,
                         data = page.data,
@@ -379,6 +385,7 @@ private fun PageController(
 private fun ResultList(
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
+    gridState: androidx.compose.foundation.lazy.grid.LazyGridState = androidx.compose.foundation.lazy.grid.rememberLazyGridState(),
     contentPadding: PaddingValues = PaddingValues(),
     classes: PlatformClasses,
     data: List<Pair<PlatformSearchData, AddonProjectInfo?>>,
@@ -386,6 +393,44 @@ private fun ResultList(
     installedInfo: ((Platform, projectId: String) -> InstalledMod?)? = null
 ) {
     val context = LocalContext.current
+
+    if (com.movtery.zalithlauncher.ui.theme.isBoxy()) {
+        //gaya kotak: kisi kartu, seperti daftar versi game
+        androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+            modifier = modifier,
+            state = gridState,
+            columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(minSize = 230.dp),
+            contentPadding = contentPadding,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            items(data.size) { index ->
+                val (item, mcmod) = data[index]
+                val platform = remember(item) { item.platform() }
+                val title = remember(item) { item.platformTitle() }
+                val categories = remember(item, classes) { item.platformCategories(classes) }
+                val isInstalled = installedInfo?.invoke(platform, item.platformId()) != null
+                val iconUrl = remember(item) { item.platformIconUrl() }
+
+                ResultProjectCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    platform = platform,
+                    title = mcmod.getMcmodTitle(title, context),
+                    description = remember(item) { item.platformDescription() },
+                    iconUrl = iconUrl,
+                    authors = remember(item) { item.platformAuthors() },
+                    downloads = remember(item) { item.platformDownloadCount() },
+                    modloaders = remember(item) { item.platformModLoaders() },
+                    categories = categories?.sortedWith { o1, o2 -> o1.index() - o2.index() },
+                    followsCount = remember(item) { item.platformFollows() },
+                    isInstalled = isInstalled,
+                    onClick = { swapToDownload(platform, item.platformId(), iconUrl) }
+                )
+            }
+        }
+        return
+    }
+
     LazyColumn(
         modifier = modifier,
         state = state,
@@ -642,5 +687,138 @@ fun ProjectTitleHead(
         )
         //平台标签
         PlatformIdentifier(platform = platform)
+    }
+}
+
+/**
+ * Kartu proyek (mod, modpack, paket sumber daya, dunia, shader) untuk kisi gaya kotak:
+ * ikon besar di atas, lalu judul, penulis, deskripsi, statistik, dan label.
+ */
+@Composable
+fun ResultProjectCard(
+    modifier: Modifier = Modifier,
+    platform: Platform,
+    title: String,
+    description: String,
+    iconUrl: String? = null,
+    authors: List<String>? = null,
+    downloads: Long = 0L,
+    modloaders: List<PlatformDisplayLabel>? = null,
+    categories: List<PlatformFilterCode>? = null,
+    followsCount: Long? = null,
+    isInstalled: Boolean = false,
+    onClick: () -> Unit = {}
+) {
+    val context = LocalContext.current
+    val shape = com.movtery.zalithlauncher.ui.theme.nevShape(12.dp)
+    val accent = NevRed.GradientStart
+
+    Surface(
+        modifier = modifier.nevGlow(shape, 6.dp, 0.4f),
+        shape = shape,
+        color = NevRed.PanelDeep.copy(alpha = 0.9f),
+        contentColor = NevRed.OnPanel,
+        border = NevCardBorder,
+        onClick = onClick
+    ) {
+        Column(modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            //kepala: ikon + label platform
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(NevRed.Panel.copy(alpha = 0.8f))
+                    .padding(vertical = 14.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AddonIcon(
+                    modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                    size = 80.dp,
+                    iconUrl = iconUrl
+                )
+                PlatformIdentifier(
+                    modifier = Modifier.align(Alignment.TopEnd).padding(end = 6.dp),
+                    platform = platform
+                )
+                if (isInstalled) {
+                    InstalledModBadge(modifier = Modifier.align(Alignment.TopStart).padding(start = 6.dp))
+                }
+            }
+
+            MarqueeText(
+                text = title,
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+            )
+
+            authors?.takeIf { it.isNotEmpty() }?.let {
+                Row(
+                    modifier = Modifier.alpha(0.7f),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier.size(13.dp),
+                        painter = painterResource(R.drawable.ic_person_filled),
+                        contentDescription = null
+                    )
+                    MarqueeText(text = it.joinToString(", "), style = MaterialTheme.typography.labelSmall)
+                }
+            }
+
+            Text(
+                modifier = Modifier.alpha(0.85f).heightIn(min = 32.dp),
+                text = description,
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            //statistik
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        modifier = Modifier.size(14.dp),
+                        painter = painterResource(R.drawable.ic_download_2_filled),
+                        contentDescription = null,
+                        tint = accent
+                    )
+                    Text(text = formatNumberByLocale(context, downloads), style = MaterialTheme.typography.labelSmall)
+                }
+                followsCount?.let {
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            modifier = Modifier.size(14.dp),
+                            painter = painterResource(R.drawable.ic_star_filled),
+                            contentDescription = null,
+                            tint = accent
+                        )
+                        Text(text = formatNumberByLocale(context, it), style = MaterialTheme.typography.labelSmall)
+                    }
+                }
+            }
+
+            //label: mod loader + kategori (maksimal 3)
+            val labels = buildList {
+                modloaders?.forEach { add(it.getDisplayName()) }
+                categories?.forEach { add(stringResource(it.getDisplayName())) }
+            }.take(3)
+            if (labels.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    labels.forEach { label ->
+                        Text(
+                            modifier = Modifier
+                                .border(1.dp, accent.copy(alpha = 0.55f), com.movtery.zalithlauncher.ui.theme.nevShape(6.dp))
+                                .padding(horizontal = 6.dp, vertical = 2.dp),
+                            text = label,
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
+        }
     }
 }
