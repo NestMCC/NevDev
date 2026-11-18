@@ -18,6 +18,8 @@
 
 package com.movtery.zalithlauncher.ui.activities
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
