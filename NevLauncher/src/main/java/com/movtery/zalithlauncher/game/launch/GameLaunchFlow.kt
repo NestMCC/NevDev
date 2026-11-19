@@ -21,7 +21,7 @@ package com.movtery.zalithlauncher.game.launch
 import android.content.Context
 import android.os.SystemClock
 import com.movtery.zalithlauncher.utils.logging.Logger
-import com.movtery.zalithlauncher.zalithlauncher.R
+import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.coroutine.Task
 import com.movtery.zalithlauncher.coroutine.TaskFlowExecutor
 import com.movtery.zalithlauncher.coroutine.TitledTask
