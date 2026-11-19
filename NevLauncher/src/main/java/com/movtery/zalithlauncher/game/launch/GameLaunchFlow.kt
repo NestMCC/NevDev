@@ -19,7 +19,9 @@
 package com.movtery.zalithlauncher.game.launch
 
 import android.content.Context
-import com.movtery.zalithlauncher.R
+import android.os.SystemClock
+import com.movtery.zalithlauncher.utils.logging.Logger
+import com.movtery.zalithlauncher.zalithlauncher.R
 import com.movtery.zalithlauncher.coroutine.Task
 import com.movtery.zalithlauncher.coroutine.TaskFlowExecutor
 import com.movtery.zalithlauncher.coroutine.TitledTask
@@ -160,6 +162,11 @@ class GameLaunchFlow(scope: CoroutineScope) {
             version.offlineAccountLogin = true
         }
 
+        val t0 = SystemClock.elapsedRealtime()
+        fun mark(step: String) {
+            Logger.info("LaunchTiming", "[+${SystemClock.elapsedRealtime() - t0} ms] $step")
+        }
+
         return buildPhase {
             var launchManifest: GameManifest? = null
 
@@ -170,6 +177,7 @@ class GameLaunchFlow(scope: CoroutineScope) {
                     title = androidText(R.string.account_logging_in, account.username),
                     dispatcher = Dispatchers.IO
                 ) { task ->
+                    mark("account check start")
                     try {
                         if (account.isMicrosoftAccount()) {
                             checkMicrosoftAccount(task, account)
@@ -193,6 +201,7 @@ class GameLaunchFlow(scope: CoroutineScope) {
                 title = androidText(R.string.launch_check_mods),
                 dispatcher = Dispatchers.IO
             ) { task ->
+                mark("mod scan start")
                 val patchedManifest = checkMods(version)
                 val manifest = patchedManifest ?: VersionInfoParser(version)
                     .setInheriting(skipIfNotExists = true)
@@ -231,6 +240,7 @@ class GameLaunchFlow(scope: CoroutineScope) {
                 icon = R.drawable.ic_rocket_launch_filled,
                 title = androidText(R.string.main_launch_game)
             ) { _ ->
+                mark("verification done, starting game activity")
                 launchManifest?.let { manifest ->
                     version.launchManifest = GSON.toJson(
                         VersionInfoParser(version)

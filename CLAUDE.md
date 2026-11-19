@@ -21,6 +21,8 @@ Repo: NestMCC/NevDev, branch kerja: `tema-cyber-desain` (fork Zalith Launcher 2,
 - Analisis crash: `game/crash/CrashAnalyzer.kt` (aturan offline) + `AiCrashClient.kt` (opsional, API key milik pengguna) + `ui/components/CrashAnalysisDialog.kt`.
 - Installer komponen di latar (`components/ComponentInstaller.kt`) dengan kartu progres di beranda hero; layar loading bermerek "NEV LAUNCHER" (`GameLoadingOverlay.kt`, `SplashScreen.kt`).
 - `setting/SettingsGuard.kt`: cadangan pengaturan (MMKV) saat versi berubah + pemulihan bila kosong. Pengaturan baru harus lewat `AllSettings` dengan nilai bawaan agar update tidak mereset.
+- Startup game lebih cepat: `fastGameStartup` (flag JVM `-XX:-BytecodeVerificationRemote`, default aktif, saklar di Pengaturan Game), cache verifikasi file (`VerifiedFileCache`), cache pemindaian mod (`ModScanCache`), log waktu per tahap `LaunchTiming` di `GameLaunchFlow.kt`.
+- Dialog pasang mod: kotak info dependensi otomatis + tombol hijau "+ INSTAL" (`_Download.Single.kt`).
 - Donasi "Dukung Nev Launcher", akun Ely.by, folder data di beranda penyimpanan, kredit NestMC, teks "Nev Launcher" (pakai spasi).
 
 ## Pola kode

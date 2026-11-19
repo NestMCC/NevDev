@@ -139,6 +139,9 @@ object AllSettings : SettingsRegistry() {
      */
     val skipGameIntegrityCheck = boolSetting("skipGameIntegrityCheck", false)
 
+    /** Percepat loading ke logo Mojang: lewati verifikasi bytecode kelas dari jar yang dimuat */
+    val fastGameStartup = boolSetting("fastGameStartup", true)
+
     /**
      * 版本自定义信息
      */

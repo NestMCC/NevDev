@@ -1765,4 +1765,6 @@
     <string name="settings_display_control_liquid_title">Tombol kontrol Liquid</string>
     <string name="settings_display_control_liquid_summary">Tombol kontrol bening seperti kaca; saat ditekan muncul gelombang cairan yang naik dan tombol sedikit mengenyal. Ringan: animasi hanya berjalan saat tombol ditekan.</string>
     <string name="download_addon_auto_dependencies_notice">Unduh Dependensi Otomatis aktif: dependensi wajib akan dipasang secara otomatis.</string>
+    <string name="settings_game_fast_startup_title">Startup lebih cepat</string>
+    <string name="settings_game_fast_startup_summary">Melewati verifikasi bytecode jar yang dimuat (mod dan library) sehingga game memuat jauh lebih cepat sampai logo Mojang. Matikan jika ada mod yang crash saat start.</string>
 </resources>

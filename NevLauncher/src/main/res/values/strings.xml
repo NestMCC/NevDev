@@ -3377,4 +3377,6 @@
     <string name="settings_display_control_liquid_title">Liquid control buttons</string>
     <string name="settings_display_control_liquid_summary">Glass-clear control buttons; pressing makes a wave of liquid rise with a soft squish. Lightweight: the animation only runs while a button is pressed.</string>
     <string name="download_addon_auto_dependencies_notice">Auto-Download Dependencies active: required dependencies will be installed automatically.</string>
+    <string name="settings_game_fast_startup_title">Faster startup</string>
+    <string name="settings_game_fast_startup_summary">Skips bytecode verification of loaded jars (mods and libraries), so the game loads noticeably faster up to the Mojang logo. Turn off if a mod crashes at startup.</string>
 </resources>
