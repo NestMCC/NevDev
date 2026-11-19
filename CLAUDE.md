@@ -21,11 +21,12 @@ Repo: NestMCC/NevDev, branch kerja: `tema-cyber-desain` (fork Zalith Launcher 2,
 - Analisis crash: `game/crash/CrashAnalyzer.kt` (aturan offline) + `AiCrashClient.kt` (opsional, API key milik pengguna) + `ui/components/CrashAnalysisDialog.kt`.
 - Installer komponen di latar (`components/ComponentInstaller.kt`) dengan kartu progres di beranda hero; layar loading bermerek "NEV LAUNCHER" (`GameLoadingOverlay.kt`, `SplashScreen.kt`).
 - `setting/SettingsGuard.kt`: cadangan pengaturan (MMKV) saat versi berubah + pemulihan bila kosong. Pengaturan baru harus lewat `AllSettings` dengan nilai bawaan agar update tidak mereset.
-- Startup game lebih cepat: `fastGameStartup` (flag JVM `-XX:-BytecodeVerificationRemote`, default aktif, saklar di Pengaturan Game), cache verifikasi file (`VerifiedFileCache`), cache pemindaian mod (`ModScanCache`), log waktu per tahap `LaunchTiming` di `GameLaunchFlow.kt`.
+- Startup game: cache verifikasi file (`VerifiedFileCache`), cache pemindaian mod (`ModScanCache`), log waktu per tahap `LaunchTiming` di `GameLaunchFlow.kt`.
 - Dialog pasang mod: kotak info dependensi otomatis + tombol hijau "+ INSTAL" (`_Download.Single.kt`).
 - Donasi "Dukung Nev Launcher", akun Ely.by, folder data di beranda penyimpanan, kredit NestMC, teks "Nev Launcher" (pakai spasi).
 
 ## Pola kode
 - Pengaturan: `boolSetting/intSetting/stringSetting/enumSetting` di `setting/AllSettings.kt` (MMKV lintas proses; proses `:game` menjalankan VMActivity).
 - String: tambahkan ke `res/values` DAN `res/values-in`.
+- PERINGATAN: jangan tambah flag JVM diagnostic/eksperimental (mis. `-XX:-BytecodeVerificationRemote`): di Java 25 itu membuat JVM gagal start (`IgnoreUnrecognizedVMOptions` tidak menolong). Uji dulu lewat log game.
 - Belum dikerjakan/belum dikonfirmasi: mode hemat, dialog lemari pakaian bergaya kotak, halaman Favorit bergaya grid, fitur sosial, hapus APK lama otomatis di Actions.
