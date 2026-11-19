@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -227,6 +228,8 @@ private fun rememberValidVersions(): State<List<Version>> {
     }
 }
 
+private val InstallGreen = Color(0xFF2EBD85)
+
 @Composable
 private fun DownloadDialog(
     dependencyEntries: List<DependencyEntry>,
@@ -316,6 +319,31 @@ private fun DownloadDialog(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
+                        if (dependencies.isNotEmpty()) {
+                            //info: dependensi wajib dipasang otomatis
+                            val noticeShape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(noticeShape)
+                                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, noticeShape)
+                                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                Icon(
+                                    painter = androidx.compose.ui.res.painterResource(R.drawable.ic_auto_fix),
+                                    contentDescription = null,
+                                    tint = InstallGreen,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.download_addon_auto_dependencies_notice),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
                         Row(
                             modifier = Modifier
                                 .weight(1f, fill = false)
@@ -412,6 +440,10 @@ private fun DownloadDialog(
                             Button(
                                 modifier = Modifier.weight(0.5f),
                                 enabled = selectedVersions.isNotEmpty(),
+                                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                                    containerColor = InstallGreen,
+                                    contentColor = Color.White
+                                ),
                                 onClick = {
                                     if (selectedVersions.isNotEmpty()) {
                                         onInstall(
@@ -433,7 +465,10 @@ private fun DownloadDialog(
                                     }
                                 }
                             ) {
-                                MarqueeText(text = stringResource(R.string.download_install))
+                                MarqueeText(
+                                    text = "+ " + stringResource(R.string.download_install).uppercase(),
+                                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                                )
                             }
                         }
                     }
