@@ -44,6 +44,7 @@ enum class ColorThemeType {
     NEV_LAVA,
     CRYOGENIC,
     CYBER,
+    LIQUID,
     CUSTOM,
     SEED_OCEAN,
     SEED_SUNSET,

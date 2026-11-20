@@ -40,6 +40,7 @@ import com.movtery.zalithlauncher.ui.screens.content.elements.backgroundGlass
 import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder
 import com.movtery.zalithlauncher.ui.theme.cyberFrame
+import com.movtery.zalithlauncher.ui.theme.liquidGlassRim
 import com.movtery.zalithlauncher.ui.theme.nevGlow
 import com.movtery.zalithlauncher.ui.theme.cardColor
 import com.movtery.zalithlauncher.ui.theme.cardTitleColor
@@ -80,7 +81,8 @@ fun BackgroundCard(
 ) {
     Card(
         modifier = modifier.nevGlow(shape, 6.dp, 0.45f)
-            .then(if (LocalNevStyle.current.cyber) Modifier.cyberFrame() else Modifier),
+            .then(if (LocalNevStyle.current.cyber) Modifier.cyberFrame() else Modifier)
+            .then(if (LocalNevStyle.current.liquid) Modifier.liquidGlassRim(shape) else Modifier),
         shape = shape,
         colors = colors,
         elevation = elevation,
@@ -116,7 +118,8 @@ fun BackgroundCard(
 ) {
     Card(
         modifier = modifier.nevGlow(shape, 6.dp, 0.45f)
-            .then(if (LocalNevStyle.current.cyber) Modifier.cyberFrame() else Modifier),
+            .then(if (LocalNevStyle.current.cyber) Modifier.cyberFrame() else Modifier)
+            .then(if (LocalNevStyle.current.liquid) Modifier.liquidGlassRim(shape) else Modifier),
         shape = shape,
         colors = colors,
         elevation = elevation,

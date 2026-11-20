@@ -389,7 +389,13 @@ fun nevTextFieldColors() = androidx.compose.material3.OutlinedTextFieldDefaults.
 
 /** Border gradasi merah menyala untuk kartu. */
 val NevCardBorder: BorderStroke
-    @Composable get() = if (LocalNevStyle.current.cyber) {
+    @Composable get() = if (LocalNevStyle.current.liquid) {
+        //Liquid: tepi kaca putih bening
+        BorderStroke(
+            1.dp,
+            Brush.linearGradient(listOf(Color.White.copy(alpha = 0.5f), Color.White.copy(alpha = 0.1f)))
+        )
+    } else if (LocalNevStyle.current.cyber) {
         //Cyber: garis tepi samar; penanda sudut (cyberFrame) yang menonjol
         BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.28f))
     } else BorderStroke(

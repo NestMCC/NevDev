@@ -46,7 +46,10 @@ enum class DesignStyleType {
     CRYOGENIC,
 
     /** Gaya Cyber: sudut terpotong diagonal terbalik, bingkai neon tipis, dock navigasi di bawah. */
-    CYBER
+    CYBER,
+
+    /** Gaya Liquid: kaca bening, sudut sangat bulat, latar cairan bergerak, efek gelombang saat ditekan. */
+    LIQUID
 }
 
 /** Sisi layar tempat menu navigasi utama diletakkan. */
@@ -73,6 +76,8 @@ data class NevStyle(
     val floatingRail: Boolean,
     /** true: gaya Cyber (bentuk, label, dan tata letak sendiri). */
     val cyber: Boolean = false,
+    /** true: gaya Liquid (kaca bening + animasi cairan). */
+    val liquid: Boolean = false,
     /** true: menu navigasi utama berupa dock horizontal di bawah layar (tata letak Cyber). */
     val bottomDock: Boolean = false
 )
@@ -112,7 +117,20 @@ val NevCyberStyle = NevStyle(
     bottomDock = true
 )
 
+val NevLiquidStyle = NevStyle(
+    cardOuterScale = 1.3f,
+    cardInnerScale = 0.8f,
+    cardBorderWidth = 1.dp,
+    glowRadiusScale = 1.2f,
+    glowIntensityScale = 0.8f,
+    cardAlpha = 0.5f,
+    cutCorners = false,
+    floatingRail = true,
+    liquid = true
+)
+
 fun nevStyleFor(type: DesignStyleType): NevStyle = when (type) {
+    DesignStyleType.LIQUID -> NevLiquidStyle
     DesignStyleType.NEV -> NevClassicStyle
     DesignStyleType.CRYOGENIC -> NevCryogenicStyle
     DesignStyleType.CYBER -> NevCyberStyle
@@ -124,7 +142,9 @@ val LocalNevStyle = compositionLocalOf { NevClassicStyle }
 @Composable
 fun nevPillShape(): Shape {
     val style = LocalNevStyle.current
-    return if (style.cyber) {
+    return if (style.liquid) {
+        RoundedCornerShape(50)
+    } else if (style.cyber) {
         //Cyber: potongan pada sisi diagonal yang berlawanan dengan Cryogenic
         CutCornerShape(topStart = 0.dp, topEnd = 12.dp, bottomEnd = 0.dp, bottomStart = 12.dp)
     } else if (style.cutCorners) {
@@ -140,7 +160,9 @@ fun nevPillShape(): Shape {
 @Composable
 fun nevShape(radius: Dp): Shape {
     val style = LocalNevStyle.current
-    return if (style.cyber) {
+    return if (style.liquid) {
+        RoundedCornerShape(radius * 1.3f)
+    } else if (style.cyber) {
         val cut = radius * 0.5f
         CutCornerShape(topStart = 0.dp, topEnd = cut, bottomEnd = 0.dp, bottomStart = cut)
     } else if (style.cutCorners) {

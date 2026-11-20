@@ -65,7 +65,8 @@ private val builtInOrder = listOf(
     ColorThemeType.VERDANT_DAWN,
     ColorThemeType.NEV_LAVA,
     ColorThemeType.CRYOGENIC,
-    ColorThemeType.CYBER
+    ColorThemeType.CYBER,
+    ColorThemeType.LIQUID
 )
 
 @Composable
@@ -81,6 +82,7 @@ private fun themeLabel(type: ColorThemeType): String = when (type) {
     ColorThemeType.NEV_LAVA -> stringResource(R.string.theme_color_nev_lava)
     ColorThemeType.CRYOGENIC -> stringResource(R.string.theme_color_cryogenic)
     ColorThemeType.CYBER -> stringResource(R.string.theme_color_cyber)
+    ColorThemeType.LIQUID -> stringResource(R.string.theme_color_liquid)
     ColorThemeType.CUSTOM -> stringResource(R.string.generic_custom)
     else -> seedThemeOf(type)?.let { stringResource(it.nameRes) } ?: type.name
 }

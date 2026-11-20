@@ -1765,4 +1765,7 @@
     <string name="settings_display_control_liquid_title">Tombol kontrol Liquid</string>
     <string name="settings_display_control_liquid_summary">Tombol kontrol bening seperti kaca; saat ditekan muncul gelombang cairan yang naik dan tombol sedikit mengenyal. Ringan: animasi hanya berjalan saat tombol ditekan.</string>
     <string name="download_addon_auto_dependencies_notice">Unduh Dependensi Otomatis aktif: dependensi wajib akan dipasang secara otomatis.</string>
+    <string name="theme_color_liquid">Liquid</string>
+    <string name="settings_display_theme_liquid_desc">Kaca bening, cairan mengalir</string>
+    <string name="settings_display_style_liquid">Liquid</string>
 </resources>

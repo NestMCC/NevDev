@@ -20,6 +20,7 @@ package com.movtery.zalithlauncher.ui.screens.main
 
 import com.movtery.zalithlauncher.ui.theme.nevGlow
 import com.movtery.zalithlauncher.ui.theme.cyberBackdrop
+import com.movtery.zalithlauncher.ui.theme.liquidBackdrop
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -268,6 +269,7 @@ fun MainScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .then(if (bottomDock) Modifier.cyberBackdrop() else Modifier)
+                .then(if (com.movtery.zalithlauncher.ui.theme.LocalNevStyle.current.liquid) Modifier.liquidBackdrop() else Modifier)
         ) {
         if (railSide == NavRailSide.START && !bottomDock && !heroLayout) rail()
         Column(

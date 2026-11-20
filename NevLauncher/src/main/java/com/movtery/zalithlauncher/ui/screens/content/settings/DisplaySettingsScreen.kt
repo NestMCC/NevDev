@@ -92,6 +92,13 @@ private val designThemes = listOf(
         descRes = R.string.settings_display_theme_cyber_desc,
         swatch = listOf(Color(0xFF050A12), Color(0xFF00E5FF), Color(0xFFA78BFF)),
         style = DesignStyleType.CYBER
+    ),
+    DesignTheme(
+        type = ColorThemeType.LIQUID,
+        nameRes = R.string.theme_color_liquid,
+        descRes = R.string.settings_display_theme_liquid_desc,
+        swatch = listOf(Color(0xFF060D18), Color(0xFF5AC8FA), Color(0xFF9B8CFF)),
+        style = DesignStyleType.LIQUID
     )
 )
 
@@ -149,8 +156,9 @@ fun DisplaySettingsScreen(
                                             if (ownStyle != null) {
                                                 //tema dengan gaya sendiri (Cyber): pasang gaya + tata letaknya
                                                 AllSettings.launcherDesignStyle.save(ownStyle)
-                                            } else if (AllSettings.launcherDesignStyle.state == DesignStyleType.CYBER) {
-                                                //pindah dari Cyber ke tema lain: kembali ke gaya klasik
+                                            } else if (AllSettings.launcherDesignStyle.state == DesignStyleType.CYBER ||
+                                                AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
+                                                //pindah dari Cyber/Liquid ke tema lain: kembali ke gaya klasik
                                                 AllSettings.launcherDesignStyle.save(DesignStyleType.NEV)
                                             }
                                         }
@@ -173,6 +181,7 @@ fun DisplaySettingsScreen(
                                 DesignStyleType.NEV -> stringResource(R.string.settings_display_style_nev)
                                 DesignStyleType.CRYOGENIC -> stringResource(R.string.settings_display_style_cryogenic)
                                 DesignStyleType.CYBER -> stringResource(R.string.settings_display_style_cyber)
+                                DesignStyleType.LIQUID -> stringResource(R.string.settings_display_style_liquid)
                             }
                         }
                     )

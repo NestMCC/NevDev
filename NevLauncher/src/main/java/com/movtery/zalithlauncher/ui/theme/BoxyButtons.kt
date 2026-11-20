@@ -32,18 +32,21 @@ fun Button(
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit
-) = androidx.compose.material3.Button(
+) {
+    val src = rememberButtonSource(interactionSource)
+    androidx.compose.material3.Button(
     onClick = onClick,
-    modifier = modifier,
+    modifier = modifier.liquidButton(src, shape),
     enabled = enabled,
     shape = resolveButtonShape(shape),
     colors = colors,
     elevation = elevation,
     border = border,
     contentPadding = contentPadding,
-    interactionSource = interactionSource,
+    interactionSource = src,
     content = content
-)
+    )
+}
 
 @Composable
 fun FilledTonalButton(
@@ -57,18 +60,21 @@ fun FilledTonalButton(
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit
-) = androidx.compose.material3.FilledTonalButton(
+) {
+    val src = rememberButtonSource(interactionSource)
+    androidx.compose.material3.FilledTonalButton(
     onClick = onClick,
-    modifier = modifier,
+    modifier = modifier.liquidButton(src, shape),
     enabled = enabled,
     shape = resolveButtonShape(shape),
     colors = colors,
     elevation = elevation,
     border = border,
     contentPadding = contentPadding,
-    interactionSource = interactionSource,
+    interactionSource = src,
     content = content
-)
+    )
+}
 
 @Composable
 fun OutlinedButton(
@@ -82,18 +88,21 @@ fun OutlinedButton(
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit
-) = androidx.compose.material3.OutlinedButton(
+) {
+    val src = rememberButtonSource(interactionSource)
+    androidx.compose.material3.OutlinedButton(
     onClick = onClick,
-    modifier = modifier,
+    modifier = modifier.liquidButton(src, shape),
     enabled = enabled,
     shape = resolveButtonShape(shape),
     colors = colors,
     elevation = elevation,
     border = border,
     contentPadding = contentPadding,
-    interactionSource = interactionSource,
+    interactionSource = src,
     content = content
-)
+    )
+}
 
 @Composable
 fun TextButton(
@@ -107,15 +116,29 @@ fun TextButton(
     contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit
-) = androidx.compose.material3.TextButton(
+) {
+    val src = rememberButtonSource(interactionSource)
+    androidx.compose.material3.TextButton(
     onClick = onClick,
-    modifier = modifier,
+    modifier = modifier.liquidButton(src, shape),
     enabled = enabled,
     shape = resolveButtonShape(shape),
     colors = colors,
     elevation = elevation,
     border = border,
     contentPadding = contentPadding,
-    interactionSource = interactionSource,
+    interactionSource = src,
     content = content
-)
+    )
+}
+
+@Composable
+private fun rememberButtonSource(source: MutableInteractionSource?): MutableInteractionSource =
+    source ?: androidx.compose.runtime.remember { MutableInteractionSource() }
+
+/** Pada gaya Liquid, tombol mendapat efek gelombang cairan saat ditekan. */
+@Composable
+private fun Modifier.liquidButton(source: MutableInteractionSource, shape: Shape?): Modifier {
+    if (!LocalNevStyle.current.liquid) return this
+    return this.liquidPress(source, resolveButtonShape(shape), androidx.compose.material3.MaterialTheme.colorScheme.primary)
+}

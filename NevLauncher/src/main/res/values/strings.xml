@@ -3377,4 +3377,7 @@
     <string name="settings_display_control_liquid_title">Liquid control buttons</string>
     <string name="settings_display_control_liquid_summary">Glass-clear control buttons; pressing makes a wave of liquid rise with a soft squish. Lightweight: the animation only runs while a button is pressed.</string>
     <string name="download_addon_auto_dependencies_notice">Auto-Download Dependencies active: required dependencies will be installed automatically.</string>
+    <string name="theme_color_liquid">Liquid</string>
+    <string name="settings_display_theme_liquid_desc">Glass, flowing liquid</string>
+    <string name="settings_display_style_liquid">Liquid</string>
 </resources>

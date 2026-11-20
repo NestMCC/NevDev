@@ -695,6 +695,67 @@ private val cyberLight = lightColorScheme(
     surfaceContainerHighest = surfaceContainerHighestLight.cyber,
 )
 
+private val liquidDark = darkColorScheme(
+    primary = Color(0xFF5AC8FA),
+    onPrimary = Color(0xFF00344A),
+    primaryContainer = Color(0xFF0B4F6C),
+    onPrimaryContainer = Color(0xFFC4EBFF),
+    secondary = Color(0xFF9B8CFF),
+    onSecondary = Color(0xFF261A6B),
+    secondaryContainer = Color(0xFF3B3190),
+    onSecondaryContainer = Color(0xFFE3DFFF),
+    tertiary = Color(0xFF5EEAD4),
+    onTertiary = Color(0xFF00382F),
+    tertiaryContainer = Color(0xFF0E5247),
+    onTertiaryContainer = Color(0xFFA0F5E4),
+    error = Color(0xFFFFB4AB),
+    onError = Color(0xFF690005),
+    errorContainer = Color(0xFF93000A),
+    onErrorContainer = Color(0xFFFFDAD6),
+    background = Color(0xFF060D18),
+    onBackground = Color(0xFFE2EAF5),
+    surface = Color(0xFF0A1422),
+    onSurface = Color(0xFFE2EAF5),
+    surfaceVariant = Color(0xFF1B2A3D),
+    onSurfaceVariant = Color(0xFFB4C4D8),
+    outline = Color(0xFF6E8199),
+    outlineVariant = Color(0xFF2B3C52),
+    scrim = Color(0xFF000000),
+    inverseSurface = Color(0xFFE2EAF5),
+    inverseOnSurface = Color(0xFF1B2A3D),
+    inversePrimary = Color(0xFF006A8E),
+    surfaceDim = Color(0xFF060D18),
+    surfaceBright = Color(0xFF22344B),
+    surfaceContainerLowest = Color(0xFF040A12),
+    surfaceContainerLow = Color(0xFF0A1422),
+    surfaceContainer = Color(0xFF0F1B2D),
+    surfaceContainerHigh = Color(0xFF16243A),
+    surfaceContainerHighest = Color(0xFF1D2E47),
+)
+
+private val liquidLight = lightColorScheme(
+    primary = Color(0xFF006A8E),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFC4EBFF),
+    onPrimaryContainer = Color(0xFF001E2C),
+    secondary = Color(0xFF5B4FC4),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFE3DFFF),
+    onSecondaryContainer = Color(0xFF16004F),
+    tertiary = Color(0xFF00695C),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFA0F5E4),
+    onTertiaryContainer = Color(0xFF00201A),
+    background = Color(0xFFEEF6FD),
+    onBackground = Color(0xFF0B1826),
+    surface = Color(0xFFF4F9FE),
+    onSurface = Color(0xFF0B1826),
+    surfaceVariant = Color(0xFFDCE8F4),
+    onSurfaceVariant = Color(0xFF3F5166),
+    outline = Color(0xFF71859C),
+    outlineVariant = Color(0xFFC0D0E2),
+)
+
 private val cyberDark = darkColorScheme(
     primary = primaryDark.cyber,
     onPrimary = onPrimaryDark.cyber,
@@ -790,6 +851,7 @@ fun NevLauncherTheme(
                 ColorThemeType.NEV_LAVA -> nevLavaDark
                 ColorThemeType.CRYOGENIC -> cryogenicDark
                 ColorThemeType.CYBER -> cyberDark
+                ColorThemeType.LIQUID -> liquidDark
                 ColorThemeType.CUSTOM -> customDark(
                     color = customColor,
                     style = customPaletteStyle
@@ -808,6 +870,7 @@ fun NevLauncherTheme(
                 ColorThemeType.NEV_LAVA -> nevLavaLight
                 ColorThemeType.CRYOGENIC -> cryogenicLight
                 ColorThemeType.CYBER -> cyberLight
+                ColorThemeType.LIQUID -> liquidLight
                 ColorThemeType.CUSTOM -> customLight(
                     color = customColor,
                     style = customPaletteStyle
@@ -846,7 +909,7 @@ fun NevLauncherTheme(
 
     //satu animasi putar bersama untuk garis tepi semua tombol Liquid (hanya berjalan bila fitur aktif)
     val liquidOn = AllSettings.controlLiquid.state
-    val liquidSpin: androidx.compose.runtime.State<Float>? = if (liquidOn) {
+    val liquidSpin: androidx.compose.runtime.State<Float>? = if (liquidOn || nevStyle.liquid) {
         androidx.compose.animation.core.rememberInfiniteTransition(label = "liquidSpin").animateFloat(
             initialValue = 0f,
             targetValue = 360f,
