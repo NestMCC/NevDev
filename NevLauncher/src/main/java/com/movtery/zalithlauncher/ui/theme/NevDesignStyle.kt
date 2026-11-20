@@ -142,7 +142,7 @@ val LocalNevStyle = compositionLocalOf { NevClassicStyle }
 @Composable
 fun nevPillShape(): Shape {
     val style = LocalNevStyle.current
-    return if (style.liquid) {
+    return if (style.liquid && !isBoxy()) {
         RoundedCornerShape(50)
     } else if (style.cyber) {
         //Cyber: potongan pada sisi diagonal yang berlawanan dengan Cryogenic
@@ -160,7 +160,7 @@ fun nevPillShape(): Shape {
 @Composable
 fun nevShape(radius: Dp): Shape {
     val style = LocalNevStyle.current
-    return if (style.liquid) {
+    return if (style.liquid && !isBoxy()) {
         RoundedCornerShape(radius * 1.3f)
     } else if (style.cyber) {
         val cut = radius * 0.5f

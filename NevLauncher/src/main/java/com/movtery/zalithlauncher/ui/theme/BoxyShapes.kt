@@ -34,8 +34,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape as BaseRoundedCorner
 
 /** Apakah bentuk kotak berlengkung tipis sedang aktif. */
 fun isBoxy(): Boolean =
-    AllSettings.launcherHeroHome.state && AllSettings.launcherDesignStyle.state != DesignStyleType.CYBER &&
-        AllSettings.launcherDesignStyle.state != DesignStyleType.LIQUID
+    AllSettings.launcherHeroHome.state && AllSettings.launcherDesignStyle.state != DesignStyleType.CYBER
 
 /** Radius yang diperkecil menjadi sudut kotak berlengkung tipis (4–10 dp). */
 fun boxyRadius(size: Dp): Dp =
