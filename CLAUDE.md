@@ -14,6 +14,7 @@ Repo: NestMCC/NevDev, branch kerja: `tema-cyber-desain` (fork Zalith Launcher 2,
 
 ## Fitur yang sudah ada (jangan sampai hilang)
 - Tema: Nev Lava, Cryogenic, Cyber (gaya desain + tata letak sendiri); "Hero" home; gaya kotak (boxy) global kecuali Cyber (`isBoxy()`, `BoxyButtons.kt`, `boxyBorder()`, import-swap tombol Material ke `ui.theme.*`).
+- Tema desain **Liquid** (`ColorThemeType.LIQUID` + `DesignStyleType.LIQUID`, `ui/theme/LiquidStyle.kt`): palet kaca, latar cairan bergerak (`liquidBackdrop`), tepi kaca berputar (`liquidGlassRim` di BackgroundCard), efek gelombang saat tombol ditekan (`liquidPress` di `BoxyButtons.kt`), bentuk sangat bulat (bukan boxy). Berbagi animasi putar `LocalLiquidSpin`. Dipilih dari Pengaturan → Tampilan.
 - Server Hub (cari, lokasi, online, game, favorit), unduh mod/modpack/shader dengan dependensi, kartu seri versi.
 - Perekaman layar (+ noise cancelling), overlay FPS/koordinat/arah, Menu Game satu panel, musik (mini player), statistik waktu bermain.
 - Kontrol: layout default NestMC, kontrol mengikuti tema (`controlFollowTheme`, `LocalControlAccent`), **Liquid** (`controlLiquid`, `LayerController/.../utils/LiquidEffect.kt`: kaca putih bening, gelombang cairan saat ditekan, garis tepi berputar).
