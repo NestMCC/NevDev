@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content
 
+import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -327,7 +328,7 @@ private fun ActionsLayout(
                 .weight(1f)
                 .fillMaxWidth()
                 .clip(nevShape(22.dp))
-                .background(NevRed.PanelDeep.copy(alpha = 0.85f))
+                .background(NevRed.PanelDeep.glassAlpha(0.85f))
                 .border(1.dp, frameColor.copy(alpha = 0.4f), nevShape(22.dp))
                 .drawBehind {
                     //penanda sudut ala HUD + cincin pijakan di bawah model

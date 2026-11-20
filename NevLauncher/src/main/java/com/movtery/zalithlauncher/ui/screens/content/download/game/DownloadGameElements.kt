@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.download.game
 
+import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
@@ -249,7 +250,7 @@ fun <E> AddonListLayout(
                 .fillMaxWidth()
                 .background(
                     Brush.horizontalGradient(
-                        listOf(NevRed.Panel.copy(alpha = 0.8f), NevRed.PanelDeep.copy(alpha = 0.9f))
+                        listOf(NevRed.Panel.glassAlpha(0.8f), NevRed.PanelDeep.glassAlpha(0.9f))
                     )
                 )
         ) {
@@ -483,7 +484,7 @@ fun AddonListItem(
             )
             .background(
                 Brush.horizontalGradient(
-                    listOf(NevRed.Panel.copy(alpha = 0.8f), NevRed.PanelDeep.copy(alpha = 0.9f))
+                    listOf(NevRed.Panel.glassAlpha(0.8f), NevRed.PanelDeep.glassAlpha(0.9f))
                 )
             )
             .clickable(onClick = onClick)
@@ -550,7 +551,7 @@ private fun CryoAddonListItem(
             modifier = Modifier
                 .background(
                     Brush.horizontalGradient(
-                        listOf(NevRed.Panel.copy(alpha = 0.8f), NevRed.PanelDeep.copy(alpha = 0.9f))
+                        listOf(NevRed.Panel.glassAlpha(0.8f), NevRed.PanelDeep.glassAlpha(0.9f))
                     )
                 )
                 .padding(horizontal = 16.dp, vertical = 12.dp),

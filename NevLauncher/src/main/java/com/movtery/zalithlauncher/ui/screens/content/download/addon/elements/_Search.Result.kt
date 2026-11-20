@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.download.addon.elements
 
+import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import androidx.compose.foundation.BorderStroke
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder
 import com.movtery.zalithlauncher.ui.theme.NevRed
@@ -716,7 +717,7 @@ fun ResultProjectCard(
     Surface(
         modifier = modifier.nevGlow(shape, 6.dp, 0.4f),
         shape = shape,
-        color = NevRed.PanelDeep.copy(alpha = 0.9f),
+        color = NevRed.PanelDeep.glassAlpha(0.9f),
         contentColor = NevRed.OnPanel,
         border = NevCardBorder,
         onClick = onClick
@@ -727,7 +728,7 @@ fun ResultProjectCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp))
-                    .background(NevRed.Panel.copy(alpha = 0.8f))
+                    .background(NevRed.Panel.glassAlpha(0.8f))
                     .padding(vertical = 14.dp),
                 contentAlignment = Alignment.Center
             ) {

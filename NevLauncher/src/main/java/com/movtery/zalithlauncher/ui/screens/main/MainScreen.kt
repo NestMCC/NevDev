@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.main
 
+import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import com.movtery.zalithlauncher.ui.theme.nevGlow
 import com.movtery.zalithlauncher.ui.theme.cyberBackdrop
 import com.movtery.zalithlauncher.ui.theme.liquidBackdrop
@@ -651,7 +652,7 @@ private fun SideRail(
                 Row(
                     modifier = Modifier
                         .nevGlow(dockShape, 10.dp, 0.45f)
-                        .background(NevRed.Panel.copy(alpha = 0.92f), dockShape)
+                        .background(NevRed.Panel.glassAlpha(0.92f), dockShape)
                         .border(
                             BorderStroke(
                                 1.dp,
@@ -687,7 +688,7 @@ private fun SideRail(
                             ),
                             capsule
                         )
-                        .background(NevRed.Panel.copy(alpha = 0.72f), capsule)
+                        .background(NevRed.Panel.glassAlpha(0.72f), capsule)
                         .padding(all = 6.dp)
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,

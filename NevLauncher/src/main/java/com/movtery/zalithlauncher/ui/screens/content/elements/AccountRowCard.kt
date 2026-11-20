@@ -17,6 +17,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.elements
 
+import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -74,7 +75,7 @@ fun AccountRowCard(
     Surface(
         modifier = modifier,
         shape = shape,
-        color = NevRed.PanelDeep.copy(alpha = 0.92f),
+        color = NevRed.PanelDeep.glassAlpha(0.92f),
         contentColor = NevRed.OnPanel,
         border = if (selected) BorderStroke(1.5.dp, NevRed.Gradient) else NevCardBorder,
         onClick = { if (!selected) onSelected(account) }

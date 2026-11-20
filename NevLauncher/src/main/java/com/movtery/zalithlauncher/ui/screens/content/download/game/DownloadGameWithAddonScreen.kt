@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.download.game
 
+import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -636,7 +637,7 @@ private fun ScreenHeader(
                         editedByUser = true
                     }
                 },
-                color = NevRed.PanelDeep.copy(alpha = 0.9f),
+                color = NevRed.PanelDeep.glassAlpha(0.9f),
                 contentColor = itemContentColor,
                 contextPadding = PaddingValues(horizontal = 18.dp, vertical = 14.dp),
                 singleLine = true,

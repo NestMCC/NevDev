@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.elements
 
+import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import com.movtery.zalithlauncher.ui.theme.nevGlow
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Brush
@@ -2310,7 +2311,7 @@ private fun SkinActionRow(
     Surface(
         modifier = modifier,
         shape = nevShape(16.dp),
-        color = NevRed.Panel.copy(alpha = 0.9f),
+        color = NevRed.Panel.glassAlpha(0.9f),
         contentColor = if (enabled) NevRed.OnPanel else NevRed.Muted,
         border = androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = if (enabled) 0.45f else 0.15f)),
         enabled = enabled,

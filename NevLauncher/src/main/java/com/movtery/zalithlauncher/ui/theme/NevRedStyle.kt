@@ -46,13 +46,18 @@ object NevRed {
     val OnGradient: Color
         @Composable get() = MaterialTheme.colorScheme.onPrimary
     val Panel: Color
-        @Composable get() = MaterialTheme.colorScheme.surfaceContainer
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainer, 0.42f)
     val PanelDeep: Color
-        @Composable get() = MaterialTheme.colorScheme.surfaceContainerLow
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerLow, 0.50f)
     val SurfaceHigh: Color
-        @Composable get() = MaterialTheme.colorScheme.surfaceContainerHigh
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerHigh, 0.48f)
     val SurfaceHighest: Color
-        @Composable get() = MaterialTheme.colorScheme.surfaceContainerHighest
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerHighest, 0.52f)
+
+    /** Pada gaya Liquid warna panel dibuat tembus pandang seperti kaca; gaya lain tetap solid. */
+    @Composable
+    private fun glass(base: Color, alpha: Float): Color =
+        if (LocalNevStyle.current.liquid) lerp(base, Color.White, 0.07f).copy(alpha = alpha) else base
     val Outline: Color
         @Composable get() = MaterialTheme.colorScheme.outlineVariant
     val OutlineBright: Color
@@ -462,7 +467,7 @@ fun NevPillTab(
                 modifier = Modifier
                     .background(
                         if (selected) NevRed.Gradient
-                        else androidx.compose.ui.graphics.SolidColor(NevRed.Panel.copy(alpha = 0.8f))
+                        else androidx.compose.ui.graphics.SolidColor(NevRed.Panel.glassAlpha(0.8f))
                     )
                     .padding(horizontal = 14.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -514,7 +519,7 @@ fun NevPillTab(
                     )
                     .background(
                         if (selected) NevRed.OnGradient.copy(alpha = 0.18f)
-                        else NevRed.SurfaceHigh.copy(alpha = 0.6f),
+                        else NevRed.SurfaceHigh.glassAlpha(0.6f),
                         nevPillShape()
                     ),
                 contentAlignment = Alignment.Center
@@ -562,7 +567,7 @@ fun NevPillBar(
                 ),
                 shape
             )
-            .background(NevRed.Panel.copy(alpha = 0.72f), shape)
+            .background(NevRed.Panel.glassAlpha(0.72f), shape)
             .padding(horizontal = 4.dp, vertical = 4.dp)
     ) {
         content()
@@ -629,7 +634,7 @@ fun NevFilterChip(
             modifier = Modifier
                 .background(
                     if (selected) NevRed.GradientDiagonal
-                    else NevRed.solid(NevRed.Panel.copy(alpha = 0.72f))
+                    else NevRed.solid(NevRed.Panel.glassAlpha(0.72f))
                 )
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -670,7 +675,7 @@ fun NevPanelFrame(
             )
             .background(
                 Brush.verticalGradient(
-                    listOf(NevRed.Panel.copy(alpha = 0.82f), NevRed.PanelDeep.copy(alpha = 0.9f))
+                    listOf(NevRed.Panel.glassAlpha(0.82f), NevRed.PanelDeep.glassAlpha(0.9f))
                 ),
                 shape
             )
@@ -694,7 +699,7 @@ fun NevInnerPanel(
             .border(1.dp, accent.copy(alpha = 0.75f), shape)
             .background(
                 Brush.verticalGradient(
-                    listOf(accent.copy(alpha = 0.14f), NevRed.PanelDeep.copy(alpha = 0.85f))
+                    listOf(accent.copy(alpha = 0.14f), NevRed.PanelDeep.glassAlpha(0.85f))
                 ),
                 shape
             )
@@ -749,3 +754,11 @@ fun NevActionButton(
         }
     }
 }
+
+/**
+ * Atur opasitas warna panel NevRed. Gaya lain: opasitas persis [alpha].
+ * Gaya Liquid: panel tetap berupa kaca tembus pandang, jadi opasitas hanya boleh lebih rendah dari nilai kaca bawaan.
+ */
+@Composable
+fun Color.glassAlpha(alpha: Float): Color =
+    if (LocalNevStyle.current.liquid) copy(alpha = minOf(this.alpha, alpha)) else copy(alpha = alpha)

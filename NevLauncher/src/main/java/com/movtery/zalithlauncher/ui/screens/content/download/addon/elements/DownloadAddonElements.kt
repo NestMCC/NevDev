@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.download.addon.elements
 
+import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import com.movtery.zalithlauncher.ui.theme.RoundedCornerShape
 import androidx.compose.foundation.BorderStroke
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder
@@ -758,7 +759,7 @@ private fun CryoAddonVersionListItem(
             modifier = Modifier
                 .background(
                     Brush.horizontalGradient(
-                        listOf(NevRed.Panel.copy(alpha = 0.8f), NevRed.PanelDeep.copy(alpha = 0.9f))
+                        listOf(NevRed.Panel.glassAlpha(0.8f), NevRed.PanelDeep.glassAlpha(0.9f))
                     )
                 )
                 .padding(horizontal = 12.dp, vertical = 10.dp),

@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.download.game
 
+import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import androidx.activity.compose.BackHandler
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -445,7 +446,7 @@ private fun VersionHeader(
                             .border(1.dp, NevRed.OutlineBright.copy(alpha = 0.7f), RoundedCornerShape(50)),
                         value = versionFilter.id,
                         onValueChange = { onVersionFilterChange(versionFilter.copy(id = it)) },
-                        color = NevRed.Panel.copy(alpha = 0.72f),
+                        color = NevRed.Panel.glassAlpha(0.72f),
                         contentColor = itemContentColor,
                         contextPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
                         singleLine = true,
@@ -1162,7 +1163,7 @@ private fun VersionGroupInfoPanel(
         ) {
             Box(
                 modifier = Modifier
-                    .background(NevRed.SurfaceHigh.copy(alpha = 0.7f))
+                    .background(NevRed.SurfaceHigh.glassAlpha(0.7f))
                     .padding(vertical = 14.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -1201,7 +1202,7 @@ private fun VersionNumberedRow(
             modifier = Modifier
                 .background(
                     Brush.horizontalGradient(
-                        listOf(NevRed.Panel.copy(alpha = 0.8f), NevRed.PanelDeep.copy(alpha = 0.9f))
+                        listOf(NevRed.Panel.glassAlpha(0.8f), NevRed.PanelDeep.glassAlpha(0.9f))
                     )
                 )
                 .padding(horizontal = 16.dp, vertical = 12.dp),

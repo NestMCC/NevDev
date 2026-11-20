@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.components
 
+import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import androidx.compose.foundation.layout.Arrangement
 import com.movtery.zalithlauncher.ui.theme.NevActionButton
 import com.movtery.zalithlauncher.ui.theme.NevRed
@@ -813,7 +814,7 @@ private fun NevOutlineButton(
     ) {
         androidx.compose.foundation.layout.Box(
             modifier = Modifier
-                .androidx_fill(shape, NevRed.SurfaceHigh.copy(alpha = 0.6f))
+                .androidx_fill(shape, NevRed.SurfaceHigh.glassAlpha(0.6f))
                 .padding(horizontal = 18.dp, vertical = 14.dp),
             contentAlignment = Alignment.Center
         ) {
