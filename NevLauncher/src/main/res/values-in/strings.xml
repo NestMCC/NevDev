@@ -1779,4 +1779,6 @@
     <string name="dash_packs_versions">Paket &amp; Versi</string>
     <string name="dash_choose">Pilih</string>
     <string name="dash_selected">Dipilih</string>
+    <string name="theme_color_hero">Hero</string>
+    <string name="settings_display_theme_hero_desc">Layar penuh, judul versi besar</string>
 </resources>

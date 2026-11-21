@@ -49,7 +49,10 @@ enum class DesignStyleType {
     CYBER,
 
     /** Gaya Liquid: kaca bening, sudut sangat bulat, latar cairan bergerak, efek gelombang saat ditekan. */
-    LIQUID
+    LIQUID,
+
+    /** Gaya Hero: layar penuh dengan judul versi besar dan tombol Main besar; bentuk dan warna seperti Nev. */
+    HERO
 }
 
 /** Sisi layar tempat menu navigasi utama diletakkan. */
@@ -132,6 +135,7 @@ val NevLiquidStyle = NevStyle(
 fun nevStyleFor(type: DesignStyleType): NevStyle = when (type) {
     DesignStyleType.LIQUID -> NevLiquidStyle
     DesignStyleType.NEV -> NevClassicStyle
+    DesignStyleType.HERO -> NevClassicStyle
     DesignStyleType.CRYOGENIC -> NevCryogenicStyle
     DesignStyleType.CYBER -> NevCyberStyle
 }

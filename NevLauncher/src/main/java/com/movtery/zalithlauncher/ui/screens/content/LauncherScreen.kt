@@ -192,7 +192,9 @@ fun LauncherScreen(
             if (!isVisible) dragState.onDragCancel()
         }
 
-        if (!LocalNevStyle.current.cyber) {
+        if (AllSettings.launcherDesignStyle.state != com.movtery.zalithlauncher.ui.theme.DesignStyleType.HERO &&
+            !LocalNevStyle.current.cyber
+        ) {
             DashboardHome(
                 isVisible = isVisible,
                 onLaunchGame = onLaunchGame,
@@ -211,7 +213,7 @@ fun LauncherScreen(
             return@BaseScreen
         }
 
-        if (AllSettings.launcherHeroHome.state) {
+        if (AllSettings.launcherDesignStyle.state == com.movtery.zalithlauncher.ui.theme.DesignStyleType.HERO) {
             HeroHome(
                 isVisible = isVisible,
                 onLaunchGame = onLaunchGame,

@@ -99,6 +99,13 @@ private val designThemes = listOf(
         descRes = R.string.settings_display_theme_liquid_desc,
         swatch = listOf(Color(0xFF060D18), Color(0xFF5AC8FA), Color(0xFF9B8CFF)),
         style = DesignStyleType.LIQUID
+    ),
+    DesignTheme(
+        type = ColorThemeType.NEV_LAVA,
+        nameRes = R.string.theme_color_hero,
+        descRes = R.string.settings_display_theme_hero_desc,
+        swatch = listOf(Color(0xFF2A0C0A), Color(0xFFB3201A), Color(0xFFFF5A3D)),
+        style = DesignStyleType.HERO
     )
 )
 
@@ -149,7 +156,9 @@ fun DisplaySettingsScreen(
                                     DesignThemeCard(
                                         modifier = Modifier.weight(1f),
                                         theme = theme,
-                                        selected = selectedType == theme.type,
+                                        selected = selectedType == theme.type &&
+                                            ((AllSettings.launcherDesignStyle.state == DesignStyleType.HERO) ==
+                                                (theme.style == DesignStyleType.HERO)),
                                         onClick = {
                                             AllSettings.launcherColorTheme.save(theme.type)
                                             val ownStyle = theme.style
@@ -157,7 +166,8 @@ fun DisplaySettingsScreen(
                                                 //tema dengan gaya sendiri (Cyber): pasang gaya + tata letaknya
                                                 AllSettings.launcherDesignStyle.save(ownStyle)
                                             } else if (AllSettings.launcherDesignStyle.state == DesignStyleType.CYBER ||
-                                                AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
+                                                AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID ||
+                                                AllSettings.launcherDesignStyle.state == DesignStyleType.HERO) {
                                                 //pindah dari Cyber/Liquid ke tema lain: kembali ke gaya klasik
                                                 AllSettings.launcherDesignStyle.save(DesignStyleType.NEV)
                                             }
@@ -182,16 +192,9 @@ fun DisplaySettingsScreen(
                                 DesignStyleType.CRYOGENIC -> stringResource(R.string.settings_display_style_cryogenic)
                                 DesignStyleType.CYBER -> stringResource(R.string.settings_display_style_cyber)
                                 DesignStyleType.LIQUID -> stringResource(R.string.settings_display_style_liquid)
+                                DesignStyleType.HERO -> stringResource(R.string.theme_color_hero)
                             }
                         }
-                    )
-
-                    SwitchSettingsCard(
-                        modifier = Modifier.fillMaxWidth(),
-                        position = CardPosition.Middle,
-                        unit = AllSettings.launcherHeroHome,
-                        title = stringResource(R.string.settings_display_hero_home_title),
-                        summary = stringResource(R.string.settings_display_hero_home_summary)
                     )
 
                     SwitchSettingsCard(

@@ -483,8 +483,6 @@ object AllSettings : SettingsRegistry() {
      */
     val launcherUiScale = intSetting("launcherUiScale", 100, 60..150)
 
-    /** Beranda bergaya hero (judul versi besar + tombol Main besar). Mati = beranda kartu lama. */
-    val launcherHeroHome = boolSetting("launcherHeroHome", true)
 
     /** Warna tombol kontrol (merah/oranye bawaan Nev) mengikuti tema warna launcher */
     val controlFollowTheme = boolSetting("controlFollowTheme", true)

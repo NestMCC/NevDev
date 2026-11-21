@@ -3391,4 +3391,6 @@
     <string name="dash_packs_versions">Packs &amp; Versions</string>
     <string name="dash_choose">Select</string>
     <string name="dash_selected">Selected</string>
+    <string name="theme_color_hero">Hero</string>
+    <string name="settings_display_theme_hero_desc">Full screen, big version title</string>
 </resources>

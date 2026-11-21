@@ -188,7 +188,7 @@ fun MainScreen(
     val mainScreenKey = screenBackStackModel.mainScreen.currentKey
     val inLauncherScreen = mainScreenKey == null || mainScreenKey is NormalNavKey.LauncherMain
     //beranda hero: layar penuh tanpa side rail; menu pindah jadi teks di bawah judul
-    val heroLayout = AllSettings.launcherHeroHome.state
+    val heroLayout = AllSettings.launcherDesignStyle.state == com.movtery.zalithlauncher.ui.theme.DesignStyleType.HERO
     val heroHome = heroLayout && inLauncherScreen
 
     val isBackgroundValid = LocalBackgroundViewModel.current?.isValid == true
