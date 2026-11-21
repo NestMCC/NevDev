@@ -557,6 +557,11 @@ fun NevPillBar(
         Box(modifier = modifier) { content() }
         return
     }
+    if (isNevDesign()) {
+        //tema Nev: tanpa garis/kapsul pembungkus, tab berdiri sendiri
+        Box(modifier = modifier) { content() }
+        return
+    }
     val shape = nevPillShape()
     Box(
         modifier = modifier
@@ -581,8 +586,19 @@ fun NevDiamondIcon(
     modifier: Modifier = Modifier,
     filled: Boolean = false
 ) {
+    val round = isNevDesign()
     androidx.compose.foundation.Canvas(modifier = modifier.size(18.dp)) {
         val s = size.minDimension
+        if (round) {
+            //tema Nev: ikon bundar menggantikan berlian
+            drawCircle(
+                color = color,
+                radius = s / 2f - s * 0.06f,
+                style = androidx.compose.ui.graphics.drawscope.Stroke(width = s * 0.12f)
+            )
+            if (filled) drawCircle(color = color, radius = s * 0.24f)
+            return@Canvas
+        }
         val path = androidx.compose.ui.graphics.Path().apply {
             moveTo(s / 2f, 0f)
             lineTo(s, s / 2f)
@@ -619,7 +635,7 @@ fun NevFilterChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shape = nevShape(16.dp)
+    val shape = if (isNevDesign()) nevPillShape() else nevShape(16.dp)
     Surface(
         onClick = onClick,
         modifier = modifier.semantics { role = Role.Checkbox },

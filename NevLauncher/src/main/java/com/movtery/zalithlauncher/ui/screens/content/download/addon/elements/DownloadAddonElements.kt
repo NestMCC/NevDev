@@ -241,7 +241,7 @@ fun AddonVersionItemLayout(
     infoMap: VersionInfoMap,
     defaultExpanded: Boolean = infoMap.isAdapt,
     maxListHeight: Dp = rememberMaxHeight(),
-    shape: Shape = RoundedCornerShape(20.dp),
+    shape: Shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(20.dp, 8.dp)),
     influencedByBackground: Boolean = true,
     color: Color = cardColor(influencedByBackground),
     contentColor: Color = onCardColor(),
@@ -747,7 +747,7 @@ private fun CryoAddonVersionListItem(
     Surface(
         onClick = onClick,
         modifier = modifier,
-        shape = nevShape(18.dp),
+        shape = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) RoundedCornerShape(8.dp) else nevShape(18.dp),
         color = Color.Transparent,
         contentColor = NevRed.OnPanel,
         border = BorderStroke(

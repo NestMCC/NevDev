@@ -493,7 +493,7 @@ fun ResultProjectLayout(
     isInstalled: Boolean = false,
 //    isFavorite: Boolean = false,
 //    onFavoriteClick: (() -> Unit)? = null,
-    shape: Shape = RoundedCornerShape(20.dp),
+    shape: Shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(20.dp, 8.dp)),
     influencedByBackground: Boolean = true,
     color: Color = cardColor(influencedByBackground),
     contentColor: Color = onCardColor(),
@@ -711,7 +711,7 @@ fun ResultProjectCard(
     onClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    val shape = com.movtery.zalithlauncher.ui.theme.nevShape(12.dp)
+    val shape = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) RoundedCornerShape(6.dp) else com.movtery.zalithlauncher.ui.theme.nevShape(12.dp)
     val accent = NevRed.GradientStart
 
     Surface(

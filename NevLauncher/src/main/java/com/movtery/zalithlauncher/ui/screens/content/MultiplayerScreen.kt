@@ -230,7 +230,7 @@ private fun MainMenu(
             //启用多人联机
             SwitchSettingsCard(
                 modifier = Modifier.fillMaxWidth(),
-                position = CardPosition.Top,
+                position = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) CardPosition.Single else CardPosition.Top,
                 unit = AllSettings.enableTerracotta,
                 title = stringResource(R.string.terracotta_enable),
                 verticalAlignment = Alignment.CenterVertically,
@@ -252,7 +252,7 @@ private fun MainMenu(
             // 自定义服务器节点
             SwitchSettingsCard(
                 modifier = Modifier.fillMaxWidth(),
-                position = CardPosition.Middle,
+                position = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) CardPosition.Single else CardPosition.Middle,
                 unit = AllSettings.enableTerracottaNodes,
                 title = stringResource(R.string.terracotta_custom_note_list),
                 verticalAlignment = Alignment.CenterVertically,
@@ -283,7 +283,7 @@ private fun MainMenu(
             //分享联机核心日志
             SettingsCard(
                 modifier = Modifier.fillMaxWidth(),
-                position = CardPosition.Middle,
+                position = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) CardPosition.Single else CardPosition.Middle,
                 title = stringResource(R.string.terracotta_export_log_share),
                 innerPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
                 onClick = onShareLogs,
@@ -293,7 +293,7 @@ private fun MainMenu(
             //关于 EasyTier
             SettingsCard(
                 modifier = Modifier.fillMaxWidth(),
-                position = CardPosition.Bottom,
+                position = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) CardPosition.Single else CardPosition.Bottom,
                 title = stringResource(R.string.terracotta_easytier),
                 innerPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
                 onClick = {

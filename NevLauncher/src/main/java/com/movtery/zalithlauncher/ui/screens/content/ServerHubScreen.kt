@@ -228,7 +228,7 @@ private fun ServerHubContent(
             )
             OutlinedButton(
                 onClick = { favoritesOnly = !favoritesOnly },
-                shape = RoundedCornerShape(12.dp),
+                shape = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) CircleShape else RoundedCornerShape(12.dp),
                 border = BorderStroke(
                     width = if (favoritesOnly) 2.dp else 1.dp,
                     color = if (favoritesOnly) NevRed.OutlineBright else NevRed.Outline
@@ -242,7 +242,7 @@ private fun ServerHubContent(
             }
             OutlinedButton(
                 onClick = { showAdd = true },
-                shape = RoundedCornerShape(12.dp),
+                shape = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) CircleShape else RoundedCornerShape(12.dp),
                 border = BorderStroke(1.dp, NevRed.Outline),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = NevRed.GradientEnd),
                 contentPadding = PaddingValues(horizontal = 12.dp)
@@ -345,7 +345,7 @@ private fun <T> FilterDropdown(
     Box {
         OutlinedButton(
             onClick = { expanded = true },
-            shape = RoundedCornerShape(12.dp),
+            shape = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) CircleShape else RoundedCornerShape(12.dp),
             border = BorderStroke(1.dp, NevRed.Outline),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = NevRed.OnPanel)
         ) {
@@ -387,7 +387,7 @@ private fun ServerHubCard(
     BackgroundCard(
         modifier = Modifier.fillMaxWidth(),
         influencedByBackground = false,
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(22.dp, 6.dp)),
         border = NevCardBorder
     ) {
         Column(

@@ -867,7 +867,7 @@ private fun VersionGroupCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shape = RoundedCornerShape(28.dp)
+    val shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(28.dp, 8.dp))
     val scale = remember { Animatable(initialValue = 0.95f) }
     LaunchedEffect(Unit) {
         scale.animateTo(targetValue = 1f, animationSpec = getAnimateTween())
@@ -1187,7 +1187,7 @@ private fun VersionNumberedRow(
     openLink: (url: String) -> Unit
 ) {
     val (_, _, wikiUrl, _) = getVersionComponents(version)
-    val shape = RoundedCornerShape(24.dp)
+    val shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(24.dp, 8.dp))
     Surface(
         modifier = Modifier.fillMaxWidth(),
         onClick = onClick,

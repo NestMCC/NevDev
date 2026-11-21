@@ -19,6 +19,7 @@
 package com.movtery.zalithlauncher.ui.theme
 
 import androidx.compose.material3.Shapes
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape as BaseRoundedCorner
  * serentak (Unduh, Modpack/Mod/Snapshot, Kelola Versi, Pengaturan, dialog, dst.).
  * Membaca state Compose, sehingga ikut berubah saat saklar diubah.
  */
+
+/** true bila tema desain aktif adalah Nev (klasik): bukan Cryogenic/Futuristik, Cyber, Liquid, maupun Hero. */
+@Composable
+fun isNevDesign(): Boolean = AllSettings.launcherDesignStyle.state == DesignStyleType.NEV
+
+/** Radius kartu daftar: persegi panjang (kecil) pada tema Nev, [default] pada tema lain. */
+@Composable
+fun nevRectRadius(default: androidx.compose.ui.unit.Dp, rect: androidx.compose.ui.unit.Dp = 8.dp): androidx.compose.ui.unit.Dp =
+    if (isNevDesign()) rect else default
 
 /** Apakah bentuk kotak berlengkung tipis sedang aktif. */
 fun isBoxy(): Boolean =

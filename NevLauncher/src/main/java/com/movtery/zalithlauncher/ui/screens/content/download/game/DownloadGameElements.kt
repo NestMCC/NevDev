@@ -473,7 +473,7 @@ fun AddonListItem(
         )
         return
     }
-    val shape = RoundedCornerShape(20.dp)
+    val shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(20.dp, 8.dp))
     Row(
         modifier = modifier
             .clip(shape)
@@ -539,7 +539,7 @@ private fun CryoAddonListItem(
     Surface(
         onClick = onClick,
         modifier = modifier,
-        shape = nevShape(20.dp),
+        shape = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) RoundedCornerShape(8.dp) else nevShape(20.dp),
         color = Color.Transparent,
         contentColor = NevRed.OnPanel,
         border = BorderStroke(
