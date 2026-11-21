@@ -695,6 +695,82 @@ private val cyberLight = lightColorScheme(
     surfaceContainerHighest = surfaceContainerHighestLight.cyber,
 )
 
+private val heroDark = darkColorScheme(
+    primary = Color(0xFFFFFFFF),
+    onPrimary = Color(0xFF000000),
+    primaryContainer = Color(0xFF2B2B2B),
+    onPrimaryContainer = Color(0xFFFFFFFF),
+    secondary = Color(0xFFD9D9D9),
+    onSecondary = Color(0xFF000000),
+    secondaryContainer = Color(0xFF3A3A3A),
+    onSecondaryContainer = Color(0xFFFFFFFF),
+    tertiary = Color(0xFFB8B8B8),
+    onTertiary = Color(0xFF000000),
+    tertiaryContainer = Color(0xFF333333),
+    onTertiaryContainer = Color(0xFFF2F2F2),
+    error = Color(0xFFFFB4AB),
+    onError = Color(0xFF690005),
+    errorContainer = Color(0xFF93000A),
+    onErrorContainer = Color(0xFFFFDAD6),
+    background = Color(0xFF000000),
+    onBackground = Color(0xFFFFFFFF),
+    surface = Color(0xFF0A0A0A),
+    onSurface = Color(0xFFFFFFFF),
+    surfaceVariant = Color(0xFF1F1F1F),
+    onSurfaceVariant = Color(0xFFCFCFCF),
+    outline = Color(0xFF8A8A8A),
+    outlineVariant = Color(0xFF3A3A3A),
+    scrim = Color(0xFF000000),
+    inverseSurface = Color(0xFFFFFFFF),
+    inverseOnSurface = Color(0xFF111111),
+    inversePrimary = Color(0xFF000000),
+    surfaceDim = Color(0xFF000000),
+    surfaceBright = Color(0xFF2A2A2A),
+    surfaceContainerLowest = Color(0xFF000000),
+    surfaceContainerLow = Color(0xFF0A0A0A),
+    surfaceContainer = Color(0xFF111111),
+    surfaceContainerHigh = Color(0xFF1A1A1A),
+    surfaceContainerHighest = Color(0xFF242424),
+)
+
+private val heroLight = lightColorScheme(
+    primary = Color(0xFF000000),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFE6E6E6),
+    onPrimaryContainer = Color(0xFF000000),
+    secondary = Color(0xFF2B2B2B),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFDADADA),
+    onSecondaryContainer = Color(0xFF000000),
+    tertiary = Color(0xFF555555),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFE0E0E0),
+    onTertiaryContainer = Color(0xFF111111),
+    error = Color(0xFFBA1A1A),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFFDAD6),
+    onErrorContainer = Color(0xFF410002),
+    background = Color(0xFFFFFFFF),
+    onBackground = Color(0xFF000000),
+    surface = Color(0xFFFAFAFA),
+    onSurface = Color(0xFF000000),
+    surfaceVariant = Color(0xFFEDEDED),
+    onSurfaceVariant = Color(0xFF444444),
+    outline = Color(0xFF777777),
+    outlineVariant = Color(0xFFCCCCCC),
+    scrim = Color(0xFF000000),
+    inverseSurface = Color(0xFF111111),
+    inverseOnSurface = Color(0xFFFFFFFF),
+    inversePrimary = Color(0xFFFFFFFF),
+    surfaceDim = Color(0xFFE2E2E2),
+    surfaceBright = Color(0xFFFFFFFF),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFF5F5F5),
+    surfaceContainer = Color(0xFFEFEFEF),
+    surfaceContainerHigh = Color(0xFFE8E8E8),
+    surfaceContainerHighest = Color(0xFFE0E0E0),
+)
+
 private val liquidDark = darkColorScheme(
     primary = Color(0xFF5AC8FA),
     onPrimary = Color(0xFF00344A),
@@ -852,6 +928,7 @@ fun NevLauncherTheme(
                 ColorThemeType.CRYOGENIC -> cryogenicDark
                 ColorThemeType.CYBER -> cyberDark
                 ColorThemeType.LIQUID -> liquidDark
+                ColorThemeType.HERO -> heroDark
                 ColorThemeType.CUSTOM -> customDark(
                     color = customColor,
                     style = customPaletteStyle
@@ -871,6 +948,7 @@ fun NevLauncherTheme(
                 ColorThemeType.CRYOGENIC -> cryogenicLight
                 ColorThemeType.CYBER -> cyberLight
                 ColorThemeType.LIQUID -> liquidLight
+                ColorThemeType.HERO -> heroLight
                 ColorThemeType.CUSTOM -> customLight(
                     color = customColor,
                     style = customPaletteStyle

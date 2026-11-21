@@ -45,6 +45,7 @@ enum class ColorThemeType {
     CRYOGENIC,
     CYBER,
     LIQUID,
+    HERO,
     CUSTOM,
     SEED_OCEAN,
     SEED_SUNSET,

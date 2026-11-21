@@ -101,10 +101,10 @@ private val designThemes = listOf(
         style = DesignStyleType.LIQUID
     ),
     DesignTheme(
-        type = ColorThemeType.NEV_LAVA,
+        type = ColorThemeType.HERO,
         nameRes = R.string.theme_color_hero,
         descRes = R.string.settings_display_theme_hero_desc,
-        swatch = listOf(Color(0xFF2A0C0A), Color(0xFFB3201A), Color(0xFFFF5A3D)),
+        swatch = listOf(Color(0xFF000000), Color(0xFF8A8A8A), Color(0xFFFFFFFF)),
         style = DesignStyleType.HERO
     )
 )
