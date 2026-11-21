@@ -252,18 +252,27 @@ fun AddonVersionItemLayout(
     var expanded by remember(infoMap) { mutableStateOf(defaultExpanded) }
     //Gaya Cryogenic: daftar file dua kolom di layar lebar
     val twoColumns = LocalNevStyle.current.cutCorners && LocalConfiguration.current.screenWidthDp >= 600
+    //selain gaya Cryogenic: tampilan kartu sama dengan daftar mod/modpack (bingkai + isi gradasi)
+    val cardStyle = !LocalNevStyle.current.cutCorners
+    val accent = NevRed.GradientStart
 
     Surface(
-        modifier = modifier.nevGlow(shape, 6.dp, 0.4f),
+        modifier = if (cardStyle) modifier else modifier.nevGlow(shape, 6.dp, 0.4f),
         shape = shape,
-        color = color,
-        contentColor = contentColor,
-        border = NevCardBorder
+        color = if (cardStyle) Color.Transparent else color,
+        contentColor = if (cardStyle) NevRed.OnPanel else contentColor,
+        border = if (cardStyle) {
+            BorderStroke(1.5.dp, Brush.linearGradient(listOf(accent.copy(alpha = 0.9f), accent.copy(alpha = 0.35f))))
+        } else NevCardBorder
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .backgroundGlass(blur, color, influencedByBackground)
+                .then(
+                    if (cardStyle) Modifier.background(
+                        Brush.verticalGradient(listOf(accent.copy(alpha = 0.28f), NevRed.PanelDeep, NevRed.Panel))
+                    ) else Modifier.backgroundGlass(blur, color, influencedByBackground)
+                )
         ) {
             AddonVersionHeadLayout(
                 modifier = Modifier.fillMaxWidth(),
@@ -320,29 +329,36 @@ fun AddonVersionItemLayout(
                                 }
                             }
                         } else {
-                            Column(
+                            androidx.compose.foundation.layout.BoxWithConstraints(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .heightIn(max = maxListHeight)
-                                    .verticalScroll(rememberScrollState())
-                                    .padding(horizontal = 10.dp, vertical = 6.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                infoMap.versions.chunked(2).forEach { pair ->
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        pair.forEach { version ->
-                                            AddonVersionListItem(
-                                                modifier = Modifier.weight(1f),
-                                                version = version,
-                                                installed = installedChecker?.invoke(version),
-                                                onClick = { onItemClicked(version) }
-                                            )
-                                        }
-                                        if (pair.size == 1) {
-                                            Spacer(modifier = Modifier.weight(1f))
+                                //jumlah kolom menyesuaikan lebar (kartu landscape min. 300dp, seperti daftar mod)
+                                val columns = (maxWidth / 300.dp).toInt().coerceAtLeast(1)
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .verticalScroll(rememberScrollState())
+                                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    infoMap.versions.chunked(columns).forEach { rowItems ->
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                        ) {
+                                            rowItems.forEach { version ->
+                                                AddonVersionListItem(
+                                                    modifier = Modifier.weight(1f),
+                                                    version = version,
+                                                    installed = installedChecker?.invoke(version),
+                                                    onClick = { onItemClicked(version) }
+                                                )
+                                            }
+                                            repeat(columns - rowItems.size) {
+                                                Spacer(modifier = Modifier.weight(1f))
+                                            }
                                         }
                                     }
                                 }
@@ -492,115 +508,136 @@ private fun AddonVersionListItem(
     val downloadCount = remember { version.platformDownloadCount() }
     val date = remember { version.platformDatePublished() }
     val context = LocalContext.current
-    val shape = RoundedCornerShape(16.dp)
+    val shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(28.dp, 22.dp))
+    //terpasang: aksen hijau (tertiary), lainnya aksen tema
+    val accent = if (installed != null) MaterialTheme.colorScheme.tertiary else NevRed.GradientStart
 
-    Column(
+    //kartu landscape bersudut bulat, sama dengan daftar mod/modpack dan daftar versi game
+    Surface(
         modifier = modifier
-            .clip(shape)
-            .background(
-                if (installed != null) MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
-                else Color.Black.copy(alpha = 0.25f)
-            )
-            .border(1.dp, NevRed.Outline.copy(alpha = 0.7f), shape)
-            .clickable(onClick = onClick)
-            .padding(10.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .fillMaxWidth()
+            .aspectRatio(2.25f),
+        onClick = onClick,
+        shape = shape,
+        color = Color.Transparent,
+        contentColor = NevRed.OnPanel,
+        border = BorderStroke(
+            1.5.dp,
+            Brush.linearGradient(listOf(accent.copy(alpha = 0.9f), accent.copy(alpha = 0.35f)))
+        )
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(releaseType.color.copy(alpha = 0.2f))
-                    .border(1.dp, releaseType.color.copy(alpha = 0.6f), RoundedCornerShape(10.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = releaseType.name.take(1),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = releaseType.color
-                )
-            }
-            Text(
-                modifier = Modifier.weight(1f),
-                text = displayName,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+        Box(
+            modifier = Modifier.background(
+                Brush.verticalGradient(listOf(accent.copy(alpha = 0.28f), NevRed.PanelDeep, NevRed.Panel))
             )
-        }
-
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .alpha(0.75f),
-                verticalArrangement = Arrangement.spacedBy(3.dp)
+                    .fillMaxSize()
+                    .padding(all = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(releaseType.color.copy(alpha = 0.2f))
+                                .border(1.dp, releaseType.color.copy(alpha = 0.6f), RoundedCornerShape(10.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = releaseType.name.take(1),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = releaseType.color
+                            )
+                        }
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = displayName,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.alpha(0.8f),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(14.dp),
+                                painter = painterResource(R.drawable.ic_download_2_outlined),
+                                contentDescription = null
+                            )
+                            Text(
+                                text = formatNumberByLocale(context, downloadCount),
+                                style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1
+                            )
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(14.dp),
+                                painter = painterResource(R.drawable.ic_autorenew),
+                                contentDescription = null
+                            )
+                            Text(
+                                text = getTimeAgo(context = context, pastInstant = date),
+                                style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1
+                            )
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(14.dp),
+                                painter = painterResource(R.drawable.ic_package_2_outlined),
+                                contentDescription = null
+                            )
+                            Text(
+                                text = stringResource(releaseType.textRes),
+                                style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(NevRed.GradientDiagonal),
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        modifier = Modifier.size(14.dp),
+                        modifier = Modifier.size(20.dp),
                         painter = painterResource(R.drawable.ic_download_2_outlined),
-                        contentDescription = null
-                    )
-                    Text(
-                        text = formatNumberByLocale(context, downloadCount),
-                        style = MaterialTheme.typography.labelSmall
+                        contentDescription = null,
+                        tint = NevRed.OnGradient
                     )
                 }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        modifier = Modifier.size(14.dp),
-                        painter = painterResource(R.drawable.ic_autorenew),
-                        contentDescription = null
-                    )
-                    Text(
-                        text = getTimeAgo(context = context, pastInstant = date),
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        modifier = Modifier.size(14.dp),
-                        painter = painterResource(R.drawable.ic_package_2_outlined),
-                        contentDescription = null
-                    )
-                    Text(
-                        text = stringResource(releaseType.textRes),
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(NevRed.GradientDiagonal),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    painter = painterResource(R.drawable.ic_download_2_outlined),
-                    contentDescription = null,
-                    tint = NevRed.OnGradient
-                )
             }
         }
     }
