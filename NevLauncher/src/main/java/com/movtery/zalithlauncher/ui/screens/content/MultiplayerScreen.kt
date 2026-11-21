@@ -57,7 +57,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.notification.NotificationManager
 import com.movtery.zalithlauncher.path.PathManager
@@ -281,21 +280,17 @@ private fun MainMenu(
 
             val terracottaEnabled = AllSettings.enableTerracotta.state
 
-            //teks dan tinggi kartu mengikuti lebar layar (ukuran launcher): tidak lagi kotak besar dengan teks kecil
-            val cardScale = (androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp / 720f).coerceIn(1f, 1.8f)
-            val cardTitleStyle = MaterialTheme.typography.titleSmall.copy(
-                fontSize = (14f * cardScale).sp,
-                lineHeight = androidx.compose.ui.unit.TextUnit.Unspecified,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold
-            )
-            val cardPadding = PaddingValues(horizontal = 16.dp * cardScale, vertical = 12.dp * cardScale)
+            //samakan layout dengan kartu "Aktifkan Multiplayer" / "Node Server EasyTier Kustom":
+            //bentuk (28dp), gaya teks (titleSmall) dan tinggi (isi 32dp + padding 16dp) yang sama
+            val cardPadding = PaddingValues(horizontal = 16.dp, vertical = 22.dp)
 
             //分享联机核心日志
             SettingsCard(
                 modifier = Modifier.fillMaxWidth(),
                 position = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) CardPosition.Single else CardPosition.Middle,
                 title = stringResource(R.string.terracotta_export_log_share),
-                titleStyle = cardTitleStyle,
+                outerShape = 28.dp,
+                innerShape = 4.dp,
                 innerPadding = cardPadding,
                 onClick = onShareLogs,
                 enabled = terracottaEnabled
@@ -306,7 +301,8 @@ private fun MainMenu(
                 modifier = Modifier.fillMaxWidth(),
                 position = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) CardPosition.Single else CardPosition.Bottom,
                 title = stringResource(R.string.terracotta_easytier),
-                titleStyle = cardTitleStyle,
+                outerShape = 28.dp,
+                innerShape = 4.dp,
                 innerPadding = cardPadding,
                 onClick = {
                     eventViewModel.sendEvent(EventViewModel.Event.OpenLink(URL_EASYTIER))

@@ -79,6 +79,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -842,7 +843,7 @@ private fun VersionBrowser(
     LazyVerticalGrid(
         modifier = modifier,
         state = gridState,
-        columns = GridCells.Adaptive(minSize = 200.dp),
+        columns = GridCells.Adaptive(minSize = 300.dp),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -867,7 +868,7 @@ private fun VersionGroupCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(28.dp, 8.dp))
+    val shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(28.dp, 22.dp))
     val scale = remember { Animatable(initialValue = 0.95f) }
     LaunchedEffect(Unit) {
         scale.animateTo(targetValue = 1f, animationSpec = getAnimateTween())
@@ -876,7 +877,7 @@ private fun VersionGroupCard(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(1f)
+            .aspectRatio(2.25f)
             .graphicsLayer(scaleX = scale.value, scaleY = scale.value),
         onClick = onClick,
         shape = shape,
@@ -924,59 +925,66 @@ private fun VersionGroupCard(
                     )
             )
 
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(all = 16.dp)
+                    .padding(all = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(
-                    text = "MC // ${groupTypeName(group.type).uppercase()}",
-                    style = MaterialTheme.typography.labelSmall,
-                    fontFamily = FontFamily.Monospace,
-                    color = accent.copy(alpha = 0.9f),
-                    maxLines = 1
-                )
-                Text(
-                    text = group.key,
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = accent,
-                    maxLines = 1
-                )
-                group.displayTitle()?.let { title ->
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        maxLines = 2
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Box(
-                    modifier = Modifier
-                        .border(1.dp, accent.copy(alpha = 0.8f), RoundedCornerShape(50))
-                        .background(Color.Black.copy(alpha = 0.35f), RoundedCornerShape(50))
-                        .padding(horizontal = 14.dp, vertical = 6.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.download_game_group_count, group.versions.size),
-                        style = MaterialTheme.typography.labelLarge,
+                        text = "MC // ${groupTypeName(group.type).uppercase()}",
+                        style = MaterialTheme.typography.labelSmall,
                         fontFamily = FontFamily.Monospace,
+                        color = accent.copy(alpha = 0.9f),
+                        maxLines = 1
+                    )
+                    Text(
+                        text = group.key,
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.ExtraBold,
                         color = accent,
                         maxLines = 1
                     )
+                    group.displayTitle()?.let { title ->
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.size(8.dp))
-                Text(
-                    text = stringResource(R.string.download_game_group_latest, group.latest.version.id),
-                    style = MaterialTheme.typography.labelLarge,
-                    fontFamily = FontFamily.Monospace,
-                    color = Color.White.copy(alpha = 0.85f),
-                    maxLines = 1
-                )
+
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .border(1.dp, accent.copy(alpha = 0.8f), RoundedCornerShape(50))
+                            .background(Color.Black.copy(alpha = 0.35f), RoundedCornerShape(50))
+                            .padding(horizontal = 14.dp, vertical = 6.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.download_game_group_count, group.versions.size),
+                            style = MaterialTheme.typography.labelLarge,
+                            fontFamily = FontFamily.Monospace,
+                            color = accent,
+                            maxLines = 1
+                        )
+                    }
+                    Text(
+                        text = stringResource(R.string.download_game_group_latest, group.latest.version.id),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontFamily = FontFamily.Monospace,
+                        color = Color.White.copy(alpha = 0.85f),
+                        maxLines = 1
+                    )
+                }
             }
         }
     }

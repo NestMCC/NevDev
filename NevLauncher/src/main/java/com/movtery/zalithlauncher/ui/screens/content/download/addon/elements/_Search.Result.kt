@@ -493,7 +493,7 @@ fun ResultProjectLayout(
     isInstalled: Boolean = false,
 //    isFavorite: Boolean = false,
 //    onFavoriteClick: (() -> Unit)? = null,
-    shape: Shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(20.dp, 8.dp)),
+    shape: Shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(20.dp, 22.dp)),
     influencedByBackground: Boolean = true,
     color: Color = cardColor(influencedByBackground),
     contentColor: Color = onCardColor(),

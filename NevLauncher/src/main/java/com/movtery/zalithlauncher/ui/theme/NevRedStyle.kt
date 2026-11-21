@@ -446,7 +446,6 @@ fun NevPillTab(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    rectangular: Boolean = false,
     icon: @Composable () -> Unit,
     label: @Composable () -> Unit
 ) {
@@ -494,16 +493,14 @@ fun NevPillTab(
         return
     }
 
-    //rectangular: persegi panjang berlengkung (layar Unduh); lainnya kapsul
-    val shape = if (rectangular) nevShape(14.dp) else nevPillShape()
-    val iconShape = if (rectangular) nevShape(10.dp) else nevPillShape()
+    val shape = nevPillShape()
+    val iconShape = nevPillShape()
     Surface(
         onClick = onClick,
         modifier = modifier.semantics { role = Role.Tab },
         shape = shape,
         color = Color.Transparent,
-        border = if (selected) BorderStroke(1.dp, NevRed.OutlineBright)
-        else if (rectangular) BorderStroke(1.dp, NevRed.Outline) else null
+        border = if (selected) BorderStroke(1.dp, NevRed.OutlineBright) else null
     ) {
         Row(
             modifier = Modifier
