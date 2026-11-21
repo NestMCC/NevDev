@@ -31,6 +31,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -188,6 +190,25 @@ fun LauncherScreen(
         LaunchedEffect(isVisible) {
             //屏幕切走时打断进行中的拖拽
             if (!isVisible) dragState.onDragCancel()
+        }
+
+        if (AllSettings.launcherDashboardHome.state && !LocalNevStyle.current.cyber) {
+            DashboardHome(
+                isVisible = isVisible,
+                onLaunchGame = onLaunchGame,
+                toAccountManageScreen = {
+                    backStackViewModel.mainScreen.navigateTo(
+                        screenKey = NormalNavKey.AccountManager(FirstLoginMenu.NONE)
+                    )
+                },
+                toVersionManageScreen = {
+                    backStackViewModel.mainScreen.removeAndNavigateTo(
+                        remove = NestedNavKey.VersionSettings::class,
+                        screenKey = NormalNavKey.VersionsManager
+                    )
+                }
+            )
+            return@BaseScreen
         }
 
         if (AllSettings.launcherHeroHome.state) {
@@ -1284,5 +1305,337 @@ private fun ComponentInstallCard(modifier: Modifier = Modifier) {
                 }
             }
         }
+    }
+}
+
+
+/** Kata waktu untuk salam: pagi / siang / sore / malam. */
+@Composable
+private fun greetingPart(): String {
+    val hour = remember { java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY) }
+    return stringResource(
+        when (hour) {
+            in 4..10 -> R.string.dash_part_morning
+            in 11..14 -> R.string.dash_part_noon
+            in 15..17 -> R.string.dash_part_afternoon
+            else -> R.string.dash_part_night
+        }
+    )
+}
+
+/**
+ * Beranda dashboard: salam di atas; kiri banner "MINECRAFT JAVA" + kartu Waktu Bermain;
+ * kanan kartu akun + Main + pilih versi, lalu daftar Paket & Versi. Warna tetap mengikuti tema (Nev Lava).
+ */
+@Composable
+private fun DashboardHome(
+    isVisible: Boolean,
+    onLaunchGame: (Version?) -> Unit,
+    toAccountManageScreen: () -> Unit,
+    toVersionManageScreen: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val ctx = rememberAnimatedContext(isVisible = isVisible)
+    val account by AccountsManager.currentAccountFlow.collectAsStateWithLifecycle()
+    val refreshWardrobe by AccountsManager.refreshWardrobe.collectAsStateWithLifecycle()
+    val version by VersionsManager.currentVersion.collectAsStateWithLifecycle()
+    val isRefreshing by VersionsManager.isRefreshing.collectAsStateWithLifecycle()
+    val versions by VersionsManager.versions.collectAsStateWithLifecycle()
+    val ready = !isRefreshing && version?.isValid() == true
+    var showList by remember { mutableStateOf(false) }
+    val primary = MaterialTheme.colorScheme.primary
+
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 12.dp)
+                .animated(ctx),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            //salam
+            Text(
+                text = stringResource(R.string.dash_greeting, greetingPart()),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                //kiri: banner + waktu bermain
+                Column(
+                    modifier = Modifier.weight(1.5f).fillMaxHeight(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    BackgroundCard(
+                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        shape = MaterialTheme.shapes.extraLarge
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.horizontalGradient(
+                                        0f to primary.copy(alpha = 0.40f),
+                                        1f to Color.Transparent
+                                    )
+                                )
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterStart)
+                                    .padding(horizontal = 18.dp, vertical = 10.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Text(
+                                    text = "MINECRAFT JAVA",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Black,
+                                    letterSpacing = 2.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = stringResource(R.string.dash_tagline_1),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 1
+                                )
+                                Text(
+                                    text = stringResource(R.string.dash_tagline_2),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = primary,
+                                    maxLines = 1
+                                )
+                                OutlinedButton(
+                                    onClick = { onLaunchGame(null) },
+                                    shape = MaterialTheme.shapes.small,
+                                    border = BorderStroke(1.dp, primary)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.dash_start_playing),
+                                        style = MaterialTheme.typography.labelLarge
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    com.movtery.zalithlauncher.ui.screens.content.home.PlayTimeStatsCard(
+                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        compact = true
+                    )
+                }
+
+                //kanan: akun + Main + versi, lalu Paket & Versi
+                Column(
+                    modifier = Modifier.weight(1f).fillMaxHeight(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    BackgroundCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.extraLarge
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .clickable(onClick = toAccountManageScreen),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                account?.let {
+                                    PlayerFace(account = it, avatarSize = 34.dp, refreshKey = refreshWardrobe)
+                                } ?: Icon(
+                                    modifier = Modifier.size(28.dp),
+                                    painter = painterResource(R.drawable.ic_add),
+                                    contentDescription = null
+                                )
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = account?.username ?: stringResource(R.string.account_add_new_account),
+                                        style = MaterialTheme.typography.titleSmall,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    account?.let {
+                                        Text(
+                                            modifier = Modifier.alpha(0.7f),
+                                            text = getAccountTypeName(it),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            maxLines = 1
+                                        )
+                                    }
+                                }
+                            }
+
+                            NevGradientButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { onLaunchGame(null) }
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.size(22.dp),
+                                        painter = painterResource(R.drawable.ic_play_arrow_filled),
+                                        contentDescription = null
+                                    )
+                                    Text(
+                                        modifier = Modifier.padding(start = 6.dp),
+                                        text = stringResource(R.string.main_play),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
+
+                            Box {
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = MaterialTheme.shapes.small,
+                                    color = Color.Transparent,
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f)),
+                                    onClick = { showList = true }
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.weight(1f),
+                                            text = if (ready) version!!.getVersionName() else stringResource(R.string.hero_empty_title),
+                                            style = MaterialTheme.typography.labelLarge,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Icon(
+                                            modifier = Modifier.size(20.dp),
+                                            painter = painterResource(R.drawable.ic_keyboard_arrow_down),
+                                            contentDescription = stringResource(R.string.hero_switch_version)
+                                        )
+                                    }
+                                }
+                                DropdownMenu(
+                                    border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
+                                    expanded = showList,
+                                    onDismissRequest = { showList = false },
+                                    modifier = Modifier.width(260.dp),
+                                    shape = MaterialTheme.shapes.extraLarge
+                                ) {
+                                    versions.forEach { v ->
+                                        DropdownMenuItem(
+                                            text = {
+                                                CommonVersionInfoLayout(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    version = v,
+                                                    iconSize = 28.dp
+                                                )
+                                            },
+                                            onClick = {
+                                                if (version != v) VersionsManager.saveVersion(v)
+                                                showList = false
+                                            }
+                                        )
+                                    }
+                                    androidx.compose.material3.HorizontalDivider()
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                text = stringResource(R.string.hero_manage_versions),
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = NevRed.GradientStart
+                                            )
+                                        },
+                                        onClick = {
+                                            showList = false
+                                            toVersionManageScreen()
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    BackgroundCard(
+                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        shape = MaterialTheme.shapes.extraLarge
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.dash_packs_versions),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .verticalScroll(rememberScrollState()),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                versions.forEach { v ->
+                                    val selected = version == v
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        CommonVersionInfoLayout(
+                                            modifier = Modifier.weight(1f),
+                                            version = v,
+                                            iconSize = 28.dp
+                                        )
+                                        OutlinedButton(
+                                            onClick = { if (!selected) VersionsManager.saveVersion(v) },
+                                            shape = MaterialTheme.shapes.small,
+                                            border = BorderStroke(1.dp, if (selected) primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)),
+                                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)
+                                        ) {
+                                            Text(
+                                                text = stringResource(if (selected) R.string.dash_selected else R.string.dash_choose),
+                                                style = MaterialTheme.typography.labelMedium,
+                                                maxLines = 1
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //kemajuan pemasangan komponen + mini player musik tetap ada
+        ComponentInstallCard(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = if (AllSettings.musicEnabled.state) 84.dp else 16.dp, start = 24.dp, end = 24.dp)
+        )
+        MusicMiniPlayer(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 12.dp)
+        )
     }
 }

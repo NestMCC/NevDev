@@ -54,7 +54,9 @@ private val MinBarHeight = 4.dp
  */
 @Composable
 fun PlayTimeStatsCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    //compact: kartu mengisi tinggi yang tersedia (dipakai di beranda dashboard)
+    compact: Boolean = false
 ) {
     //naikkan kunci ini untuk memuat ulang data (saat kembali dari game, dan berkala)
     var refreshKey by remember { mutableIntStateOf(0) }
@@ -89,8 +91,9 @@ fun PlayTimeStatsCard(
         shape = MaterialTheme.shapes.extraLarge
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = (if (compact) Modifier.fillMaxSize() else Modifier)
+                .padding(horizontal = 16.dp, vertical = if (compact) 10.dp else 14.dp),
+            verticalArrangement = Arrangement.spacedBy(if (compact) 6.dp else 12.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -103,7 +106,7 @@ fun PlayTimeStatsCard(
                 ) {
                     Text(
                         text = stringResource(R.string.play_time_stats_title),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
@@ -126,7 +129,7 @@ fun PlayTimeStatsCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(ChartHeight + 44.dp)
+                    .then(if (compact) Modifier.weight(1f) else Modifier.height(ChartHeight + 44.dp))
                     .drawBehind {
                         //garis bantu putus-putus di belakang batang
                         val dash = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
@@ -196,13 +199,13 @@ private fun DayBar(
             textAlign = TextAlign.Center
         )
 
-        Box(
+        androidx.compose.foundation.layout.BoxWithConstraints(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
             contentAlignment = Alignment.BottomCenter
         ) {
-            val barHeight = (ChartHeight * fraction.coerceIn(0f, 1f)).coerceAtLeast(MinBarHeight)
+            val barHeight = (maxHeight * fraction.coerceIn(0f, 1f)).coerceAtLeast(MinBarHeight)
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
