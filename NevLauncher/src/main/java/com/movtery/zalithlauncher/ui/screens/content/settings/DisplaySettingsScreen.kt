@@ -189,14 +189,6 @@ fun DisplaySettingsScreen(
                     SwitchSettingsCard(
                         modifier = Modifier.fillMaxWidth(),
                         position = CardPosition.Middle,
-                        unit = AllSettings.launcherDashboardHome,
-                        title = stringResource(R.string.settings_display_dashboard_home_title),
-                        summary = stringResource(R.string.settings_display_dashboard_home_summary)
-                    )
-
-                    SwitchSettingsCard(
-                        modifier = Modifier.fillMaxWidth(),
-                        position = CardPosition.Middle,
                         unit = AllSettings.launcherHeroHome,
                         title = stringResource(R.string.settings_display_hero_home_title),
                         summary = stringResource(R.string.settings_display_hero_home_summary)

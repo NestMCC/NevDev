@@ -3380,8 +3380,6 @@
     <string name="theme_color_liquid">Liquid</string>
     <string name="settings_display_theme_liquid_desc">Glass, flowing liquid</string>
     <string name="settings_display_style_liquid">Liquid</string>
-    <string name="settings_display_dashboard_home_title">Dashboard home</string>
-    <string name="settings_display_dashboard_home_summary">Home with a greeting, banner, playtime card, account + Play and a versions list. Turn off to use the previous home.</string>
     <string name="dash_greeting">Hello, good %1$s, welcome back</string>
     <string name="dash_part_morning">morning</string>
     <string name="dash_part_noon">day</string>

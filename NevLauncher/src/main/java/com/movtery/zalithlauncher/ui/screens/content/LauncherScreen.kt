@@ -192,7 +192,7 @@ fun LauncherScreen(
             if (!isVisible) dragState.onDragCancel()
         }
 
-        if (AllSettings.launcherDashboardHome.state && !LocalNevStyle.current.cyber) {
+        if (!LocalNevStyle.current.cyber) {
             DashboardHome(
                 isVisible = isVisible,
                 onLaunchGame = onLaunchGame,

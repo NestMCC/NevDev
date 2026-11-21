@@ -1768,8 +1768,6 @@
     <string name="theme_color_liquid">Liquid</string>
     <string name="settings_display_theme_liquid_desc">Kaca bening, cairan mengalir</string>
     <string name="settings_display_style_liquid">Liquid</string>
-    <string name="settings_display_dashboard_home_title">Beranda dashboard</string>
-    <string name="settings_display_dashboard_home_summary">Beranda dengan salam, banner, kartu Waktu Bermain, akun + Main, dan daftar versi. Matikan untuk kembali ke beranda sebelumnya.</string>
     <string name="dash_greeting">Halo selamat %1$s, selamat datang kembali</string>
     <string name="dash_part_morning">pagi</string>
     <string name="dash_part_noon">siang</string>
