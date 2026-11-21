@@ -387,7 +387,7 @@ private fun ServerHubCard(
     BackgroundCard(
         modifier = Modifier.fillMaxWidth(),
         influencedByBackground = false,
-        shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(22.dp, 6.dp)),
+        shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(22.dp, 20.dp)),
         border = NevCardBorder
     ) {
         Column(

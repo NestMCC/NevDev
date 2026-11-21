@@ -1397,7 +1397,7 @@ private fun DashboardHome(
                         modifier = Modifier.fillMaxWidth().weight(1f),
                         shape = MaterialTheme.shapes.extraLarge
                     ) {
-                        Box(
+                        BoxWithConstraints(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(
@@ -1407,36 +1407,39 @@ private fun DashboardHome(
                                     )
                                 )
                         ) {
+                            //skala teks mengikuti ukuran banner (ikut ukuran launcher), supaya tidak kotak besar dengan teks kecil
+                            val s = minOf(maxHeight / 190.dp, maxWidth / 520.dp).coerceIn(1f, 2.4f)
+                            val unset = androidx.compose.ui.unit.TextUnit.Unspecified
                             Column(
                                 modifier = Modifier
                                     .align(Alignment.CenterStart)
-                                    .padding(horizontal = 18.dp, vertical = 10.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                                    .padding(horizontal = 18.dp * s, vertical = 10.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp * s)
                             ) {
                                 Text(
                                     text = stringResource(R.string.dash_greeting, greetingPart()),
-                                    style = MaterialTheme.typography.labelLarge,
+                                    style = MaterialTheme.typography.labelLarge.copy(fontSize = (14f * s).sp, lineHeight = unset),
                                     modifier = Modifier.alpha(0.85f),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
                                     text = "MINECRAFT JAVA",
-                                    style = MaterialTheme.typography.headlineMedium,
+                                    style = MaterialTheme.typography.headlineMedium.copy(fontSize = (28f * s).sp, lineHeight = unset),
                                     fontWeight = FontWeight.Black,
-                                    letterSpacing = 2.sp,
+                                    letterSpacing = (2f * s).sp,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
                                     text = stringResource(R.string.dash_tagline_1),
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = MaterialTheme.typography.titleMedium.copy(fontSize = (16f * s).sp, lineHeight = unset),
                                     fontWeight = FontWeight.SemiBold,
                                     maxLines = 1
                                 )
                                 Text(
                                     text = stringResource(R.string.dash_tagline_2),
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = MaterialTheme.typography.titleMedium.copy(fontSize = (16f * s).sp, lineHeight = unset),
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White,
                                     maxLines = 1
@@ -1444,11 +1447,12 @@ private fun DashboardHome(
                                 OutlinedButton(
                                     onClick = { onLaunchGame(null) },
                                     shape = MaterialTheme.shapes.small,
-                                    border = BorderStroke(1.dp, primary)
+                                    border = BorderStroke(1.dp, primary),
+                                    contentPadding = PaddingValues(horizontal = 16.dp * s, vertical = 6.dp * s)
                                 ) {
                                     Text(
                                         text = stringResource(R.string.dash_start_playing),
-                                        style = MaterialTheme.typography.labelLarge
+                                        style = MaterialTheme.typography.labelLarge.copy(fontSize = (14f * s).sp, lineHeight = unset)
                                     )
                                 }
                             }
@@ -1600,13 +1604,14 @@ private fun DashboardHome(
                         }
                     }
 
+                    //tinggi kartu mengikuti jumlah instance (tidak memenuhi sisa layar), tetap bisa discroll bila banyak
                     BackgroundCard(
-                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        modifier = Modifier.fillMaxWidth().weight(1f, fill = false),
                         shape = MaterialTheme.shapes.extraLarge
                     ) {
                         Column(
                             modifier = Modifier
-                                .fillMaxSize()
+                                .fillMaxWidth()
                                 .padding(horizontal = 12.dp, vertical = 10.dp),
                             verticalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
@@ -1617,7 +1622,7 @@ private fun DashboardHome(
                             )
                             Column(
                                 modifier = Modifier
-                                    .weight(1f)
+                                    .weight(1f, fill = false)
                                     .fillMaxWidth()
                                     .verticalScroll(rememberScrollState()),
                                 verticalArrangement = Arrangement.spacedBy(6.dp)

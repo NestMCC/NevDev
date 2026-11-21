@@ -192,6 +192,7 @@ private fun TabMenu(
             ) {
                 downloadsList.forEachIndexed { index, item ->
                     NevPillTab(
+                        rectangular = true,
                         number = index + 1,
                         selected = backScreenViewModel.downloadScreen.currentKey == item.key,
                         onClick = {
