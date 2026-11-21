@@ -26,7 +26,7 @@ import com.movtery.zalithlauncher.setting.AllSettings
 import androidx.compose.foundation.shape.RoundedCornerShape as BaseRoundedCornerShape
 
 /*
- * Gaya "kotak berlengkung tipis": dipakai saat Beranda gaya hero aktif pada gaya desain Nev.
+ * Gaya "kotak berlengkung tipis": dipakai hanya pada tema desain Hero; Nev, Cryogenic, Liquid kembali bulat.
  * File-file UI meng-import RoundedCornerShape dari sini, jadi semua sudut membulat berubah
  * serentak (Unduh, Modpack/Mod/Snapshot, Kelola Versi, Pengaturan, dialog, dst.).
  * Membaca state Compose, sehingga ikut berubah saat saklar diubah.
@@ -34,7 +34,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape as BaseRoundedCorner
 
 /** Apakah bentuk kotak berlengkung tipis sedang aktif. */
 fun isBoxy(): Boolean =
-    AllSettings.launcherDesignStyle.state != DesignStyleType.CYBER
+    AllSettings.launcherDesignStyle.state == DesignStyleType.HERO
 
 /** Radius yang diperkecil menjadi sudut kotak berlengkung tipis (4–10 dp). */
 fun boxyRadius(size: Dp): Dp =
