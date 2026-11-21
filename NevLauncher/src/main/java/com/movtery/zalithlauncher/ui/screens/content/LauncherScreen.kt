@@ -1312,7 +1312,13 @@ private fun ComponentInstallCard(modifier: Modifier = Modifier) {
 /** Kata waktu untuk salam: pagi / siang / sore / malam. */
 @Composable
 private fun greetingPart(): String {
-    val hour = remember { java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY) }
+    //diperbarui tiap menit supaya kata salam ikut berganti saat jam berubah
+    val hour by produceState(java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)) {
+        while (true) {
+            value = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+            kotlinx.coroutines.delay(60_000L)
+        }
+    }
     return stringResource(
         when (hour) {
             in 4..10 -> R.string.dash_part_morning
@@ -1353,15 +1359,6 @@ private fun DashboardHome(
                 .animated(ctx),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            //salam
-            Text(
-                text = stringResource(R.string.dash_greeting, greetingPart()),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
             Row(
                 modifier = Modifier.fillMaxWidth().weight(1f),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -1392,6 +1389,13 @@ private fun DashboardHome(
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Text(
+                                    text = stringResource(R.string.dash_greeting, greetingPart()),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    modifier = Modifier.alpha(0.85f),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
                                     text = "MINECRAFT JAVA",
                                     style = MaterialTheme.typography.headlineMedium,
                                     fontWeight = FontWeight.Black,
@@ -1409,7 +1413,7 @@ private fun DashboardHome(
                                     text = stringResource(R.string.dash_tagline_2),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = primary,
+                                    color = Color.White,
                                     maxLines = 1
                                 )
                                 OutlinedButton(

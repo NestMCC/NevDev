@@ -45,6 +45,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -308,6 +309,10 @@ fun MainScreen(
                 mainScreenKey = mainScreenKey,
                 inLauncherScreen = inLauncherScreen,
                 showHomeButton = !heroLayout,
+                //di beranda, logo + nama digeser mentok ke tepi kiri layar (di atas rail)
+                titleStartShift = if (railSide == NavRailSide.START && !bottomDock && !heroLayout) {
+                    -(if (floatingRail) 92.dp else 84.dp)
+                } else 0.dp,
                 taskRunning = taskRunning,
                 isTasksExpanded = isTaskMenuExpanded,
                 contentColor = onBackgroundColor(),
@@ -402,6 +407,7 @@ private fun <E: TitledNavKey> TopBar(
     isTasksExpanded: Boolean,
     modifier: Modifier = Modifier,
     showHomeButton: Boolean = true,
+    titleStartShift: androidx.compose.ui.unit.Dp = 0.dp,
     contentColor: Color,
     onScreenBack: () -> Unit,
     toMainScreen: () -> Unit,
@@ -485,6 +491,7 @@ private fun <E: TitledNavKey> TopBar(
 
                 if (parent == null) {
                     Row(
+                        modifier = Modifier.offset(x = titleStartShift),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
