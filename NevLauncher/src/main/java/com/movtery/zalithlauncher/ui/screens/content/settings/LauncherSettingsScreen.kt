@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.settings
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -555,7 +556,7 @@ private fun CustomThemeDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 16.dp)
                     .heightIn(max = (maxHeight - 32.dp).coerceAtMost(rememberDialogMaxHeight()))

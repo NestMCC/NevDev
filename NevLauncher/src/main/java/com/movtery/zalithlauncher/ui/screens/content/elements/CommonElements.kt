@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.elements
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -377,7 +378,7 @@ fun TitleTaskFlowDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))

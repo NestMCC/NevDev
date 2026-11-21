@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.versions
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import android.content.Context
 import androidx.compose.animation.core.Animatable
@@ -1211,7 +1212,7 @@ private fun ServerEditDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))

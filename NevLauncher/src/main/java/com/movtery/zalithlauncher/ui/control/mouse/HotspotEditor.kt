@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.control.mouse
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -91,7 +92,7 @@ fun MouseHotspotEditorDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 3.dp)
                     .heightIn(max = (maxHeight - 6.dp).coerceAtMost(rememberDialogMaxHeight()))

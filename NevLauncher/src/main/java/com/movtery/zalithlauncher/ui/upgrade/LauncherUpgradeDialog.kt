@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.upgrade
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -87,7 +88,7 @@ fun UpgradeDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 6.dp)

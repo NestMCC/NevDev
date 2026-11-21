@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.game.elements
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -83,7 +84,7 @@ fun GamepadModePromptDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))

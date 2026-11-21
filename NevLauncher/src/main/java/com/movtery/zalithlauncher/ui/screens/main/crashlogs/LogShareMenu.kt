@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.main.crashlogs
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -62,7 +63,7 @@ fun LogShareMenu(
                     onChange(LogShareMenuOperation.None)
                 }
             ) {
-                Surface(
+                NevGradientSurface(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = 6.dp),

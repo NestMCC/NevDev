@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.settings
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -140,7 +141,7 @@ fun RendererConfigDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 3.dp)
                     .heightIn(max = (maxHeight - 6.dp).coerceAtMost(rememberDialogMaxHeight()))

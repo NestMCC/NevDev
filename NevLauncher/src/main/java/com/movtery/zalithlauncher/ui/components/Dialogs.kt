@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.components
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import androidx.compose.foundation.layout.Arrangement
@@ -273,7 +274,7 @@ fun SimpleEditDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
@@ -351,7 +352,7 @@ fun SimpleEditDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))
@@ -546,7 +547,7 @@ fun <T> SimpleListDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 3.dp)
                     .heightIn(max = (maxHeight - 6.dp).coerceAtMost(rememberDialogMaxHeight()))
@@ -649,7 +650,7 @@ fun ProgressDialog(
     text: String? = null
 ) {
     Dialog(onDismissRequest = {}) {
-        Surface(
+        NevGradientSurface(
             shape = MaterialTheme.shapes.extraLarge,
             border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
             color = cardColor(false),

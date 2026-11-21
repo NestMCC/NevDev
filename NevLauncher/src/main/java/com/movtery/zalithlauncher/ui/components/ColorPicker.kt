@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.components
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -105,7 +106,7 @@ fun ColorPickerDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 16.dp)
                     .heightIn(max = (maxHeight - 32.dp).coerceAtMost(rememberDialogMaxHeight()))

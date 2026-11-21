@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.settings
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.gestures.Orientation
@@ -925,7 +926,7 @@ private fun CreateNewLayoutDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))

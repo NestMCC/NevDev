@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.control.gamepad
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -261,7 +262,7 @@ fun GamepadRemapperDialog(
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    Surface(
+                    NevGradientSurface(
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
                             .fillMaxHeight(0.85f)

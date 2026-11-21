@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.main.control_editor.style_cabinet
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -129,7 +130,7 @@ fun StyleCabinetDialog(
                     .fillMaxHeight(),
                 contentAlignment = Alignment.Center
             ) {
-                Surface(
+                NevGradientSurface(
                     modifier = Modifier
                         .padding(all = 3.dp)
                         .heightIn(max = (maxHeight - 6.dp).coerceAtMost(rememberDialogMaxHeight()))

@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.settings
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import android.app.Activity
 import android.content.Context
@@ -468,7 +469,7 @@ private fun SelectJavaRuntimeDialog(
                 .fillMaxWidth(0.55f),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .fillMaxWidth()

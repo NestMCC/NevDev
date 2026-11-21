@@ -82,7 +82,7 @@ object NevRed {
         @Composable get() = Brush.linearGradient(listOf(GradientStart, GradientEnd))
 
     val PanelBrush: Brush
-        @Composable get() = Brush.verticalGradient(listOf(Panel, PanelDeep))
+        @Composable get() = if (isNevDesign()) NevCardFill else Brush.verticalGradient(listOf(Panel, PanelDeep))
 
     /** Brush satu warna (untuk latar polos yang tetap bertipe Brush). */
     @Composable
@@ -403,6 +403,14 @@ val NevCardBorder: BorderStroke
     } else if (LocalNevStyle.current.cyber) {
         //Cyber: garis tepi samar; penanda sudut (cyberFrame) yang menonjol
         BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.28f))
+    } else if (isNevDesign()) {
+        //Nev: bingkai gradasi aksen (sama dengan kartu daftar mod/versi)
+        BorderStroke(
+            1.5.dp,
+            Brush.linearGradient(
+                listOf(NevRed.GradientStart.copy(alpha = 0.9f), NevRed.GradientStart.copy(alpha = 0.35f))
+            )
+        )
     } else BorderStroke(
         LocalNevStyle.current.cardBorderWidth,
         Brush.linearGradient(
@@ -413,6 +421,101 @@ val NevCardBorder: BorderStroke
             )
         )
     )
+
+/** Isi kartu gradasi: bagian atas berpendar warna aksen lalu memudar ke gelap (sama dengan kartu daftar mod/versi). */
+val NevCardFill: Brush
+    @Composable get() = Brush.verticalGradient(
+        listOf(NevRed.GradientStart.copy(alpha = 0.28f), NevRed.PanelDeep, NevRed.Panel)
+    )
+
+/**
+ * Pengganti [androidx.compose.material3.Surface] untuk dialog/panel: pada desain Nev tampil dengan
+ * bingkai + isi gradasi aksen, pada desain lain identik dengan Surface biasa.
+ */
+@Composable
+fun NevGradientSurface(
+    modifier: Modifier = Modifier,
+    shape: Shape = androidx.compose.ui.graphics.RectangleShape,
+    color: Color = MaterialTheme.colorScheme.surface,
+    contentColor: Color = androidx.compose.material3.contentColorFor(color),
+    tonalElevation: Dp = 0.dp,
+    shadowElevation: Dp = 0.dp,
+    border: BorderStroke? = null,
+    content: @Composable () -> Unit
+) {
+    if (isNevDesign()) {
+        androidx.compose.material3.Surface(
+            modifier = modifier,
+            shape = shape,
+            color = NevRed.PanelDeep,
+            contentColor = NevRed.OnPanel,
+            tonalElevation = 0.dp,
+            shadowElevation = shadowElevation,
+            border = border ?: NevCardBorder
+        ) {
+            Box(modifier = Modifier.background(NevCardFill), propagateMinConstraints = true) {
+                content()
+            }
+        }
+    } else {
+        androidx.compose.material3.Surface(
+            modifier = modifier,
+            shape = shape,
+            color = color,
+            contentColor = contentColor,
+            tonalElevation = tonalElevation,
+            shadowElevation = shadowElevation,
+            border = border,
+            content = content
+        )
+    }
+}
+
+/** Versi yang bisa diklik dari [NevGradientSurface]. */
+@Composable
+fun NevGradientSurface(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = androidx.compose.ui.graphics.RectangleShape,
+    color: Color = MaterialTheme.colorScheme.surface,
+    contentColor: Color = androidx.compose.material3.contentColorFor(color),
+    tonalElevation: Dp = 0.dp,
+    shadowElevation: Dp = 0.dp,
+    border: BorderStroke? = null,
+    content: @Composable () -> Unit
+) {
+    if (isNevDesign()) {
+        androidx.compose.material3.Surface(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            shape = shape,
+            color = NevRed.PanelDeep,
+            contentColor = NevRed.OnPanel,
+            tonalElevation = 0.dp,
+            shadowElevation = shadowElevation,
+            border = border ?: NevCardBorder
+        ) {
+            Box(modifier = Modifier.background(NevCardFill), propagateMinConstraints = true) {
+                content()
+            }
+        }
+    } else {
+        androidx.compose.material3.Surface(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            shape = shape,
+            color = color,
+            contentColor = contentColor,
+            tonalElevation = tonalElevation,
+            shadowElevation = shadowElevation,
+            border = border,
+            content = content
+        )
+    }
+}
 
 /**
  * Efek glow merah: bayangan berwarna tema di sekeliling bentuk (di luar isi, tidak menutupi konten).

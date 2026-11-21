@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.main.control_editor.edit_translatable
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -116,7 +117,7 @@ fun EditTranslatableTextDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier.padding(all = 3.dp),
             shadowElevation = 3.dp,
             color = cardColor(false),

@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.main.control_editor.edit_style
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -150,7 +151,7 @@ fun EditButtonStyleDialog(
                         }
                     )
 
-                    Surface(
+                    NevGradientSurface(
                         modifier = Modifier
                             .padding(16.dp)
                             .constrainAs(config) {

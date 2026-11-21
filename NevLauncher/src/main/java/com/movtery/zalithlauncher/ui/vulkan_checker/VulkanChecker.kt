@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.vulkan_checker
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -94,7 +95,7 @@ fun VulkanChecker(
                         .fillMaxHeight(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Surface(
+                    NevGradientSurface(
                         modifier = Modifier
                             .padding(all = 6.dp)
                             .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))

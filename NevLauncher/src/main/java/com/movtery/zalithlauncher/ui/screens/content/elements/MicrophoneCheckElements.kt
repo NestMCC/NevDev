@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.elements
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -153,7 +154,7 @@ fun MicrophoneCheckDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))

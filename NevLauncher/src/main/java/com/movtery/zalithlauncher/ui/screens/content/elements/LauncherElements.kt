@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.elements
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import android.app.Activity
 import android.net.Uri
@@ -498,7 +499,7 @@ private fun AccountRefreshFailedDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))

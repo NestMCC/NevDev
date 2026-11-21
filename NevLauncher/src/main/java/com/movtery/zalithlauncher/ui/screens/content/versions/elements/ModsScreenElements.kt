@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.versions.elements
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import android.content.Context
 import androidx.compose.foundation.gestures.Orientation
@@ -285,7 +286,7 @@ private fun ModsUpdateListDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))

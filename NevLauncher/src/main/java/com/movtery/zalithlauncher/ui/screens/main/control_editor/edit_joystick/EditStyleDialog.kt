@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.main.control_editor.edit_joystick
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -128,7 +129,7 @@ fun EditJoystickStyleDialog(
             }
 
             if (style != null) {
-                Surface(
+                NevGradientSurface(
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .fillMaxHeight()

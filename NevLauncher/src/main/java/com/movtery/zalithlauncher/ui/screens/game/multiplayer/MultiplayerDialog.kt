@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.game.multiplayer
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
@@ -136,7 +137,7 @@ fun MultiplayerDialog(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 6.dp)

@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.home.server
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -962,7 +963,7 @@ private fun CardDialogFrame(
                 .fillMaxHeight(),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))

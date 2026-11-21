@@ -635,7 +635,7 @@ private fun NevAboutCard(
             .nevGlow(shape, 10.dp, 0.5f)
             .then(if (cyber) Modifier.cyberFrame() else Modifier)
             .clip(shape)
-            .background(Brush.horizontalGradient(listOf(NevRed.PanelDeep, NevRed.Panel)))
+            .background(NevRed.PanelBrush)
             .border(NevCardBorder, shape)
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -710,7 +710,7 @@ private fun NevTikTokCard(
             .nevGlow(shape, 8.dp, 0.4f)
             .then(if (cyber) Modifier.cyberFrame() else Modifier)
             .clip(shape)
-            .background(Brush.horizontalGradient(listOf(NevRed.PanelDeep, NevRed.Panel)))
+            .background(NevRed.PanelBrush)
             .border(NevCardBorder, shape)
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,

@@ -19,6 +19,7 @@
 package com.movtery.zalithlauncher.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +40,9 @@ import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.ui.screens.content.elements.backgroundGlass
 import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder
+import com.movtery.zalithlauncher.ui.theme.NevCardFill
+import com.movtery.zalithlauncher.ui.theme.NevRed
+import com.movtery.zalithlauncher.ui.theme.isNevDesign
 import com.movtery.zalithlauncher.ui.theme.cyberFrame
 import com.movtery.zalithlauncher.ui.theme.liquidGlassRim
 import com.movtery.zalithlauncher.ui.theme.nevGlow
@@ -70,26 +74,30 @@ fun BackgroundCard(
     modifier: Modifier = Modifier,
     influencedByBackground: Boolean = true,
     shape: Shape = CardDefaults.shape,
-    colors: CardColors = CardDefaults.cardColors(
-        containerColor = cardColor(influencedByBackground).styledAlpha(),
-        contentColor = onCardColor()
-    ),
+    colors: CardColors? = null,
     elevation: CardElevation = flatCardElevation(),
     blur: Int = AllSettings.backgroundBlur.state,
     border: BorderStroke? = NevCardBorder,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    //desain Nev + warna bawaan: isi gradasi aksen (sama dengan kartu daftar mod/versi)
+    val gradient = colors == null && isNevDesign()
+    val resolved = colors ?: CardDefaults.cardColors(
+        containerColor = if (gradient) NevRed.PanelDeep else cardColor(influencedByBackground).styledAlpha(),
+        contentColor = onCardColor()
+    )
     Card(
         modifier = modifier.nevGlow(shape, 6.dp, 0.45f)
             .then(if (LocalNevStyle.current.cyber) Modifier.cyberFrame() else Modifier)
             .then(if (LocalNevStyle.current.liquid) Modifier.liquidGlassRim(shape) else Modifier),
         shape = shape,
-        colors = colors,
+        colors = resolved,
         elevation = elevation,
         border = border,
     ) {
         Column(
-            modifier = Modifier.backgroundGlass(blur, colors.containerColor, influencedByBackground),
+            modifier = (if (gradient) Modifier.background(NevCardFill) else Modifier)
+                .backgroundGlass(blur, resolved.containerColor, influencedByBackground),
             content = content
         )
     }
@@ -104,11 +112,7 @@ fun BackgroundCard(
     modifier: Modifier = Modifier,
     influencedByBackground: Boolean = true,
     shape: Shape = CardDefaults.shape,
-    colors: CardColors = CardDefaults.cardColors(
-        containerColor = cardColor(influencedByBackground).styledAlpha(),
-        contentColor = onCardColor(),
-        disabledContainerColor = cardColor(influencedByBackground).styledAlpha()
-    ),
+    colors: CardColors? = null,
     elevation: CardElevation = flatCardElevation(),
     blur: Int = AllSettings.backgroundBlur.state,
     border: BorderStroke? = NevCardBorder,
@@ -116,19 +120,26 @@ fun BackgroundCard(
     enabled: Boolean = true,
     content: @Composable @UiComposable ColumnScope.() -> Unit
 ) {
+    val gradient = colors == null && isNevDesign()
+    val resolved = colors ?: CardDefaults.cardColors(
+        containerColor = if (gradient) NevRed.PanelDeep else cardColor(influencedByBackground).styledAlpha(),
+        contentColor = onCardColor(),
+        disabledContainerColor = if (gradient) NevRed.PanelDeep else cardColor(influencedByBackground).styledAlpha()
+    )
     Card(
         modifier = modifier.nevGlow(shape, 6.dp, 0.45f)
             .then(if (LocalNevStyle.current.cyber) Modifier.cyberFrame() else Modifier)
             .then(if (LocalNevStyle.current.liquid) Modifier.liquidGlassRim(shape) else Modifier),
         shape = shape,
-        colors = colors,
+        colors = resolved,
         elevation = elevation,
         border = border,
         onClick = onClick,
         enabled = enabled,
     ) {
         Column(
-            modifier = Modifier.backgroundGlass(blur, colors.containerColor, influencedByBackground),
+            modifier = (if (gradient) Modifier.background(NevCardFill) else Modifier)
+                .backgroundGlass(blur, resolved.containerColor, influencedByBackground),
             content = content
         )
     }

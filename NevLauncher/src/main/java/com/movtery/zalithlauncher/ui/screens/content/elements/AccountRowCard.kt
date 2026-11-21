@@ -48,6 +48,7 @@ import com.movtery.zalithlauncher.game.account.Account
 import com.movtery.zalithlauncher.game.account.AccountType
 import com.movtery.zalithlauncher.game.account.getAccountTypeName
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 import com.movtery.zalithlauncher.ui.theme.NevRed
 import com.movtery.zalithlauncher.ui.theme.nevShape
 
@@ -72,7 +73,7 @@ fun AccountRowCard(
     val shape = nevShape(22.dp)
     val accent = NevRed.GradientStart
 
-    Surface(
+    NevGradientSurface(
         modifier = modifier,
         shape = shape,
         color = NevRed.PanelDeep.glassAlpha(0.92f),

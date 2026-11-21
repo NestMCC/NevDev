@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.download.addon.elements
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.basicMarquee
@@ -303,7 +304,7 @@ private fun DownloadDialog(
                     .fillMaxHeight(),
                 contentAlignment = Alignment.Center
             ) {
-                Surface(
+                NevGradientSurface(
                     modifier = Modifier
                         .padding(all = 6.dp)
                         .heightIn(max = (maxHeight - 12.dp).coerceAtMost(rememberDialogMaxHeight()))

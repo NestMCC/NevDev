@@ -17,6 +17,7 @@
  */
 
 package com.movtery.zalithlauncher.ui.control
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.basicMarquee
@@ -474,7 +475,7 @@ private fun KeyboardNavDialog(
             usePlatformDefaultWidth = false
         )
     ) {
-        Surface(
+        NevGradientSurface(
             modifier = Modifier.fillMaxWidth(0.75f),
             shadowElevation = 3.dp,
             shape = MaterialTheme.shapes.extraLarge,
