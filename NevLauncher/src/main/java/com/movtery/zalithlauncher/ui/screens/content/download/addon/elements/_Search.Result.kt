@@ -41,6 +41,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -160,7 +161,7 @@ fun ResultListLayout(
 
                 val listState = rememberLazyListState()
                 val gridState = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
-                val boxyGrid = com.movtery.zalithlauncher.ui.theme.isBoxy()
+                val boxyGrid = RESULT_AS_GRID
                 val maxCollapsePx = with(LocalDensity.current) { controllerHeight.toPx() }
 
                 //计算缩放比例，滑动偏移限制在0 ~ maxCollapsePx之间
@@ -395,15 +396,15 @@ private fun ResultList(
 ) {
     val context = LocalContext.current
 
-    if (com.movtery.zalithlauncher.ui.theme.isBoxy()) {
-        //gaya kotak: kisi kartu, seperti daftar versi game
+    if (RESULT_AS_GRID) {
+        //kisi kartu landscape bersudut bulat, layout sama dengan daftar versi game
         androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
             modifier = modifier,
             state = gridState,
-            columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(minSize = 230.dp),
+            columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(minSize = 300.dp),
             contentPadding = contentPadding,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(data.size) { index ->
                 val (item, mcmod) = data[index]
@@ -413,7 +414,7 @@ private fun ResultList(
                 val isInstalled = installedInfo?.invoke(platform, item.platformId()) != null
                 val iconUrl = remember(item) { item.platformIconUrl() }
 
-                ResultProjectCard(
+                ResultProjectWideCard(
                     modifier = Modifier.fillMaxWidth(),
                     platform = platform,
                     title = mcmod.getMcmodTitle(title, context),
@@ -421,8 +422,6 @@ private fun ResultList(
                     iconUrl = iconUrl,
                     authors = remember(item) { item.platformAuthors() },
                     downloads = remember(item) { item.platformDownloadCount() },
-                    modloaders = remember(item) { item.platformModLoaders() },
-                    categories = categories?.sortedWith { o1, o2 -> o1.index() - o2.index() },
                     followsCount = remember(item) { item.platformFollows() },
                     isInstalled = isInstalled,
                     onClick = { swapToDownload(platform, item.platformId(), iconUrl) }
@@ -817,6 +816,145 @@ fun ResultProjectCard(
                             style = MaterialTheme.typography.labelSmall,
                             maxLines = 1
                         )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** true: hasil pencarian mod/modpack/dst tampil sebagai grid kartu landscape (sama dengan daftar versi game). */
+private const val RESULT_AS_GRID = true
+
+/**
+ * Kartu hasil pencarian bergaya kartu seri versi game: persegi panjang landscape bersudut bulat,
+ * bingkai gradasi aksen, isi gradasi gelap. Ikon di kiri; judul, penulis, deskripsi, statistik di kanan.
+ */
+@Composable
+fun ResultProjectWideCard(
+    modifier: Modifier = Modifier,
+    platform: Platform,
+    title: String,
+    description: String,
+    iconUrl: String? = null,
+    authors: List<String>? = null,
+    downloads: Long = 0L,
+    followsCount: Long? = null,
+    isInstalled: Boolean = false,
+    onClick: () -> Unit = {}
+) {
+    val context = LocalContext.current
+    val shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(28.dp, 22.dp))
+    val accent = NevRed.GradientStart
+
+    val scale = remember { Animatable(initialValue = 0.95f) }
+    LaunchedEffect(Unit) {
+        scale.animateTo(targetValue = 1f, animationSpec = getAnimateTween())
+    }
+
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(2.25f)
+            .graphicsLayer(scaleX = scale.value, scaleY = scale.value),
+        onClick = onClick,
+        shape = shape,
+        color = Color.Transparent,
+        contentColor = NevRed.OnPanel,
+        border = BorderStroke(
+            1.5.dp,
+            androidx.compose.ui.graphics.Brush.linearGradient(listOf(accent.copy(alpha = 0.9f), accent.copy(alpha = 0.35f)))
+        )
+    ) {
+        Box(
+            modifier = Modifier.background(
+                androidx.compose.ui.graphics.Brush.verticalGradient(
+                    listOf(accent.copy(alpha = 0.28f), NevRed.PanelDeep, NevRed.Panel)
+                )
+            )
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(all = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box {
+                    AddonIcon(
+                        modifier = Modifier.clip(RoundedCornerShape(14.dp)),
+                        size = 72.dp,
+                        iconUrl = iconUrl
+                    )
+                    if (isInstalled) {
+                        InstalledModBadge(modifier = Modifier.align(Alignment.TopStart).padding(all = 4.dp))
+                    }
+                }
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(3.dp, Alignment.CenterVertically)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        MarqueeText(
+                            modifier = Modifier.weight(1f),
+                            text = title,
+                            color = accent,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold)
+                        )
+                        PlatformIdentifier(platform = platform)
+                    }
+
+                    authors?.takeIf { it.isNotEmpty() }?.let {
+                        Row(
+                            modifier = Modifier.alpha(0.75f),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(13.dp),
+                                painter = painterResource(R.drawable.ic_person_filled),
+                                contentDescription = null
+                            )
+                            MarqueeText(text = it.joinToString(", "), style = MaterialTheme.typography.labelSmall)
+                        }
+                    }
+
+                    Text(
+                        modifier = Modifier.alpha(0.85f),
+                        text = description,
+                        style = MaterialTheme.typography.labelSmall,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                modifier = Modifier.size(14.dp),
+                                painter = painterResource(R.drawable.ic_download_2_filled),
+                                contentDescription = null,
+                                tint = accent
+                            )
+                            Text(text = formatNumberByLocale(context, downloads), style = MaterialTheme.typography.labelSmall)
+                        }
+                        followsCount?.let {
+                            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    modifier = Modifier.size(14.dp),
+                                    painter = painterResource(R.drawable.ic_star_filled),
+                                    contentDescription = null,
+                                    tint = accent
+                                )
+                                Text(text = formatNumberByLocale(context, it), style = MaterialTheme.typography.labelSmall)
+                            }
+                        }
                     }
                 }
             }
