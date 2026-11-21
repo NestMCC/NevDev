@@ -84,7 +84,8 @@ private val designThemes = listOf(
         type = ColorThemeType.CRYOGENIC,
         nameRes = R.string.theme_color_cryogenic,
         descRes = R.string.settings_display_theme_cryogenic_desc,
-        swatch = listOf(Color(0xFF08131E), Color(0xFF4DD8F0), Color(0xFF9CCBFF))
+        swatch = listOf(Color(0xFF050B1E), Color(0xFFF5B52E), Color(0xFFFFDB7A)),
+        style = DesignStyleType.CRYOGENIC
     ),
     DesignTheme(
         type = ColorThemeType.CYBER,
@@ -167,6 +168,7 @@ fun DisplaySettingsScreen(
                                                 AllSettings.launcherDesignStyle.save(ownStyle)
                                             } else if (AllSettings.launcherDesignStyle.state == DesignStyleType.CYBER ||
                                                 AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID ||
+                                                AllSettings.launcherDesignStyle.state == DesignStyleType.CRYOGENIC ||
                                                 AllSettings.launcherDesignStyle.state == DesignStyleType.HERO) {
                                                 //pindah dari Cyber/Liquid ke tema lain: kembali ke gaya klasik
                                                 AllSettings.launcherDesignStyle.save(DesignStyleType.NEV)

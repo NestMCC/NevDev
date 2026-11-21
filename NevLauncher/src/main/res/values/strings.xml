@@ -143,16 +143,16 @@
     <!-- Option of the theme color setting in launcher settings -->
     <string name="theme_color_verdant_dawn">Silent Forest Dawn</string>
     <string name="theme_color_nev_lava">Nev Lava</string>
-    <string name="theme_color_cryogenic">Cryogenic</string>
+    <string name="theme_color_cryogenic">Futuristic</string>
     <string name="settings_tab_display">Display</string>
     <string name="settings_display_design_theme_title">Design Theme</string>
     <string name="settings_display_design_theme_summary">Pick the overall look of the launcher.</string>
     <string name="settings_display_theme_nev_lava_desc">Red and orange, bold gaming look.</string>
-    <string name="settings_display_theme_cryogenic_desc">Ice blue and cyan, dark futuristic panels.</string>
+    <string name="settings_display_theme_cryogenic_desc">Gold on deep navy, rounded glass panels.</string>
     <string name="settings_display_style_title">Design Style</string>
     <string name="settings_display_style_summary">Changes the shape and feel of panels, tabs and buttons, independent of color.</string>
     <string name="settings_display_style_nev">Classic (rounded)</string>
-    <string name="settings_display_style_cryogenic">Cryogenic (glass, cut corners)</string>
+    <string name="settings_display_style_cryogenic">Futuristic (gold glass, pills)</string>
     <string name="settings_display_nav_side_title">Menu Position</string>
     <string name="settings_display_nav_side_summary">Where the main navigation menu (File, Server, Download, Settings...) sits.</string>
     <string name="settings_display_nav_side_start">Left</string>
@@ -3393,4 +3393,12 @@
     <string name="dash_selected">Selected</string>
     <string name="theme_color_hero">Hero</string>
     <string name="settings_display_theme_hero_desc">Full screen, big version title</string>
+    <string name="fut_welcome">Welcome back,</string>
+    <string name="fut_subtitle">Your new journey starts here!</string>
+    <string name="fut_play_now">Play Now</string>
+    <string name="fut_version_card">Minecraft Version</string>
+    <string name="fut_your_versions">Your versions</string>
+    <string name="fut_see_all">See all</string>
+    <string name="fut_account">Account</string>
+    <string name="fut_manage_account">Manage Account</string>
 </resources>

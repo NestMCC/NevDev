@@ -31,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.PaddingValues
@@ -190,6 +191,28 @@ fun LauncherScreen(
         LaunchedEffect(isVisible) {
             //屏幕切走时打断进行中的拖拽
             if (!isVisible) dragState.onDragCancel()
+        }
+
+        if (LocalNevStyle.current.futuristic) {
+            FuturisticHome(
+                isVisible = isVisible,
+                onLaunchGame = onLaunchGame,
+                toAccountManageScreen = {
+                    backStackViewModel.mainScreen.navigateTo(
+                        screenKey = NormalNavKey.AccountManager(FirstLoginMenu.NONE)
+                    )
+                },
+                toVersionSettingsScreen = {
+                    VersionsManager.currentVersion.value?.let { navigateToVersions(it) }
+                },
+                toVersionManageScreen = {
+                    backStackViewModel.mainScreen.removeAndNavigateTo(
+                        remove = NestedNavKey.VersionSettings::class,
+                        screenKey = NormalNavKey.VersionsManager
+                    )
+                }
+            )
+            return@BaseScreen
         }
 
         if (AllSettings.launcherDesignStyle.state != com.movtery.zalithlauncher.ui.theme.DesignStyleType.HERO &&
@@ -1633,6 +1656,338 @@ private fun DashboardHome(
         }
 
         //kemajuan pemasangan komponen + mini player musik tetap ada
+        ComponentInstallCard(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = if (AllSettings.musicEnabled.state) 84.dp else 16.dp, start = 24.dp, end = 24.dp)
+        )
+        MusicMiniPlayer(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 12.dp)
+        )
+    }
+}
+
+
+/** Kartu kaca beranda Futuristik: judul ber-ikon bulat emas + isi. */
+@Composable
+private fun FuturisticCard(
+    modifier: Modifier = Modifier,
+    content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit
+) {
+    BackgroundCard(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.extraLarge,
+        content = content
+    )
+}
+
+@Composable
+private fun FuturisticCardTitle(text: String, modifier: Modifier = Modifier, trailing: @Composable () -> Unit = {}) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1
+        )
+        trailing()
+    }
+}
+
+/**
+ * Beranda tema Futuristik: kartu sambutan + kartu versi dengan tombol MAIN emas di atas,
+ * lalu daftar versi, akun, dan statistik waktu bermain. Dapat digulir ke bawah.
+ */
+@Composable
+private fun FuturisticHome(
+    isVisible: Boolean,
+    onLaunchGame: (Version?) -> Unit,
+    toAccountManageScreen: () -> Unit,
+    toVersionSettingsScreen: () -> Unit,
+    toVersionManageScreen: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val ctx = rememberAnimatedContext(isVisible = isVisible)
+    val account by AccountsManager.currentAccountFlow.collectAsStateWithLifecycle()
+    val refreshWardrobe by AccountsManager.refreshWardrobe.collectAsStateWithLifecycle()
+    val version by VersionsManager.currentVersion.collectAsStateWithLifecycle()
+    val isRefreshing by VersionsManager.isRefreshing.collectAsStateWithLifecycle()
+    val versions by VersionsManager.versions.collectAsStateWithLifecycle()
+    val ready = !isRefreshing && version?.isValid() == true
+    val primary = MaterialTheme.colorScheme.primary
+    val chipShape = com.movtery.zalithlauncher.ui.theme.nevPillShape()
+
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(start = 8.dp, end = 12.dp, top = 4.dp, bottom = 12.dp)
+                .animated(ctx),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            //baris atas: sambutan + versi Minecraft
+            Row(
+                modifier = Modifier.fillMaxWidth().height(200.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                FuturisticCard(modifier = Modifier.weight(1.6f).fillMaxHeight()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.fut_welcome),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = "Minecraft Java",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.ExtraBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            modifier = Modifier.alpha(0.8f),
+                            text = stringResource(R.string.fut_subtitle),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        if (ready) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                version?.getVersionInfo()?.let { info ->
+                                    listOf(
+                                        version!!.getVersionName(),
+                                        info.primaryLoader?.loader?.displayName
+                                    ).filterNotNull().forEach { label ->
+                                        Surface(
+                                            shape = chipShape,
+                                            color = Color.Transparent,
+                                            border = BorderStroke(1.dp, NevRed.Outline)
+                                        ) {
+                                            Text(
+                                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
+                                                text = label,
+                                                style = MaterialTheme.typography.labelSmall,
+                                                fontWeight = FontWeight.SemiBold,
+                                                maxLines = 1
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(Modifier.height(4.dp))
+                        NevGradientButton(onClick = { onLaunchGame(null) }) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 9.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(20.dp),
+                                    painter = painterResource(R.drawable.ic_play_arrow_filled),
+                                    contentDescription = null
+                                )
+                                Text(
+                                    text = stringResource(R.string.fut_play_now),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1
+                                )
+                            }
+                        }
+                    }
+                }
+
+                FuturisticCard(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        FuturisticCardTitle(stringResource(R.string.fut_version_card))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            version?.let { v ->
+                                CommonVersionInfoLayout(
+                                    modifier = Modifier.weight(1f),
+                                    version = v,
+                                    iconSize = 40.dp
+                                )
+                            } ?: Text(
+                                modifier = Modifier.weight(1f),
+                                text = stringResource(R.string.hero_empty_title),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            NevGradientButton(
+                                modifier = Modifier.weight(1f),
+                                onClick = { onLaunchGame(null) }
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.size(18.dp),
+                                        painter = painterResource(R.drawable.ic_play_arrow_filled),
+                                        contentDescription = null
+                                    )
+                                    Text(
+                                        modifier = Modifier.padding(start = 6.dp),
+                                        text = stringResource(R.string.main_play).uppercase(),
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        letterSpacing = 1.sp,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
+                            if (ready) {
+                                Surface(
+                                    shape = androidx.compose.foundation.shape.CircleShape,
+                                    color = Color.Transparent,
+                                    border = BorderStroke(1.5.dp, primary),
+                                    onClick = toVersionSettingsScreen
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.padding(9.dp).size(20.dp),
+                                        painter = painterResource(R.drawable.ic_settings_filled),
+                                        contentDescription = stringResource(R.string.versions_manage_settings)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //baris tengah: daftar versi + akun
+            Row(
+                modifier = Modifier.fillMaxWidth().height(208.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                FuturisticCard(modifier = Modifier.weight(1.4f).fillMaxHeight()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        FuturisticCardTitle(stringResource(R.string.fut_your_versions)) {
+                            Text(
+                                modifier = Modifier
+                                    .clip(chipShape)
+                                    .clickable(onClick = toVersionManageScreen)
+                                    .padding(horizontal = 8.dp, vertical = 2.dp),
+                                text = stringResource(R.string.fut_see_all) + "  \u203A",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = primary,
+                                maxLines = 1
+                            )
+                        }
+                        versions.take(3).forEach { v ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                CommonVersionInfoLayout(
+                                    modifier = Modifier.weight(1f),
+                                    version = v,
+                                    iconSize = 32.dp
+                                )
+                                Surface(
+                                    shape = androidx.compose.foundation.shape.CircleShape,
+                                    color = Color.Transparent,
+                                    border = BorderStroke(1.5.dp, primary),
+                                    onClick = {
+                                        if (version != v) VersionsManager.saveVersion(v)
+                                        onLaunchGame(v)
+                                    }
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.padding(8.dp).size(20.dp),
+                                        painter = painterResource(R.drawable.ic_play_arrow_filled),
+                                        contentDescription = stringResource(R.string.main_play)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                FuturisticCard(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        FuturisticCardTitle(stringResource(R.string.fut_account))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            account?.let {
+                                PlayerFace(account = it, avatarSize = 44.dp, refreshKey = refreshWardrobe)
+                            } ?: Icon(
+                                modifier = Modifier.size(32.dp),
+                                painter = painterResource(R.drawable.ic_add),
+                                contentDescription = null
+                            )
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = account?.username ?: stringResource(R.string.account_add_new_account),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                account?.let {
+                                    Text(
+                                        modifier = Modifier.alpha(0.75f),
+                                        text = getAccountTypeName(it),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
+                        }
+                        OutlinedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = toAccountManageScreen,
+                            border = BorderStroke(1.dp, primary)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.fut_manage_account),
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
+            }
+
+            //waktu bermain
+            com.movtery.zalithlauncher.ui.screens.content.home.PlayTimeStatsCard(
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(if (AllSettings.musicEnabled.state) 72.dp else 0.dp))
+        }
+
         ComponentInstallCard(
             modifier = Modifier
                 .align(Alignment.BottomCenter)

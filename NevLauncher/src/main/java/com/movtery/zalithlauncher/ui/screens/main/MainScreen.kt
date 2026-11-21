@@ -98,6 +98,7 @@ import com.movtery.zalithlauncher.path.PathManager
 import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.ui.theme.NevRed
 import com.movtery.zalithlauncher.ui.theme.nevShape
+import com.movtery.zalithlauncher.ui.theme.nevPillShape
 import com.movtery.zalithlauncher.ui.theme.NavRailSide
 import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
 import androidx.compose.foundation.layout.ColumnScope
@@ -200,6 +201,8 @@ fun MainScreen(
 
     val railSide = AllSettings.launcherNavRailSide.state
     val floatingRail = LocalNevStyle.current.floatingRail
+    //Futuristik: kolom kiri berisi panel pil (logo + menu berlabel), bukan rail ikon
+    val futuristic = LocalNevStyle.current.futuristic
     //Cyber: menu navigasi berupa dock horizontal di bawah layar, bukan kolom samping
     val bottomDock = LocalNevStyle.current.bottomDock
     val hudStart = NevRed.GradientStart
@@ -243,8 +246,11 @@ fun MainScreen(
         } else {
             Modifier
                 .fillMaxHeight()
-                .width(if (floatingRail) 92.dp else 84.dp)
+                .width(if (futuristic) 168.dp else if (floatingRail) 92.dp else 84.dp)
         },
+        futuristic = futuristic && !bottomDock,
+        inHomeScreen = inLauncherScreen,
+        toHomeScreen = toMainScreen,
         floating = floatingRail && !bottomDock,
         dock = bottomDock,
         contentColor = onBackgroundColor(),
@@ -310,7 +316,7 @@ fun MainScreen(
                 inLauncherScreen = inLauncherScreen,
                 showHomeButton = !heroLayout,
                 //di beranda, logo + nama digeser mentok ke tepi kiri layar (di atas rail)
-                titleStartShift = if (railSide == NavRailSide.START && !bottomDock && !heroLayout) {
+                titleStartShift = if (railSide == NavRailSide.START && !bottomDock && !heroLayout && !futuristic) {
                     -(if (floatingRail) 92.dp else 84.dp)
                 } else 0.dp,
                 taskRunning = taskRunning,
@@ -489,7 +495,39 @@ private fun <E: TitledNavKey> TopBar(
                 val softWarp = false
                 val maxLines = 1
 
-                if (parent == null) {
+                if (parent == null && LocalNevStyle.current.futuristic) {
+                    //Futuristik: logo sudah ada di kolom kiri; di sini cukup pil "Beranda"
+                    val chipShape = nevPillShape()
+                    Row(
+                        modifier = Modifier
+                            .background(NevRed.Panel.glassAlpha(0.6f), chipShape)
+                            .border(BorderStroke(1.dp, NevRed.Outline), chipShape)
+                            .padding(start = 4.dp, end = 14.dp, top = 3.dp, bottom = 3.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(26.dp)
+                                .clip(androidx.compose.foundation.shape.CircleShape)
+                                .background(MaterialTheme.colorScheme.primary),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(16.dp),
+                                painter = painterResource(R.drawable.ic_home_filled),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        Text(
+                            text = stringResource(R.string.hero_nav_home),
+                            style = style,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1
+                        )
+                    }
+                } else if (parent == null) {
                     Row(
                         modifier = Modifier.offset(x = titleStartShift),
                         verticalAlignment = Alignment.CenterVertically,
@@ -608,6 +646,9 @@ private fun SideRail(
     openFileManager: () -> Unit,
     floating: Boolean = false,
     dock: Boolean = false,
+    futuristic: Boolean = false,
+    inHomeScreen: Boolean = false,
+    toHomeScreen: () -> Unit = {},
 ) {
     val railItems: @Composable () -> Unit = {
             SideRailItem(
@@ -649,7 +690,24 @@ private fun SideRail(
     }
 
     CompositionLocalProvider(LocalContentColor provides contentColor) {
-        if (dock) {
+        if (futuristic) {
+            FuturisticRail(
+                modifier = modifier,
+                inHomeScreen = inHomeScreen,
+                inServerHubScreen = inServerHubScreen,
+                inMultiplayerScreen = inMultiplayerScreen,
+                inDonateScreen = inDonateScreen,
+                inDownloadScreen = inDownloadScreen,
+                inSettingsScreen = inSettingsScreen,
+                toHomeScreen = toHomeScreen,
+                toSettingsScreen = toSettingsScreen,
+                toDownloadScreen = toDownloadScreen,
+                toServerHubScreen = toServerHubScreen,
+                toMultiplayerScreen = toMultiplayerScreen,
+                toDonateScreen = toDonateScreen,
+                openFileManager = openFileManager
+            )
+        } else if (dock) {
             //dock Cyber: panel potong-sudut bercahaya di bawah layar; bisa digeser bila layar sempit
             val dockShape = nevShape(20.dp)
             Box(
@@ -1247,6 +1305,182 @@ private fun HeroTextNav(
                 letterSpacing = 1.sp,
                 color = if (item.selected) NevRed.GradientStart else LocalContentColor.current.copy(alpha = 0.92f),
                 maxLines = 1
+            )
+        }
+    }
+}
+
+
+/** Satu baris menu Futuristik: lingkaran emas berisi ikon + label, dalam pil berbingkai emas. */
+@Composable
+private fun FuturisticRailItem(
+    selected: Boolean,
+    painter: Painter,
+    text: String,
+    onClick: () -> Unit
+) {
+    val shape = nevPillShape()
+    val primary = MaterialTheme.colorScheme.primary
+    val onPrimary = MaterialTheme.colorScheme.onPrimary
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .then(
+                if (selected) Modifier.background(NevRed.GradientDiagonal, shape)
+                else Modifier.background(NevRed.Panel.glassAlpha(0.55f), shape)
+            )
+            .border(
+                BorderStroke(1.dp, if (selected) Color.Transparent else NevRed.Outline.copy(alpha = 0.9f)),
+                shape
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 5.dp, vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(30.dp)
+                .clip(androidx.compose.foundation.shape.CircleShape)
+                .background(if (selected) onPrimary else primary),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier.size(18.dp),
+                painter = painter,
+                contentDescription = text,
+                tint = if (selected) primary else onPrimary
+            )
+        }
+        Text(
+            modifier = Modifier.weight(1f),
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            color = if (selected) onPrimary else LocalContentColor.current,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+/** Kolom kiri Futuristik: kartu logo di atas, lalu panel berisi menu pil berlabel. */
+@Composable
+private fun FuturisticRail(
+    modifier: Modifier,
+    inHomeScreen: Boolean,
+    inServerHubScreen: Boolean,
+    inMultiplayerScreen: Boolean,
+    inDonateScreen: Boolean,
+    inDownloadScreen: Boolean,
+    inSettingsScreen: Boolean,
+    toHomeScreen: () -> Unit,
+    toSettingsScreen: () -> Unit,
+    toDownloadScreen: () -> Unit,
+    toServerHubScreen: () -> Unit,
+    toMultiplayerScreen: () -> Unit,
+    toDonateScreen: () -> Unit,
+    openFileManager: () -> Unit,
+) {
+    val panelShape = nevShape(26.dp)
+    val panelBorder = BorderStroke(
+        1.dp,
+        Brush.verticalGradient(listOf(NevRed.OutlineBright.copy(alpha = 0.9f), NevRed.Outline))
+    )
+    Column(
+        modifier = modifier.padding(start = 8.dp, end = 4.dp, top = 8.dp, bottom = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        //kartu logo
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(NevRed.Panel.glassAlpha(0.7f), panelShape)
+                .border(panelBorder, panelShape)
+                .padding(horizontal = 10.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(34.dp)
+                    .clip(androidx.compose.foundation.shape.CircleShape),
+                painter = painterResource(R.drawable.img_nev_logo),
+                contentDescription = BuildKeys.LAUNCHER_NAME,
+                contentScale = ContentScale.Fit
+            )
+            Column {
+                Text(
+                    text = BuildKeys.LAUNCHER_NAME.trim(),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = NevRed.GradientStart,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "LAUNCHER",
+                    style = MaterialTheme.typography.labelSmall,
+                    letterSpacing = 1.5.sp,
+                    color = LocalContentColor.current.copy(alpha = 0.7f),
+                    maxLines = 1
+                )
+            }
+        }
+
+        //panel menu
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .background(NevRed.Panel.glassAlpha(0.6f), panelShape)
+                .border(panelBorder, panelShape)
+                .verticalScroll(rememberScrollState())
+                .padding(all = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            FuturisticRailItem(
+                selected = inHomeScreen,
+                painter = painterResource(R.drawable.ic_home_filled),
+                text = stringResource(R.string.hero_nav_home),
+                onClick = { if (!inHomeScreen) toHomeScreen() }
+            )
+            FuturisticRailItem(
+                selected = false,
+                painter = painterResource(R.drawable.ic_folder_filled),
+                text = "File",
+                onClick = openFileManager
+            )
+            FuturisticRailItem(
+                selected = inServerHubScreen,
+                painter = painterResource(R.drawable.ic_dns_outlined),
+                text = stringResource(R.string.server_hub_title),
+                onClick = { if (!inServerHubScreen) toServerHubScreen() }
+            )
+            FuturisticRailItem(
+                selected = inMultiplayerScreen,
+                painter = painterResource(R.drawable.ic_group_filled),
+                text = stringResource(R.string.terracotta),
+                onClick = { if (!inMultiplayerScreen) toMultiplayerScreen() }
+            )
+            FuturisticRailItem(
+                selected = inDownloadScreen,
+                painter = painterResource(R.drawable.ic_download_2_filled),
+                text = stringResource(R.string.generic_download),
+                onClick = { if (!inDownloadScreen) toDownloadScreen() }
+            )
+            FuturisticRailItem(
+                selected = inDonateScreen,
+                painter = painterResource(R.drawable.ic_favorite_filled),
+                text = stringResource(R.string.donate_menu),
+                onClick = { if (!inDonateScreen) toDonateScreen() }
+            )
+            FuturisticRailItem(
+                selected = inSettingsScreen,
+                painter = painterResource(R.drawable.ic_settings_filled),
+                text = stringResource(R.string.generic_setting),
+                onClick = { if (!inSettingsScreen) toSettingsScreen() }
             )
         }
     }

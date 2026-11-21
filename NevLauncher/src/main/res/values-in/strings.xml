@@ -122,16 +122,16 @@
     <string name="download_game_addon_not_installable">Tidak dapat dipasang secara otomatis</string>
     <string name="theme_color_verdant_dawn">Hutan Fajar yang Hening</string>
     <string name="theme_color_nev_lava">Nev Lava</string>
-    <string name="theme_color_cryogenic">Cryogenic</string>
+    <string name="theme_color_cryogenic">Futuristik</string>
     <string name="settings_tab_display">Tampilan</string>
     <string name="settings_display_design_theme_title">Tema Desain</string>
     <string name="settings_display_design_theme_summary">Pilih gaya tampilan launcher secara keseluruhan.</string>
     <string name="settings_display_theme_nev_lava_desc">Merah dan oranye, nuansa gaming yang tegas.</string>
-    <string name="settings_display_theme_cryogenic_desc">Biru es dan cyan, panel gelap futuristik.</string>
+    <string name="settings_display_theme_cryogenic_desc">Emas di atas navy, panel kaca bulat.</string>
     <string name="settings_display_style_title">Gaya Desain</string>
     <string name="settings_display_style_summary">Mengubah bentuk dan nuansa panel, tab, dan tombol, terpisah dari warna.</string>
     <string name="settings_display_style_nev">Klasik (sudut bulat)</string>
-    <string name="settings_display_style_cryogenic">Cryogenic (kaca, sudut terpotong)</string>
+    <string name="settings_display_style_cryogenic">Futuristik (kaca emas, pil bulat)</string>
     <string name="settings_display_nav_side_title">Posisi Menu</string>
     <string name="settings_display_nav_side_summary">Letak menu navigasi utama (File, Server, Unduh, Pengaturan, dst.).</string>
     <string name="settings_display_nav_side_start">Kiri</string>
@@ -1781,4 +1781,12 @@
     <string name="dash_selected">Dipilih</string>
     <string name="theme_color_hero">Hero</string>
     <string name="settings_display_theme_hero_desc">Layar penuh, judul versi besar</string>
+    <string name="fut_welcome">Selamat datang kembali,</string>
+    <string name="fut_subtitle">Perjalanan barumu dimulai di sini!</string>
+    <string name="fut_play_now">Main Sekarang</string>
+    <string name="fut_version_card">Versi Minecraft</string>
+    <string name="fut_your_versions">Versi kamu</string>
+    <string name="fut_see_all">Lihat semua</string>
+    <string name="fut_account">Akun</string>
+    <string name="fut_manage_account">Kelola Akun</string>
 </resources>

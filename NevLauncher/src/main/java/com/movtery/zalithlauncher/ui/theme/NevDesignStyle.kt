@@ -42,7 +42,7 @@ enum class DesignStyleType {
     /** Sudut bulat, panel solid (tampilan asli Nev Launcher). */
     NEV,
 
-    /** Sudut terpotong, panel kaca transparan, cahaya tepi lebih kuat. */
+    /** Futuristik (nama internal Cryogenic): kaca gelap bulat, bingkai emas, rail kiri berisi pil. */
     CRYOGENIC,
 
     /** Gaya Cyber: sudut terpotong diagonal terbalik, bingkai neon tipis, dock navigasi di bawah. */
@@ -79,6 +79,8 @@ data class NevStyle(
     val floatingRail: Boolean,
     /** true: gaya Cyber (bentuk, label, dan tata letak sendiri). */
     val cyber: Boolean = false,
+    /** true: gaya Futuristik (nama kode Cryogenic): panel kaca bulat berbingkai emas, rail kiri berisi pil. */
+    val futuristic: Boolean = false,
     /** true: gaya Liquid (kaca bening + animasi cairan). */
     val liquid: Boolean = false,
     /** true: menu navigasi utama berupa dock horizontal di bawah layar (tata letak Cyber). */
@@ -97,14 +99,15 @@ val NevClassicStyle = NevStyle(
 )
 
 val NevCryogenicStyle = NevStyle(
-    cardOuterScale = 0.55f,
-    cardInnerScale = 0.3f,
+    cardOuterScale = 1.15f,
+    cardInnerScale = 0.8f,
     cardBorderWidth = 1.dp,
-    glowRadiusScale = 1.4f,
-    glowIntensityScale = 1.2f,
-    cardAlpha = 0.8f,
-    cutCorners = true,
-    floatingRail = true
+    glowRadiusScale = 1.1f,
+    glowIntensityScale = 0.9f,
+    cardAlpha = 0.62f,
+    cutCorners = false,
+    floatingRail = false,
+    futuristic = true
 )
 
 val NevCyberStyle = NevStyle(

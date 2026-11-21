@@ -85,7 +85,7 @@ fun themeSwatchColor(type: ColorThemeType): Color = when (type) {
     ColorThemeType.URBAN_ASH -> Color(0xFFC7C6C6)
     ColorThemeType.VERDANT_DAWN -> Color(0xFF8ED88E)
     ColorThemeType.NEV_LAVA -> Color(0xFFFF5A3D)
-    ColorThemeType.CRYOGENIC -> Color(0xFF4DD8F0)
+    ColorThemeType.CRYOGENIC -> Color(0xFFF5B52E)
     ColorThemeType.CYBER -> Color(0xFF00E5FF)
     ColorThemeType.LIQUID -> Color(0xFF5AC8FA)
     ColorThemeType.HERO -> Color(0xFFFFFFFF)
