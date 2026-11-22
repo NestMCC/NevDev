@@ -499,8 +499,11 @@ private fun VersionList(
     versions: List<MinecraftVersion>,
     onVersionSelect: (MinecraftVersion) -> Unit,
     openLink: (url: String) -> Unit,
-    latestId: String? = null
+    latestId: String? = null,
+    groupCoverUrl: String? = null
 ) {
+    //Hero: gambar sampul ("Minecraft drop") di ubin ikon tiap baris
+    val covers by VersionCoverRepository.covers.collectAsStateWithLifecycle()
     val scrollState = rememberLazyListState()
     LazyColumn(
         modifier = modifier.nonInteractiveScrollbar(
@@ -517,6 +520,7 @@ private fun VersionList(
                     .padding(vertical = 6.dp),
                 version = version,
                 isLatest = latestId != null && version.version.id == latestId,
+                coverUrl = covers[version.version.id] ?: groupCoverUrl,
                 onClick = {
                     onVersionSelect(version)
                 },
@@ -532,6 +536,7 @@ private fun VersionList(
 private fun VersionItemLayout(
     modifier: Modifier = Modifier,
     version: MinecraftVersion,
+    coverUrl: String? = null,
     onClick: () -> Unit = {},
     onAccessWiki: (String) -> Unit = {},
     isLatest: Boolean = false,
@@ -563,12 +568,22 @@ private fun VersionItemLayout(
             chips = listOfNotNull(versionType, if (isLatest) latestText else null, dateText),
             actionText = stringResource(R.string.download_install),
             icon = {
-                icon?.let { versionIcon ->
-                    Image(
-                        modifier = Modifier.size(34.dp),
-                        painter = versionIcon,
-                        contentDescription = null
+                if (coverUrl != null) {
+                    //gambar sampul rilis (Minecraft drop)
+                    AsyncImage(
+                        modifier = Modifier.fillMaxSize(),
+                        model = coverUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
                     )
+                } else {
+                    icon?.let { versionIcon ->
+                        Image(
+                            modifier = Modifier.size(34.dp),
+                            painter = versionIcon,
+                            contentDescription = null
+                        )
+                    }
                 }
             },
             extra = if (wikiUrl != null) {
@@ -891,6 +906,48 @@ private fun VersionBrowser(
         return
     }
 
+    if (com.movtery.zalithlauncher.ui.theme.isBoxy()) {
+        //Hero: daftar seri berupa baris lebar polos (bukan kartu persegi panjang), ikon = gambar sampul
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(groups, key = { "hero-group-${it.id}" }) { group ->
+                val index = groups.indexOf(group)
+                val cover = group.coverUrl(covers)
+                val name = listOfNotNull(group.key, group.displayTitle()).joinToString(" · ")
+                com.movtery.zalithlauncher.ui.screens.content.download.HeroListRow(
+                    onClick = { onOpenGroup(group.id) },
+                    title = name,
+                    description = stringResource(R.string.download_game_group_count, group.versions.size),
+                    chips = listOf(
+                        groupTypeName(group.type),
+                        stringResource(R.string.download_game_group_latest, group.latest.version.id)
+                    ),
+                    actionText = stringResource(R.string.generic_view),
+                    icon = {
+                        if (cover != null) {
+                            AsyncImage(
+                                modifier = Modifier.fillMaxSize(),
+                                model = cover,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            DefaultCover(
+                                modifier = Modifier.fillMaxSize(),
+                                seed = group.id,
+                                accent = GROUP_ACCENTS[index % GROUP_ACCENTS.size]
+                            )
+                        }
+                    }
+                )
+            }
+        }
+        return
+    }
+
     val gridState = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
     LazyVerticalGrid(
         modifier = modifier,
@@ -1161,7 +1218,8 @@ private fun NevVersionGroupDetail(
             versions = group.versions,
             onVersionSelect = onVersionSelect,
             openLink = openLink,
-            latestId = latestId
+            latestId = latestId,
+            groupCoverUrl = coverUrl
         )
     }
 }
