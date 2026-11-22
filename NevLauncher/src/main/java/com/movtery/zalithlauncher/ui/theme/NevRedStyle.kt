@@ -82,7 +82,7 @@ object NevRed {
         @Composable get() = Brush.linearGradient(listOf(GradientStart, GradientEnd))
 
     val PanelBrush: Brush
-        @Composable get() = if (isNevGradient()) NevCardFill else Brush.verticalGradient(listOf(Panel, PanelDeep))
+        @Composable get() = if (isNevGradient()) NevCardFill else if (isBoxy()) NevRed.solid(PanelDeep) else Brush.verticalGradient(listOf(Panel, PanelDeep))
 
     /** Brush satu warna (untuk latar polos yang tetap bertipe Brush). */
     @Composable
@@ -403,6 +403,9 @@ val NevCardBorder: BorderStroke
     } else if (LocalNevStyle.current.cyber) {
         //Cyber: garis tepi samar; penanda sudut (cyberFrame) yang menonjol
         BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.28f))
+    } else if (isBoxy()) {
+        //Hero (kotak): garis tepi polos, tanpa gradasi
+        BorderStroke(LocalNevStyle.current.cardBorderWidth, NevRed.OutlineBright)
     } else if (isNevGradient()) {
         //Nev: bingkai gradasi aksen (sama dengan kartu daftar mod/versi)
         if (LocalNevStyle.current.futuristic) {

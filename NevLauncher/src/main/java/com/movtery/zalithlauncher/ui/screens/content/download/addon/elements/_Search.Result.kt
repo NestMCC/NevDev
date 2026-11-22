@@ -861,13 +861,14 @@ fun ResultProjectWideCard(
         shape = shape,
         color = Color.Transparent,
         contentColor = NevRed.OnPanel,
-        border = BorderStroke(
+        //Hero (kotak): polos tanpa gradasi
+        border = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) com.movtery.zalithlauncher.ui.theme.boxyBorder() else BorderStroke(
             1.5.dp,
             androidx.compose.ui.graphics.Brush.linearGradient(listOf(accent.copy(alpha = 0.9f), accent.copy(alpha = 0.35f)))
         )
     ) {
         Box(
-            modifier = Modifier.background(
+            modifier = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) Modifier.background(NevRed.PanelDeep) else Modifier.background(
                 androidx.compose.ui.graphics.Brush.verticalGradient(
                     listOf(accent.copy(alpha = 0.28f), NevRed.PanelDeep, NevRed.Panel)
                 )

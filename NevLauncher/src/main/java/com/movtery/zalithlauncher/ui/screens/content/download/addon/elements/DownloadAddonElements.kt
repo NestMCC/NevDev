@@ -262,7 +262,7 @@ fun AddonVersionItemLayout(
         shape = shape,
         color = if (cardStyle) Color.Transparent else color,
         contentColor = if (cardStyle) NevRed.OnPanel else contentColor,
-        border = if (cardStyle) {
+        border = if (cardStyle && com.movtery.zalithlauncher.ui.theme.isBoxy()) com.movtery.zalithlauncher.ui.theme.boxyBorder() else if (cardStyle) {
             BorderStroke(1.5.dp, Brush.linearGradient(listOf(accent.copy(alpha = 0.9f), accent.copy(alpha = 0.35f))))
         } else NevCardBorder
     ) {
@@ -270,7 +270,8 @@ fun AddonVersionItemLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .then(
-                    if (cardStyle) Modifier.background(
+                    if (cardStyle && com.movtery.zalithlauncher.ui.theme.isBoxy()) Modifier.background(NevRed.PanelDeep)
+                    else if (cardStyle) Modifier.background(
                         Brush.verticalGradient(listOf(accent.copy(alpha = 0.28f), NevRed.PanelDeep, NevRed.Panel))
                     ) else Modifier.backgroundGlass(blur, color, influencedByBackground)
                 )
@@ -522,13 +523,13 @@ private fun AddonVersionListItem(
         shape = shape,
         color = Color.Transparent,
         contentColor = NevRed.OnPanel,
-        border = BorderStroke(
+        border = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) com.movtery.zalithlauncher.ui.theme.boxyBorder() else BorderStroke(
             1.5.dp,
             Brush.linearGradient(listOf(accent.copy(alpha = 0.9f), accent.copy(alpha = 0.35f)))
         )
     ) {
         Box(
-            modifier = Modifier.background(
+            modifier = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) Modifier.background(NevRed.PanelDeep) else Modifier.background(
                 Brush.verticalGradient(listOf(accent.copy(alpha = 0.28f), NevRed.PanelDeep, NevRed.Panel))
             )
         ) {

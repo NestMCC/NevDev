@@ -894,13 +894,13 @@ private fun VersionGroupCard(
         onClick = onClick,
         shape = shape,
         color = Color.Transparent,
-        border = androidx.compose.foundation.BorderStroke(
+        border = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) com.movtery.zalithlauncher.ui.theme.boxyBorder() else androidx.compose.foundation.BorderStroke(
             1.5.dp,
             Brush.linearGradient(listOf(accent.copy(alpha = 0.9f), accent.copy(alpha = 0.35f)))
         )
     ) {
         Box(
-            modifier = Modifier.background(
+            modifier = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) Modifier.background(NevRed.PanelDeep) else Modifier.background(
                 Brush.verticalGradient(
                     listOf(accent.copy(alpha = 0.28f), NevRed.PanelDeep, NevRed.Panel)
                 )
