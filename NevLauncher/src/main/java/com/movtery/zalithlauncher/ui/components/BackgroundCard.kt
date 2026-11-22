@@ -40,6 +40,7 @@ import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.ui.screens.content.elements.backgroundGlass
 import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder
+import com.movtery.zalithlauncher.ui.theme.NevCardBase
 import com.movtery.zalithlauncher.ui.theme.NevCardFill
 import com.movtery.zalithlauncher.ui.theme.NevRed
 import com.movtery.zalithlauncher.ui.theme.isNevGradient
@@ -83,7 +84,7 @@ fun BackgroundCard(
     //desain Nev + warna bawaan: isi gradasi aksen (sama dengan kartu daftar mod/versi)
     val gradient = colors == null && isNevGradient()
     val resolved = colors ?: CardDefaults.cardColors(
-        containerColor = if (gradient) NevRed.PanelDeep else cardColor(influencedByBackground).styledAlpha(),
+        containerColor = if (gradient) NevCardBase else cardColor(influencedByBackground).styledAlpha(),
         contentColor = onCardColor()
     )
     Card(
@@ -122,9 +123,9 @@ fun BackgroundCard(
 ) {
     val gradient = colors == null && isNevGradient()
     val resolved = colors ?: CardDefaults.cardColors(
-        containerColor = if (gradient) NevRed.PanelDeep else cardColor(influencedByBackground).styledAlpha(),
+        containerColor = if (gradient) NevCardBase else cardColor(influencedByBackground).styledAlpha(),
         contentColor = onCardColor(),
-        disabledContainerColor = if (gradient) NevRed.PanelDeep else cardColor(influencedByBackground).styledAlpha()
+        disabledContainerColor = if (gradient) NevCardBase else cardColor(influencedByBackground).styledAlpha()
     )
     Card(
         modifier = modifier.nevGlow(shape, 6.dp, 0.45f)

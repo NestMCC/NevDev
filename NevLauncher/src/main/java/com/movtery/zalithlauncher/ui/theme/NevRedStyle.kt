@@ -405,7 +405,19 @@ val NevCardBorder: BorderStroke
         BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.28f))
     } else if (isNevGradient()) {
         //Nev: bingkai gradasi aksen (sama dengan kartu daftar mod/versi)
-        BorderStroke(
+        if (LocalNevStyle.current.futuristic) {
+            //Futuristik: bingkai emas tipis, terang di sudut lalu meredup
+            BorderStroke(
+                1.2.dp,
+                Brush.linearGradient(
+                    listOf(
+                        NevRed.GradientEnd.copy(alpha = 0.95f),
+                        NevRed.GradientStart.copy(alpha = 0.55f),
+                        NevRed.GradientStart.copy(alpha = 0.28f)
+                    )
+                )
+            )
+        } else BorderStroke(
             1.5.dp,
             Brush.linearGradient(
                 listOf(NevRed.GradientStart.copy(alpha = 0.9f), NevRed.GradientStart.copy(alpha = 0.35f))
@@ -427,11 +439,24 @@ val LocalNevGradientCards = androidx.compose.runtime.compositionLocalOf { true }
 
 /** true: desain Nev dan gradasi aksen kartu/dialog/panel sedang aktif. */
 @Composable
-fun isNevGradient(): Boolean = isNevDesign() && LocalNevGradientCards.current
+fun isNevGradient(): Boolean = (isNevDesign() || LocalNevStyle.current.futuristic) && LocalNevGradientCards.current
+
+/** Warna dasar kartu gradasi: tembus pandang (kaca) pada tema Futuristik, solid pada Nev. */
+val NevCardBase: Color
+    @Composable get() = if (LocalNevStyle.current.futuristic) NevRed.PanelDeep.copy(alpha = 0.62f) else NevRed.PanelDeep
 
 /** Isi kartu gradasi: bagian atas berpendar warna aksen lalu memudar ke gelap (sama dengan kartu daftar mod/versi). */
 val NevCardFill: Brush
-    @Composable get() = Brush.verticalGradient(
+    @Composable get() = if (LocalNevStyle.current.futuristic) {
+        //Futuristik: kaca gelap dengan pendar emas dari kiri
+        Brush.horizontalGradient(
+            listOf(
+                NevRed.GradientStart.copy(alpha = 0.20f),
+                NevRed.PanelDeep.copy(alpha = 0.55f),
+                NevRed.Panel.copy(alpha = 0.45f)
+            )
+        )
+    } else Brush.verticalGradient(
         listOf(NevRed.GradientStart.copy(alpha = 0.28f), NevRed.PanelDeep, NevRed.Panel)
     )
 
@@ -454,7 +479,7 @@ fun NevGradientSurface(
         androidx.compose.material3.Surface(
             modifier = modifier,
             shape = shape,
-            color = NevRed.PanelDeep,
+            color = NevCardBase,
             contentColor = NevRed.OnPanel,
             tonalElevation = 0.dp,
             shadowElevation = shadowElevation,
@@ -498,7 +523,7 @@ fun NevGradientSurface(
             modifier = modifier,
             enabled = enabled,
             shape = shape,
-            color = NevRed.PanelDeep,
+            color = NevCardBase,
             contentColor = NevRed.OnPanel,
             tonalElevation = 0.dp,
             shadowElevation = shadowElevation,
