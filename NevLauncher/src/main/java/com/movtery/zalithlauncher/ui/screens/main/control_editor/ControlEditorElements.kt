@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.main.control_editor
 
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border
@@ -847,7 +848,7 @@ private fun ControlLayerItem(
         else (-1).dp
     )
 
-    Surface(
+    NevGradientSurface(
         modifier = modifier.border(
             width = borderWidth,
             color = borderColor,

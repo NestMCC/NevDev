@@ -160,7 +160,7 @@ fun <E> InfoLayoutListItem(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Surface(
+    NevGradientSurface(
         modifier = modifier,
         shape = MaterialTheme.shapes.large,
         border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
