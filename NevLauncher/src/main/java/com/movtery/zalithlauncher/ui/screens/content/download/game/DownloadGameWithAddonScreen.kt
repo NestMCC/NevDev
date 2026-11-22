@@ -565,10 +565,10 @@ private fun ScreenHeader(
 @Composable
 private fun AddonScreenFrame(
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable () -> Unit
 ) {
     if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) {
-        Box(modifier = modifier, content = content)
+        Box(modifier = modifier) { content() }
     } else {
         NevPanelFrame(modifier = modifier, content = content)
     }
