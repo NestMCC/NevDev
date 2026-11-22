@@ -168,7 +168,6 @@ private fun AddonTextLayout(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            fontFamily = FontFamily.Monospace,
             fontWeight = FontWeight.Bold
         )
         summary()
@@ -235,24 +234,16 @@ fun <E> AddonListLayout(
         if (incompatibleSet.isNotEmpty()) clear()
     }
 
-    Surface(
+    //tampilan daftar bawaan (ikon, nama + keterangan, panah) dengan desain kartu launcher
+    com.movtery.zalithlauncher.ui.theme.NevGradientSurface(
         modifier = modifier,
-        shape = RoundedCornerShape(26.dp),
-        color = Color.Transparent,
-        contentColor = NevRed.OnPanel,
-        border = BorderStroke(
-            1.dp,
-            Brush.horizontalGradient(listOf(NevRed.Outline, NevRed.OutlineBright.copy(alpha = 0.8f)))
-        )
+        shape = com.movtery.zalithlauncher.ui.theme.nevShape(28.dp),
+        color = color,
+        contentColor = contentColor,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder()
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(NevRed.Panel.glassAlpha(0.8f), NevRed.PanelDeep.glassAlpha(0.9f))
-                    )
-                )
+            modifier = Modifier.fillMaxWidth()
         ) {
             AddonListHeader(
                 modifier = Modifier.fillMaxWidth(),
@@ -340,20 +331,11 @@ private fun <E> AddonListHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(14.dp))
-        //Ubin ikon bergaris oranye
-        Box(
-            modifier = Modifier
-                .size(56.dp)
-                .border(1.dp, NevRed.OutlineBright.copy(alpha = 0.8f), RoundedCornerShape(16.dp))
-                .background(NevRed.PanelDeep, RoundedCornerShape(16.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                modifier = Modifier.size(38.dp),
-                painter = iconPainter,
-                contentDescription = null
-            )
-        }
+        Image(
+            modifier = Modifier.size(48.dp),
+            painter = iconPainter,
+            contentDescription = null
+        )
         Spacer(modifier = Modifier.width(14.dp))
 
         when(state) {
@@ -392,30 +374,14 @@ private fun <E> AddonListHeader(
                         }
                         Spacer(modifier = Modifier.width(6.dp))
                     }
-                    //Tombol pil "PILIH ▾"
-                    Row(
+                    //panah buka/tutup (seperti daftar bawaan)
+                    Icon(
                         modifier = Modifier
-                            .background(NevRed.Gradient, RoundedCornerShape(50))
-                            .padding(start = 22.dp, end = 14.dp, top = 12.dp, bottom = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.download_game_addon_choose).uppercase(),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = NevRed.OnGradient,
-                            maxLines = 1
-                        )
-                        Icon(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .rotate(rotation),
-                            painter = painterResource(R.drawable.ic_arrow_drop_down_rounded),
-                            tint = NevRed.OnGradient,
-                            contentDescription = stringResource(if (expanded) R.string.generic_expand else R.string.generic_collapse)
-                        )
-                    }
+                            .size(28.dp)
+                            .rotate(rotation),
+                        painter = painterResource(R.drawable.ic_arrow_drop_down_rounded),
+                        contentDescription = stringResource(if (expanded) R.string.generic_expand else R.string.generic_collapse)
+                    )
                 }
             }
             is AddonState.Loading -> {
@@ -473,54 +439,50 @@ fun AddonListItem(
         )
         return
     }
-    val shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(20.dp, 8.dp))
-    Row(
-        modifier = modifier
-            .clip(shape)
-            .border(
-                width = if (selected) 1.4.dp else 1.dp,
-                color = if (selected) NevRed.OutlineBright else NevRed.Outline.copy(alpha = 0.7f),
-                shape = shape
-            )
-            .background(
-                Brush.horizontalGradient(
-                    listOf(NevRed.Panel.glassAlpha(0.8f), NevRed.PanelDeep.glassAlpha(0.9f))
-                )
-            )
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp)
+    val shape = com.movtery.zalithlauncher.ui.theme.nevShape(22.dp)
+    com.movtery.zalithlauncher.ui.theme.NevGradientSurface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = shape,
+        color = cardColor(),
+        contentColor = onCardColor(),
+        border = if (selected) BorderStroke(1.5.dp, NevRed.OutlineBright)
+        else com.movtery.zalithlauncher.ui.theme.boxyBorder()
     ) {
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            Text(
-                text = itemName,
-                style = MaterialTheme.typography.titleMedium,
-                fontFamily = FontFamily.Monospace,
-                fontWeight = FontWeight.Bold
-            )
-            summary?.invoke()
-        }
-        //Lingkaran pilihan: terisi gradasi + centang saat dipilih
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .then(
-                    if (selected) Modifier.background(NevRed.Gradient, CircleShape)
-                    else Modifier.border(1.dp, NevRed.Outline, CircleShape)
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            if (selected) {
-                Icon(
-                    modifier = Modifier.size(22.dp),
-                    painter = painterResource(R.drawable.ic_check),
-                    tint = NevRed.OnGradient,
-                    contentDescription = null
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = itemName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
                 )
+                summary?.invoke()
+            }
+            //Lingkaran pilihan: terisi gradasi + centang saat dipilih
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .then(
+                        if (selected) Modifier.background(NevRed.Gradient, CircleShape)
+                        else Modifier.border(1.dp, NevRed.Outline, CircleShape)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (selected) {
+                    Icon(
+                        modifier = Modifier.size(22.dp),
+                        painter = painterResource(R.drawable.ic_check),
+                        tint = NevRed.OnGradient,
+                        contentDescription = null
+                    )
+                }
             }
         }
     }

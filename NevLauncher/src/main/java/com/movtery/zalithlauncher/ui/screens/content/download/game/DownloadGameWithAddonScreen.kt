@@ -256,7 +256,7 @@ fun DownloadGameWithAddonScreen(
     ) { isVisible ->
         val animatedCtx = rememberAnimatedContext(isVisible = isVisible)
 
-        NevPanelFrame(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 12.dp, vertical = 8.dp)
@@ -505,34 +505,17 @@ fun DownloadGameWithAddonScreen(
             }
                 }
 
-                if (wide) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        sidePanel(
-                            Modifier
-                                .weight(0.4f)
-                                .fillMaxHeight()
-                        )
-                        addonList(
-                            Modifier
-                                .weight(0.6f)
-                                .fillMaxHeight()
-                        )
-                    }
-                } else {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        sidePanel(Modifier.fillMaxWidth())
-                        addonList(
-                            Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                        )
-                    }
+                //tampilan seperti daftar bawaan: kartu nama versi + tombol Pasang di atas, daftar addon selebar layar
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    sidePanel(Modifier.fillMaxWidth())
+                    addonList(
+                        Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                    )
                 }
             }
         }
@@ -580,104 +563,112 @@ private fun ScreenHeader(
         nameValue.isEmpty() || filenameInvalidMessage != null || isVersionExists
     }
 
-    NevInnerPanel(modifier = modifier) {
-        Text(
-            text = stringResource(R.string.download_game_install_label).uppercase(),
-            style = MaterialTheme.typography.labelMedium,
-            fontFamily = FontFamily.Monospace,
-            color = NevRed.GradientEnd,
-            maxLines = 1
-        )
-        Text(
-            text = gameVersion,
-            style = if (compact) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.ExtraBold,
-            color = lerp(NevRed.GradientEnd, Color.White, 0.55f),
-            maxLines = 1
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(4.dp)
-                .background(NevRed.Gradient, RoundedCornerShape(50))
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+    com.movtery.zalithlauncher.ui.theme.NevGradientSurface(
+        modifier = modifier,
+        shape = com.movtery.zalithlauncher.ui.theme.nevShape(28.dp),
+        color = itemContainerColor,
+        contentColor = itemContentColor,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder()
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            VersionIconPreview(
-                modifier = Modifier.size(32.dp),
-                currentAddon = currentAddon,
-                gameType = gameType,
-                refreshIcon = refreshIcon
-            )
-            Text(
-                text = stringResource(R.string.download_game_version_name).uppercase(),
-                style = MaterialTheme.typography.labelLarge,
-                fontFamily = FontFamily.Monospace,
-                color = NevRed.GradientEnd,
-                maxLines = 1
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Column(modifier = Modifier.animateContentSize(animationSpec = getAnimateTween())) {
-            SimpleTextInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, NevRed.OutlineBright.copy(alpha = 0.8f), RoundedCornerShape(50)),
-                value = nameValue,
-                onValueChange = {
-                    nameValue = it
-                    if (!editedByUser) {
-                        //用户已经对版本名称进行了编辑
-                        editedByUser = true
-                    }
-                },
-                color = NevRed.PanelDeep.glassAlpha(0.9f),
-                contentColor = itemContentColor,
-                contextPadding = PaddingValues(horizontal = 18.dp, vertical = 14.dp),
-                singleLine = true,
-                hint = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                VersionIconPreview(
+                    modifier = Modifier.size(44.dp),
+                    currentAddon = currentAddon,
+                    gameType = gameType,
+                    refreshIcon = refreshIcon
+                )
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = stringResource(R.string.download_game_version_name),
-                        style = TextStyle(color = itemContentColor).copy(fontSize = 14.sp)
+                        text = stringResource(R.string.download_game_install_label).uppercase(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = NevRed.GradientStart,
+                        maxLines = 1
+                    )
+                    Text(
+                        text = gameVersion,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1
                     )
                 }
-            )
+                if (!compact) {
+                    NevActionButton(
+                        modifier = Modifier.width(200.dp),
+                        text = stringResource(R.string.download_game_install_button),
+                        painter = painterResource(R.drawable.ic_download_2_filled),
+                        enabled = !isError,
+                        cornerRadius = 24.dp,
+                        onClick = {
+                            if (!isError) {
+                                onInstall(nameValue)
+                            }
+                        }
+                    )
+                }
+            }
 
-            if (isError) {
-                val message = filenameInvalidMessage
-                    ?: (if (isVersionExists) existsError else emptyError)
-
-                Text(
+            Column(modifier = Modifier.animateContentSize(animationSpec = getAnimateTween())) {
+                SimpleTextInputField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    text = message,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.labelMedium
+                        .border(1.dp, NevRed.OutlineBright.copy(alpha = 0.8f), RoundedCornerShape(50)),
+                    value = nameValue,
+                    onValueChange = {
+                        nameValue = it
+                        if (!editedByUser) {
+                            //用户已经对版本名称进行了编辑
+                            editedByUser = true
+                        }
+                    },
+                    color = NevRed.PanelDeep.glassAlpha(0.9f),
+                    contentColor = itemContentColor,
+                    contextPadding = PaddingValues(horizontal = 18.dp, vertical = 14.dp),
+                    singleLine = true,
+                    hint = {
+                        Text(
+                            text = stringResource(R.string.download_game_version_name),
+                            style = TextStyle(color = itemContentColor).copy(fontSize = 14.sp)
+                        )
+                    }
+                )
+
+                if (isError) {
+                    val message = filenameInvalidMessage
+                        ?: (if (isVersionExists) existsError else emptyError)
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        text = message,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
+
+            if (compact) {
+                NevActionButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.download_game_install_button),
+                    painter = painterResource(R.drawable.ic_download_2_filled),
+                    enabled = !isError,
+                    cornerRadius = 24.dp,
+                    onClick = {
+                        if (!isError) {
+                            onInstall(nameValue)
+                        }
+                    }
                 )
             }
         }
-
-        if (compact) Spacer(modifier = Modifier.height(10.dp)) else Spacer(modifier = Modifier.weight(1f))
-
-        NevActionButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.download_game_install_button),
-            painter = painterResource(R.drawable.ic_download_2_filled),
-            enabled = !isError,
-            cornerRadius = 24.dp,
-            onClick = {
-                if (!isError) {
-                    onInstall(nameValue)
-                }
-            }
-        )
     }
 }
 
