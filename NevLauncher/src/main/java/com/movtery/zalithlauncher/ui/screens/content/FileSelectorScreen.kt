@@ -20,7 +20,6 @@ package com.movtery.zalithlauncher.ui.screens.content
 
 import androidx.compose.material3.Icon
 import androidx.compose.ui.draw.alpha
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.res.painterResource
 import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
