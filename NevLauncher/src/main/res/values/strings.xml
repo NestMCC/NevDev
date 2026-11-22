@@ -3401,4 +3401,5 @@
     <string name="fut_see_all">See all</string>
     <string name="fut_account">Account</string>
     <string name="fut_manage_account">Manage Account</string>
+    <string name="download_quick_install_preparing">Preparing installation…</string>
 </resources>

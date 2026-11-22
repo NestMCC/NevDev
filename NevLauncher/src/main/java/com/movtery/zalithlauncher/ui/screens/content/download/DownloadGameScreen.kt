@@ -63,6 +63,10 @@ import com.movtery.zalithlauncher.ui.screens.NestedNavKey
 import com.movtery.zalithlauncher.ui.screens.NormalNavKey
 import com.movtery.zalithlauncher.ui.screens.TitledNavKey
 import com.movtery.zalithlauncher.ui.screens.content.download.game.DownloadGameWithAddonScreen
+import com.movtery.zalithlauncher.ui.screens.content.download.game.LocalQuickInstall
+import com.movtery.zalithlauncher.ui.screens.content.download.game.PendingLoaderPreselect
+import com.movtery.zalithlauncher.ui.screens.content.download.game.buildQuickInstallInfo
+import kotlinx.coroutines.launch
 import com.movtery.zalithlauncher.ui.screens.content.download.game.SelectGameVersionHost
 import com.movtery.zalithlauncher.ui.screens.content.download.game.SelectGameVersionScreen
 import com.movtery.zalithlauncher.ui.screens.content.elements.TitleTaskFlowDialog
@@ -186,6 +190,48 @@ fun DownloadGameScreen(
 
     val context = LocalContext.current
     val backStack = key.backStack
+    val startInstall: (GameDownloadInfo) -> Unit = startInstall@{ info ->
+                        if (viewModel.installOperation !is GameInstallOperation.None) {
+                            //不是待安装状态，拒绝此次安装
+                            return@startInstall
+                        }
+                        if (!NotificationManager.checkNotificationEnabled(context)) {
+                            //警告通知权限
+                            viewModel.installOperation = GameInstallOperation.WarningForNotification(info)
+                        } else {
+                            if (isUsingMobileData(context)) {
+                                //警告正在使用流量
+                                viewModel.installOperation = GameInstallOperation.WarningForMobileData(info)
+                            } else {
+                                viewModel.install(
+                                    context = context,
+                                    info = info,
+                                    onStart = {
+                                        eventViewModel.sendKeepScreen(true)
+                                    },
+                                    onStop = {
+                                        eventViewModel.sendKeepScreen(false)
+                                    }
+                                )
+                            }
+                        }
+    }
+    val quickScope = androidx.compose.runtime.rememberCoroutineScope()
+    val quickInstall: (com.movtery.zalithlauncher.game.versioninfo.MinecraftVersion, com.movtery.zalithlauncher.game.addons.modloader.ModLoader?) -> Unit = { version, loader ->
+        quickScope.launch {
+            android.widget.Toast.makeText(context, R.string.download_quick_install_preparing, android.widget.Toast.LENGTH_SHORT).show()
+            val info = buildQuickInstallInfo(version.version.id, loader)
+            if (info == null || com.movtery.zalithlauncher.game.version.installed.VersionsManager.isVersionExists(info.customVersionName, true)) {
+                //gagal mengambil versi loader / nama sudah ada: buka layar Pasang agar bisa diatur manual
+                PendingLoaderPreselect.loader = loader
+                backStack.navigateTo(
+                    NormalNavKey.DownloadGame.Addons(gameVersion = version.version.id, type = version.type)
+                )
+            } else {
+                startInstall(info)
+            }
+        }
+    }
     val stackTopKey = backStack.lastOrNull()
     LaunchedEffect(stackTopKey) {
         onCurrentKeyChange(stackTopKey)
@@ -228,6 +274,7 @@ fun DownloadGameScreen(
             popTransitionSpec = rememberTransitionSpec(),
             entryProvider = entryProvider {
                 entry<NormalNavKey.DownloadGame.SelectGameVersion> {
+                    androidx.compose.runtime.CompositionLocalProvider(LocalQuickInstall provides quickInstall) {
                     SelectGameVersionScreen(
                         host = SelectGameVersionHost.Download(
                             mainScreenKey = mainScreenKey,
@@ -243,6 +290,7 @@ fun DownloadGameScreen(
                             )
                         )
                     }
+                    }
                 }
                 entry<NormalNavKey.DownloadGame.Addons> { key ->
                     val context = LocalContext.current
@@ -253,30 +301,7 @@ fun DownloadGameScreen(
                         key = key,
                         refreshErrorCheck = viewModel.versionNameErrorCheck
                     ) { info ->
-                        if (viewModel.installOperation !is GameInstallOperation.None) {
-                            //不是待安装状态，拒绝此次安装
-                            return@DownloadGameWithAddonScreen
-                        }
-                        if (!NotificationManager.checkNotificationEnabled(context)) {
-                            //警告通知权限
-                            viewModel.installOperation = GameInstallOperation.WarningForNotification(info)
-                        } else {
-                            if (isUsingMobileData(context)) {
-                                //警告正在使用流量
-                                viewModel.installOperation = GameInstallOperation.WarningForMobileData(info)
-                            } else {
-                                viewModel.install(
-                                    context = context,
-                                    info = info,
-                                    onStart = {
-                                        eventViewModel.sendKeepScreen(true)
-                                    },
-                                    onStop = {
-                                        eventViewModel.sendKeepScreen(false)
-                                    }
-                                )
-                            }
-                        }
+                        startInstall(info)
                     }
                 }
             }

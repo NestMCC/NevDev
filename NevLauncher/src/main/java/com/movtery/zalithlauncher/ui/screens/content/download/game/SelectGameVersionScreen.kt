@@ -568,11 +568,17 @@ private fun VersionItemLayout(
             chips = listOfNotNull(versionType, if (isLatest) latestText else null, dateText),
             actionText = stringResource(R.string.download_install),
             expandedContent = {
+                val quickInstall = LocalQuickInstall.current
                 HeroLoaderPicker(
                     gameVersion = version.version.id,
                     onDownload = { loader ->
-                        com.movtery.zalithlauncher.ui.screens.content.download.game.PendingLoaderPreselect.loader = loader
-                        onClick()
+                        if (quickInstall != null) {
+                            //langsung unduh + pasang versi terbaru loader terpilih
+                            quickInstall(version, loader)
+                        } else {
+                            PendingLoaderPreselect.loader = loader
+                            onClick()
+                        }
                     }
                 )
             },
