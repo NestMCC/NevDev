@@ -168,6 +168,7 @@ private fun AddonTextLayout(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
+            fontFamily = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) null else FontFamily.Monospace,
             fontWeight = FontWeight.Bold
         )
         summary()
@@ -189,6 +190,82 @@ private fun AddonTextLayout(
  */
 @Composable
 fun <E> AddonListLayout(
+    modifier: Modifier = Modifier,
+    state: AddonState,
+    items: List<E>?,
+    current: E?,
+    incompatibleSet: Set<ModLoader>,
+    checkIncompatible: () -> Unit = {},
+    triggerCheckIncompatible: Array<Any> = arrayOf(Unit),
+    error: String? = null,
+    iconPainter: Painter,
+    title: String,
+    getItemText: @Composable (E) -> String,
+    summary: (@Composable (E) -> Unit)? = null,
+    maxListHeight: Dp = rememberMaxHeight(),
+    autoCollapse: Boolean = true,
+    onValueChange: (E?) -> Unit = {},
+    onReload: () -> Unit = {},
+    shape: Shape = MaterialTheme.shapes.large,
+    influencedByBackground: Boolean = true,
+    color: Color = cardColor(influencedByBackground),
+    contentColor: Color = onCardColor(),
+    blur: Int = AllSettings.backgroundBlur.state,
+) {
+    //tampilan daftar bawaan hanya untuk desain Nev Lava; tema lain tetap tampilan sebelumnya
+    if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) {
+        NevAddonListLayout(
+        modifier = modifier,
+        state = state,
+        items = items,
+        current = current,
+        incompatibleSet = incompatibleSet,
+        checkIncompatible = checkIncompatible,
+        triggerCheckIncompatible = triggerCheckIncompatible,
+        error = error,
+        iconPainter = iconPainter,
+        title = title,
+        getItemText = getItemText,
+        summary = summary,
+        maxListHeight = maxListHeight,
+        autoCollapse = autoCollapse,
+        onValueChange = onValueChange,
+        onReload = onReload,
+        shape = shape,
+        influencedByBackground = influencedByBackground,
+        color = color,
+        contentColor = contentColor,
+        blur = blur
+        )
+    } else {
+        LegacyAddonListLayout(
+        modifier = modifier,
+        state = state,
+        items = items,
+        current = current,
+        incompatibleSet = incompatibleSet,
+        checkIncompatible = checkIncompatible,
+        triggerCheckIncompatible = triggerCheckIncompatible,
+        error = error,
+        iconPainter = iconPainter,
+        title = title,
+        getItemText = getItemText,
+        summary = summary,
+        maxListHeight = maxListHeight,
+        autoCollapse = autoCollapse,
+        onValueChange = onValueChange,
+        onReload = onReload,
+        shape = shape,
+        influencedByBackground = influencedByBackground,
+        color = color,
+        contentColor = contentColor,
+        blur = blur
+        )
+    }
+}
+
+@Composable
+private fun <E> NevAddonListLayout(
     modifier: Modifier = Modifier,
     state: AddonState,
     items: List<E>?,
@@ -302,6 +379,344 @@ fun <E> AddonListLayout(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun <E> LegacyAddonListLayout(
+    modifier: Modifier = Modifier,
+    state: AddonState,
+    items: List<E>?,
+    current: E?,
+    incompatibleSet: Set<ModLoader>,
+    checkIncompatible: () -> Unit = {},
+    triggerCheckIncompatible: Array<Any> = arrayOf(Unit),
+    error: String? = null,
+    iconPainter: Painter,
+    title: String,
+    getItemText: @Composable (E) -> String,
+    summary: (@Composable (E) -> Unit)? = null,
+    maxListHeight: Dp = rememberMaxHeight(),
+    autoCollapse: Boolean = true,
+    onValueChange: (E?) -> Unit = {},
+    onReload: () -> Unit = {},
+    shape: Shape = MaterialTheme.shapes.large,
+    influencedByBackground: Boolean = true,
+    color: Color = cardColor(influencedByBackground),
+    contentColor: Color = onCardColor(),
+    blur: Int = AllSettings.backgroundBlur.state,
+) {
+    var selectedItem by remember { mutableStateOf<E?>(null) }
+
+    LaunchedEffect(state, selectedItem, *triggerCheckIncompatible) {
+        //加载状态 || 选择项变更 || 手动触发，检查一次不兼容情况
+        checkIncompatible()
+    }
+
+    LaunchedEffect(state, items, current) {
+        selectedItem = items?.firstOrNull { it == current }
+    }
+    var expanded by remember { mutableStateOf(false) }
+
+    fun clear() {
+        onValueChange(null)
+        selectedItem = null
+        if (autoCollapse) expanded = false
+    }
+
+    //不兼容列表不为空，清除当前Addon的选择
+    LaunchedEffect(incompatibleSet) {
+        if (incompatibleSet.isNotEmpty()) clear()
+    }
+
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(26.dp),
+        color = Color.Transparent,
+        contentColor = NevRed.OnPanel,
+        border = BorderStroke(
+            1.dp,
+            Brush.horizontalGradient(listOf(NevRed.Outline, NevRed.OutlineBright.copy(alpha = 0.8f)))
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Brush.horizontalGradient(
+                        listOf(NevRed.Panel.glassAlpha(0.8f), NevRed.PanelDeep.glassAlpha(0.9f))
+                    )
+                )
+        ) {
+            LegacyAddonListHeader(
+                modifier = Modifier.fillMaxWidth(),
+                state = state,
+                iconPainter = iconPainter,
+                title = title,
+                items = items,
+                selectedItem = selectedItem,
+                getItemText = getItemText,
+                incompatibleSet = incompatibleSet,
+                error = error,
+                expanded = expanded,
+                //加载已完成 && 版本列表不为空 && 不兼容列表为空 && 错误名称为 null -> 可展开
+                enabled = state == AddonState.None && !items.isNullOrEmpty() && incompatibleSet.isEmpty() && error == null,
+                onClick = { expanded = !expanded },
+                onClear = ::clear,
+                onReload = onReload
+            )
+
+            if (state == AddonState.None && !items.isNullOrEmpty() && error == null) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    AnimatedVisibility(
+                        visible = expanded,
+                        enter = expandVertically(animationSpec = getAnimateTween()),
+                        exit = shrinkVertically(animationSpec = getAnimateTween()) + fadeOut(),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = maxListHeight)
+                                .padding(vertical = 4.dp),
+                            contentPadding = PaddingValues(horizontal = 4.dp)
+                        ) {
+                            itemsIndexed(items) { index, item ->
+                                LegacyAddonListItem(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(all = 4.dp),
+                                    number = index + 1,
+                                    index = index,
+                                    selected = selectedItem == item,
+                                    itemName = getItemText(item),
+                                    summary = summary?.let {
+                                        { it.invoke(item) }
+                                    },
+                                    onClick = {
+                                        if (expanded && selectedItem != item) {
+                                            onValueChange(item)
+                                            selectedItem = item
+                                            if (autoCollapse) expanded = false
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun <E> LegacyAddonListHeader(
+    modifier: Modifier = Modifier,
+    state: AddonState,
+    iconPainter: Painter,
+    title: String,
+    items: List<E>?,
+    selectedItem: E?,
+    getItemText: @Composable (E) -> String,
+    incompatibleSet: Set<ModLoader>,
+    error: String? = null,
+    expanded: Boolean,
+    enabled: Boolean = true,
+    onClick: () -> Unit = {},
+    onClear: () -> Unit = {},
+    onReload: () -> Unit = {}
+) {
+    Row(
+        modifier = modifier
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(modifier = Modifier.width(14.dp))
+        //Ubin ikon bergaris oranye
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .border(1.dp, NevRed.OutlineBright.copy(alpha = 0.8f), RoundedCornerShape(16.dp))
+                .background(NevRed.PanelDeep, RoundedCornerShape(16.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                modifier = Modifier.size(38.dp),
+                painter = iconPainter,
+                contentDescription = null
+            )
+        }
+        Spacer(modifier = Modifier.width(14.dp))
+
+        when(state) {
+            is AddonState.None -> {
+                Column(modifier = Modifier.weight(1f)) {
+                    val summary: String = when {
+                        error != null -> error
+                        incompatibleSet.isNotEmpty() -> {
+                            stringResource(R.string.download_game_addon_incompatible_with, incompatibleSet.joinToString(", ") { it.displayName })
+                        }
+                        items.isNullOrEmpty() -> stringResource(R.string.download_game_addon_unavailable)
+                        selectedItem == null -> stringResource(R.string.download_game_addon_available)
+                        else -> stringResource(R.string.settings_element_selected, getItemText(selectedItem))
+                    }
+                    AddonTextLayout(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = title,
+                        summary = summary,
+                    )
+                }
+                if (!items.isNullOrEmpty() && incompatibleSet.isEmpty() && error == null) {
+                    val rotation by animateFloatAsState(
+                        targetValue = if (expanded) -180f else 0f,
+                        animationSpec = getAnimateTween()
+                    )
+                    if (selectedItem != null) {
+                        IconButton(
+                            modifier = Modifier.size(40.dp),
+                            onClick = onClear
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(22.dp),
+                                painter = painterResource(R.drawable.ic_deselect),
+                                contentDescription = stringResource(R.string.generic_clear)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(6.dp))
+                    }
+                    //Tombol pil "PILIH ▾"
+                    Row(
+                        modifier = Modifier
+                            .background(NevRed.Gradient, RoundedCornerShape(50))
+                            .padding(start = 22.dp, end = 14.dp, top = 12.dp, bottom = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.download_game_addon_choose).uppercase(),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = NevRed.OnGradient,
+                            maxLines = 1
+                        )
+                        Icon(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .rotate(rotation),
+                            painter = painterResource(R.drawable.ic_arrow_drop_down_rounded),
+                            tint = NevRed.OnGradient,
+                            contentDescription = stringResource(if (expanded) R.string.generic_expand else R.string.generic_collapse)
+                        )
+                    }
+                }
+            }
+            is AddonState.Loading -> {
+                AddonTextLayout(
+                    modifier = Modifier.weight(1f),
+                    title = title,
+                    summary = stringResource(R.string.generic_loading),
+                )
+            }
+            is AddonState.Error -> {
+                AddonTextLayout(
+                    modifier = Modifier.weight(1f),
+                    title = title,
+                    summary = androidText(
+                        R.string.download_game_addon_list_load_error,
+                        state.message
+                    )
+                )
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(34.dp),
+                    onClick = onReload
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_refresh),
+                        contentDescription = stringResource(R.string.generic_refresh)
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.width(14.dp))
+    }
+}
+
+@Composable
+private fun LegacyAddonListItem(
+    modifier: Modifier = Modifier,
+    number: Int? = null,
+    selected: Boolean,
+    itemName: String,
+    summary: (@Composable () -> Unit)? = null,
+    index: Int? = null,
+    onClick: () -> Unit = {}
+) {
+    if (LocalNevStyle.current.cutCorners) {
+        CryoAddonListItem(
+            modifier = modifier,
+            selected = selected,
+            itemName = itemName,
+            summary = summary,
+            index = index,
+            onClick = onClick
+        )
+        return
+    }
+    val shape = RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.nevRectRadius(20.dp, 8.dp))
+    Row(
+        modifier = modifier
+            .clip(shape)
+            .border(
+                width = if (selected) 1.4.dp else 1.dp,
+                color = if (selected) NevRed.OutlineBright else NevRed.Outline.copy(alpha = 0.7f),
+                shape = shape
+            )
+            .background(
+                Brush.horizontalGradient(
+                    listOf(NevRed.Panel.glassAlpha(0.8f), NevRed.PanelDeep.glassAlpha(0.9f))
+                )
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = itemName,
+                style = MaterialTheme.typography.titleMedium,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold
+            )
+            summary?.invoke()
+        }
+        //Lingkaran pilihan: terisi gradasi + centang saat dipilih
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .then(
+                    if (selected) Modifier.background(NevRed.Gradient, CircleShape)
+                    else Modifier.border(1.dp, NevRed.Outline, CircleShape)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (selected) {
+                Icon(
+                    modifier = Modifier.size(22.dp),
+                    painter = painterResource(R.drawable.ic_check),
+                    tint = NevRed.OnGradient,
+                    contentDescription = null
+                )
             }
         }
     }

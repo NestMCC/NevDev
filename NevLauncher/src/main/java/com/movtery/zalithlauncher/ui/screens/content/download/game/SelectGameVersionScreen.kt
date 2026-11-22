@@ -1017,6 +1017,24 @@ private fun VersionGroupDetail(
     onVersionSelect: (MinecraftVersion) -> Unit,
     openLink: (url: String) -> Unit
 ) {
+    //daftar bawaan hanya untuk desain Nev Lava; tema lain tetap tampilan sebelumnya
+    if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) {
+        NevVersionGroupDetail(modifier, group, accent, coverUrl, onClose, onVersionSelect, openLink)
+    } else {
+        LegacyVersionGroupDetail(modifier, group, accent, coverUrl, onClose, onVersionSelect, openLink)
+    }
+}
+
+@Composable
+private fun NevVersionGroupDetail(
+    modifier: Modifier = Modifier,
+    group: VersionGroup,
+    accent: Color,
+    coverUrl: String?,
+    onClose: () -> Unit,
+    onVersionSelect: (MinecraftVersion) -> Unit,
+    openLink: (url: String) -> Unit
+) {
     val latestId = group.latest.version.id
     Column(
         modifier = modifier
@@ -1102,6 +1120,225 @@ private fun VersionGroupDetail(
             openLink = openLink,
             latestId = latestId
         )
+    }
+}
+
+@Composable
+private fun LegacyVersionList(
+    modifier: Modifier = Modifier,
+    versions: List<MinecraftVersion>,
+    onVersionSelect: (MinecraftVersion) -> Unit,
+    openLink: (url: String) -> Unit
+) {
+    val scrollState = rememberLazyListState()
+    LazyColumn(
+        modifier = modifier.nonInteractiveScrollbar(
+            state = scrollState.scrollIndicatorState!!,
+            orientation = Orientation.Vertical,
+        ),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+        state = scrollState,
+    ) {
+        items(versions) { version ->
+            LegacyVersionItemLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp),
+                version = version,
+                onClick = {
+                    onVersionSelect(version)
+                },
+                onAccessWiki = { wikiUrl ->
+                    openLink(wikiUrl)
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun LegacyVersionItemLayout(
+    modifier: Modifier = Modifier,
+    version: MinecraftVersion,
+    onClick: () -> Unit = {},
+    onAccessWiki: (String) -> Unit = {},
+    shape: Shape = MaterialTheme.shapes.large,
+    influencedByBackground: Boolean = true,
+    color: Color = cardColor(influencedByBackground),
+    contentColor: Color = onCardColor(),
+    blur: Int = AllSettings.backgroundBlur.state,
+) {
+    val scale = remember { Animatable(initialValue = 0.95f) }
+    LaunchedEffect(Unit) {
+        scale.animateTo(targetValue = 1f, animationSpec = getAnimateTween())
+    }
+
+    val (icon, versionType, wikiUrl, summary) = getVersionComponents(version)
+
+    Surface(
+        modifier = modifier.graphicsLayer(scaleY = scale.value, scaleX = scale.value),
+        onClick = onClick,
+        shape = shape,
+        border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
+        color = color,
+        contentColor = contentColor
+    ) {
+        Row(
+            modifier = Modifier
+                .clip(shape = shape)
+                .backgroundGlass(blur, color, influencedByBackground)
+                .padding(all = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            icon?.let { versionIcon ->
+                Image(
+                    modifier = Modifier.size(32.dp),
+                    painter = versionIcon,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+            }
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = version.version.id,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+
+                    LittleTextLabel(
+                        text = versionType
+                    )
+                }
+
+                summary?.let { text ->
+                    Text(
+                        modifier = Modifier.alpha(0.7f),
+                        text = text,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+
+                Text(
+                    modifier = Modifier.alpha(0.7f),
+                    text = formatDate(
+                        input = version.version.releaseTime,
+                        pattern = stringResource(R.string.date_format)
+                    ),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
+
+            wikiUrl?.let { url ->
+                IconButton(
+                    modifier = Modifier.size(32.dp),
+                    onClick = { onAccessWiki(url) }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_link),
+                        contentDescription = "Wiki"
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LegacyVersionGroupDetail(
+    modifier: Modifier = Modifier,
+    group: VersionGroup,
+    accent: Color,
+    coverUrl: String?,
+    onClose: () -> Unit,
+    onVersionSelect: (MinecraftVersion) -> Unit,
+    openLink: (url: String) -> Unit
+) {
+    val latestId = group.latest.version.id
+    NevPanelFrame(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+    ) {
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            val wide = maxWidth >= 600.dp
+            val list: @Composable (Modifier) -> Unit = { m ->
+                val listState = rememberLazyListState()
+                LazyColumn(
+                    modifier = m.nonInteractiveScrollbar(
+                        state = listState.scrollIndicatorState!!,
+                        orientation = Orientation.Vertical,
+                    ),
+                    state = listState,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    itemsIndexed(group.versions, key = { _, v -> v.version.id }) { index, version ->
+                        VersionNumberedRow(
+                            number = index + 1,
+                            version = version,
+                            accent = accent,
+                            isLatest = version.version.id == latestId,
+                            onClick = { onVersionSelect(version) },
+                            openLink = openLink
+                        )
+                    }
+                }
+            }
+
+            if (wide) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    VersionGroupInfoPanel(
+                        modifier = Modifier
+                            .weight(0.38f)
+                            .fillMaxHeight(),
+                        group = group,
+                        accent = accent,
+                        coverUrl = coverUrl,
+                        onClose = onClose
+                    )
+                    list(Modifier.weight(0.62f).fillMaxHeight())
+                }
+            } else {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = listOfNotNull(group.key, group.displayTitle()).joinToString("  ·  "),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = accent,
+                            maxLines = 1
+                        )
+                        Text(
+                            modifier = Modifier
+                                .border(1.dp, NevRed.Outline, RoundedCornerShape(50))
+                                .clickable(onClick = onClose)
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            text = stringResource(R.string.generic_close),
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    list(Modifier.weight(1f).fillMaxWidth())
+                }
+            }
+        }
     }
 }
 

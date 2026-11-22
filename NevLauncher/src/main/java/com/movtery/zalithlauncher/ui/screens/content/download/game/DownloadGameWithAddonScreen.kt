@@ -26,6 +26,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -256,7 +257,7 @@ fun DownloadGameWithAddonScreen(
     ) { isVisible ->
         val animatedCtx = rememberAnimatedContext(isVisible = isVisible)
 
-        Box(
+        AddonScreenFrame(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 12.dp, vertical = 8.dp)
@@ -505,17 +506,35 @@ fun DownloadGameWithAddonScreen(
             }
                 }
 
-                //tampilan seperti daftar bawaan: kartu nama versi + tombol Pasang di atas, daftar addon selebar layar
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    sidePanel(Modifier.fillMaxWidth())
-                    addonList(
-                        Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                    )
+                if (wide && !com.movtery.zalithlauncher.ui.theme.isNevDesign()) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        sidePanel(
+                            Modifier
+                                .weight(0.4f)
+                                .fillMaxHeight()
+                        )
+                        addonList(
+                            Modifier
+                                .weight(0.6f)
+                                .fillMaxHeight()
+                        )
+                    }
+                } else {
+                    //tampilan seperti daftar bawaan: kartu nama versi + tombol Pasang di atas, daftar addon selebar layar
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        sidePanel(Modifier.fillMaxWidth())
+                        addonList(
+                            Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                        )
+                    }
                 }
             }
         }
@@ -524,6 +543,39 @@ fun DownloadGameWithAddonScreen(
 
 @Composable
 private fun ScreenHeader(
+    modifier: Modifier = Modifier,
+    compact: Boolean = false,
+    itemContainerColor: Color,
+    itemContentColor: Color,
+    gameVersion: String,
+    gameType: MinecraftVersion.Type,
+    currentAddon: CurrentAddon,
+    refreshIcon: Any? = null,
+    refreshErrorCheck: Any? = null,
+    onInstall: (String) -> Unit = {}
+) {
+    //tampilan baru hanya untuk desain Nev Lava; tema lain tetap tampilan sebelumnya
+    if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) {
+        NevScreenHeader(modifier, compact, itemContainerColor, itemContentColor, gameVersion, gameType, currentAddon, refreshIcon, refreshErrorCheck, onInstall)
+    } else {
+        LegacyScreenHeader(modifier, compact, itemContainerColor, itemContentColor, gameVersion, gameType, currentAddon, refreshIcon, refreshErrorCheck, onInstall)
+    }
+}
+
+@Composable
+private fun AddonScreenFrame(
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit
+) {
+    if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) {
+        Box(modifier = modifier, content = content)
+    } else {
+        NevPanelFrame(modifier = modifier, content = content)
+    }
+}
+
+@Composable
+private fun NevScreenHeader(
     modifier: Modifier = Modifier,
     compact: Boolean = false,
     itemContainerColor: Color,
@@ -669,6 +721,148 @@ private fun ScreenHeader(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun LegacyScreenHeader(
+    modifier: Modifier = Modifier,
+    compact: Boolean = false,
+    itemContainerColor: Color,
+    itemContentColor: Color,
+    gameVersion: String,
+    gameType: MinecraftVersion.Type,
+    currentAddon: CurrentAddon,
+    refreshIcon: Any? = null,
+    refreshErrorCheck: Any? = null,
+    onInstall: (String) -> Unit = {}
+) {
+    var nameValue by remember { mutableStateOf(gameVersion) }
+    //用户是否对版本名称进行过编辑
+    var editedByUser by remember { mutableStateOf(false) }
+
+    AutoChangeVersionName(
+        gameVersion = gameVersion,
+        currentAddon = currentAddon,
+        editedByUser = editedByUser,
+        changeValue = {
+            nameValue = it
+        }
+    )
+
+    val emptyError = stringResource(R.string.generic_cannot_empty)
+    val existsError = stringResource(R.string.versions_manage_install_exists)
+
+    val filenameInvalidMessage = key(nameValue) {
+        isFilenameInvalid(nameValue)
+    }
+    //目标版本已存在时，阻止安装
+    val isVersionExists = remember(nameValue, refreshErrorCheck) {
+        isVersionExists(nameValue, true)
+    }
+
+    val isError = remember(nameValue, refreshErrorCheck) {
+        nameValue.isEmpty() || filenameInvalidMessage != null || isVersionExists
+    }
+
+    NevInnerPanel(modifier = modifier) {
+        Text(
+            text = stringResource(R.string.download_game_install_label).uppercase(),
+            style = MaterialTheme.typography.labelMedium,
+            fontFamily = FontFamily.Monospace,
+            color = NevRed.GradientEnd,
+            maxLines = 1
+        )
+        Text(
+            text = gameVersion,
+            style = if (compact) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.displayMedium,
+            fontWeight = FontWeight.ExtraBold,
+            color = lerp(NevRed.GradientEnd, Color.White, 0.55f),
+            maxLines = 1
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+                .background(NevRed.Gradient, RoundedCornerShape(50))
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            VersionIconPreview(
+                modifier = Modifier.size(32.dp),
+                currentAddon = currentAddon,
+                gameType = gameType,
+                refreshIcon = refreshIcon
+            )
+            Text(
+                text = stringResource(R.string.download_game_version_name).uppercase(),
+                style = MaterialTheme.typography.labelLarge,
+                fontFamily = FontFamily.Monospace,
+                color = NevRed.GradientEnd,
+                maxLines = 1
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Column(modifier = Modifier.animateContentSize(animationSpec = getAnimateTween())) {
+            SimpleTextInputField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, NevRed.OutlineBright.copy(alpha = 0.8f), RoundedCornerShape(50)),
+                value = nameValue,
+                onValueChange = {
+                    nameValue = it
+                    if (!editedByUser) {
+                        //用户已经对版本名称进行了编辑
+                        editedByUser = true
+                    }
+                },
+                color = NevRed.PanelDeep.glassAlpha(0.9f),
+                contentColor = itemContentColor,
+                contextPadding = PaddingValues(horizontal = 18.dp, vertical = 14.dp),
+                singleLine = true,
+                hint = {
+                    Text(
+                        text = stringResource(R.string.download_game_version_name),
+                        style = TextStyle(color = itemContentColor).copy(fontSize = 14.sp)
+                    )
+                }
+            )
+
+            if (isError) {
+                val message = filenameInvalidMessage
+                    ?: (if (isVersionExists) existsError else emptyError)
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    text = message,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
+        }
+
+        if (compact) Spacer(modifier = Modifier.height(10.dp)) else Spacer(modifier = Modifier.weight(1f))
+
+        NevActionButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.download_game_install_button),
+            painter = painterResource(R.drawable.ic_download_2_filled),
+            enabled = !isError,
+            cornerRadius = 24.dp,
+            onClick = {
+                if (!isError) {
+                    onInstall(nameValue)
+                }
+            }
+        )
     }
 }
 
