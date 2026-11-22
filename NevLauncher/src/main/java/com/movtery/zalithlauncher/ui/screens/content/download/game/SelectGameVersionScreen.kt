@@ -567,6 +567,15 @@ private fun VersionItemLayout(
             description = summary,
             chips = listOfNotNull(versionType, if (isLatest) latestText else null, dateText),
             actionText = stringResource(R.string.download_install),
+            expandedContent = {
+                HeroLoaderPicker(
+                    gameVersion = version.version.id,
+                    onDownload = { loader ->
+                        com.movtery.zalithlauncher.ui.screens.content.download.game.PendingLoaderPreselect.loader = loader
+                        onClick()
+                    }
+                )
+            },
             icon = {
                 if (coverUrl != null) {
                     //gambar sampul rilis (Minecraft drop)
@@ -1663,5 +1672,81 @@ private fun DefaultCover(
                 .fillMaxSize()
                 .background(accent.copy(alpha = 0.18f))
         )
+    }
+}
+
+
+/** Isi dropdown baris versi (Hero): pilihan loader lalu tombol hijau Unduh. */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun HeroLoaderPicker(
+    gameVersion: String,
+    onDownload: (com.movtery.zalithlauncher.game.addons.modloader.ModLoader?) -> Unit
+) {
+    val supports = rememberLoaderVerSupports(gameVersion)
+    val green = Color(0xFF10B981)
+    val options = remember(supports) {
+        buildList {
+            add(null)
+            add(com.movtery.zalithlauncher.game.addons.modloader.ModLoader.OPTIFINE)
+            add(com.movtery.zalithlauncher.game.addons.modloader.ModLoader.FORGE)
+            if (supports.isNeoForgeSupports) add(com.movtery.zalithlauncher.game.addons.modloader.ModLoader.NEOFORGE)
+            if (supports.isFabricSupports) add(com.movtery.zalithlauncher.game.addons.modloader.ModLoader.FABRIC)
+            if (supports.isQuiltSupports) add(com.movtery.zalithlauncher.game.addons.modloader.ModLoader.QUILT)
+            if (supports.isLegacyFabricSupports) add(com.movtery.zalithlauncher.game.addons.modloader.ModLoader.LEGACY_FABRIC)
+        }
+    }
+    var selected by remember(gameVersion) {
+        mutableStateOf<com.movtery.zalithlauncher.game.addons.modloader.ModLoader?>(null)
+    }
+
+    androidx.compose.foundation.layout.FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        options.forEach { loader ->
+            val isSelected = loader == selected
+            val label = loader?.displayName ?: stringResource(R.string.versions_manage_category_vanilla)
+            Box(
+                modifier = Modifier
+                    .clickable { selected = loader }
+                    .background(if (isSelected) green.copy(alpha = 0.2f) else Color.Transparent)
+                    .border(1.dp, if (isSelected) green else NevRed.Outline)
+                    .padding(horizontal = 14.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                )
+            }
+        }
+    }
+
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Row(
+            modifier = Modifier
+                .clickable { onDownload(selected) }
+                .background(green)
+                .padding(horizontal = 18.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(
+                modifier = Modifier.size(18.dp),
+                painter = painterResource(R.drawable.ic_download_2_filled),
+                tint = Color.White,
+                contentDescription = null
+            )
+            Text(
+                text = stringResource(R.string.generic_download).uppercase(),
+                color = Color.White,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }

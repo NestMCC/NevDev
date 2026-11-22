@@ -192,6 +192,48 @@ private class AddonsViewModel(
         }
     )
 
+    /** Pilih otomatis versi terbaru loader yang dipilih dari dropdown baris versi (Hero). */
+    fun applyPreselect() {
+        val loader = PendingLoaderPreselect.loader ?: return
+        PendingLoaderPreselect.loader = null
+        viewModelScope.launch {
+            fun ready(): Boolean = when (loader) {
+                ModLoader.OPTIFINE -> addonList.optifineList != null
+                ModLoader.FORGE -> addonList.forgeList != null
+                ModLoader.NEOFORGE -> addonList.neoforgeList != null
+                ModLoader.FABRIC -> addonList.fabricList != null
+                ModLoader.QUILT -> addonList.quiltList != null
+                ModLoader.LEGACY_FABRIC -> addonList.legacyFabricList != null
+                else -> true
+            }
+            var waited = 0
+            while (!ready() && waited < 20000) {
+                kotlinx.coroutines.delay(150)
+                waited += 150
+            }
+            when (loader) {
+                ModLoader.OPTIFINE -> currentAddon.optifineVersion.value = addonList.optifineList?.firstOrNull()
+                ModLoader.FORGE -> currentAddon.forgeVersion.value = addonList.forgeList?.firstOrNull()
+                ModLoader.NEOFORGE -> currentAddon.neoforgeVersion.value = addonList.neoforgeList?.firstOrNull()
+                ModLoader.FABRIC -> {
+                    currentAddon.fabricVersion.value = addonList.fabricList?.firstOrNull()
+                    currentAddon.fabricAPIVersion.value = addonList.fabricAPIList?.firstOrNull()
+                }
+                ModLoader.QUILT -> {
+                    currentAddon.quiltVersion.value = addonList.quiltList?.firstOrNull()
+                    currentAddon.quiltAPIVersion.value = addonList.quiltAPIList?.firstOrNull()
+                }
+                ModLoader.LEGACY_FABRIC -> {
+                    currentAddon.legacyFabricVersion.value = addonList.legacyFabricList?.firstOrNull()
+                    currentAddon.legacyFabricAPIVersion.value = addonList.legacyFabricAPIList?.firstOrNull()
+                }
+                else -> return@launch
+            }
+            currentAddon.updateIncompatibleState(loader, addonList)
+            refreshIcon()
+        }
+    }
+
     private fun <T> launchAddonReload(
         updateState: (AddonState) -> Unit,
         fetch: suspend () -> T?,
@@ -247,6 +289,8 @@ fun DownloadGameWithAddonScreen(
     ) {
         AddonsViewModel(key.gameVersion, loaderSupports)
     }
+
+    androidx.compose.runtime.LaunchedEffect(viewModel) { viewModel.applyPreselect() }
 
     BaseScreen(
         listOf(

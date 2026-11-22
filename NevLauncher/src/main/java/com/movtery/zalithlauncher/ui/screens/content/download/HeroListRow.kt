@@ -6,6 +6,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.height
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -48,17 +51,21 @@ fun HeroListRow(
     chips: List<String> = emptyList(),
     actionText: String,
     icon: @Composable () -> Unit,
-    extra: (@Composable RowScope.() -> Unit)? = null
+    extra: (@Composable RowScope.() -> Unit)? = null,
+    /** Bila tidak null, baris bisa dibuka (dropdown): tombol hijau diganti panah dan isi tampil di bawah. */
+    expandedContent: (@Composable ColumnScope.() -> Unit)? = null
 ) {
+    var expanded by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
     val line = NevRed.Outline
     Surface(
         modifier = modifier.fillMaxWidth(),
-        onClick = onClick,
+        onClick = if (expandedContent != null) ({ expanded = !expanded }) else onClick,
         shape = RectangleShape,
         color = NevRed.PanelDeep,
         contentColor = NevRed.OnPanel,
         border = BorderStroke(1.dp, line)
     ) {
+      Column(modifier = Modifier.animateContentSize()) {
         Row(
             modifier = Modifier.padding(all = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -148,20 +155,49 @@ fun HeroListRow(
 
             extra?.invoke(this)
 
-            //tombol hijau "+ INSTAL" (seluruh baris yang menangani klik)
-            Box(
-                modifier = Modifier
-                    .background(Color(0xFF10B981), RoundedCornerShape(0.dp))
-                    .padding(horizontal = 14.dp, vertical = 9.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "+ ${actionText.uppercase()}",
-                    color = Color.White,
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                    maxLines = 1
-                )
+            if (expandedContent != null) {
+                //panah dropdown
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .border(1.dp, line),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.size(28.dp),
+                        painter = painterResource(
+                            if (expanded) R.drawable.ic_arrow_drop_up_rounded else R.drawable.ic_arrow_drop_down_rounded
+                        ),
+                        contentDescription = null
+                    )
+                }
+            } else {
+                //tombol hijau "+ INSTAL" (seluruh baris yang menangani klik)
+                Box(
+                    modifier = Modifier
+                        .background(Color(0xFF10B981), RoundedCornerShape(0.dp))
+                        .padding(horizontal = 14.dp, vertical = 9.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "+ ${actionText.uppercase()}",
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                        maxLines = 1
+                    )
+                }
             }
         }
+        if (expandedContent != null && expanded) {
+            Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(line))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                content = expandedContent
+            )
+        }
+      }
     }
 }

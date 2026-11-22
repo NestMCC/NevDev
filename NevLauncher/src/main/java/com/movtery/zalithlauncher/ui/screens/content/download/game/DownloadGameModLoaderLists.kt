@@ -708,3 +708,12 @@ private fun checkForgeCompatibilityError(
         else -> null
     }
 }
+
+/**
+ * Pilihan loader dari baris versi Hero (dropdown). Dibaca sekali oleh layar Pasang
+ * untuk memilih otomatis versi terbaru loader tersebut.
+ */
+object PendingLoaderPreselect {
+    @Volatile
+    var loader: com.movtery.zalithlauncher.game.addons.modloader.ModLoader? = null
+}
