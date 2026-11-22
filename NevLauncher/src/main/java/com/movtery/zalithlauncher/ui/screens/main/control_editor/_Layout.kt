@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.main.control_editor
 
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -504,7 +505,7 @@ fun InfoLayoutItem(
         if (selected) 2.dp else (-1).dp
     )
 
-    Surface(
+    NevGradientSurface(
         modifier = modifier
             .border(
                 width = borderWidth,

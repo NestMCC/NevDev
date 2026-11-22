@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content
 
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 import android.os.Environment
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.horizontalScroll
@@ -601,7 +602,7 @@ private fun VersionsLayout(
                         val blur = AllSettings.backgroundBlur.state
                         val cardColor = cardColor()
 
-                        Surface(
+                        NevGradientSurface(
                             modifier = Modifier
                                 .height(IntrinsicSize.Max)
                                 .then(barShadowModifier),
@@ -633,7 +634,7 @@ private fun VersionsLayout(
                         }
 
                         // 版本分类
-                        Surface(
+                        NevGradientSurface(
                             modifier = Modifier
                                 .weight(1f, fill = false)
                                 .height(IntrinsicSize.Max)

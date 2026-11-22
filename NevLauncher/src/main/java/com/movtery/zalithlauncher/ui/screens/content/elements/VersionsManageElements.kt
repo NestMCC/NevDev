@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.elements
 
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Animatable
@@ -699,17 +700,17 @@ fun VersionItemLayout(
     LaunchedEffect(Unit) {
         scale.animateTo(targetValue = 1f, animationSpec = getAnimateTween())
     }
-    Surface(
+    NevGradientSurface(
         modifier = modifier.graphicsLayer(scaleY = scale.value, scaleX = scale.value),
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
-        border = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) {
+        border = if (com.movtery.zalithlauncher.ui.theme.isBoxy() || com.movtery.zalithlauncher.ui.theme.isNevGradient()) {
             if (selected) androidx.compose.foundation.BorderStroke(1.5.dp, com.movtery.zalithlauncher.ui.theme.NevRed.Gradient)
             else com.movtery.zalithlauncher.ui.theme.NevCardBorder
         } else null,
         onClick = {
-            if (selected) return@Surface
+            if (selected) return@NevGradientSurface
             onSelected()
         }
     ) {

@@ -340,14 +340,14 @@ fun AccountItem(
     LaunchedEffect(Unit) {
         scale.animateTo(targetValue = 1f, animationSpec = getAnimateTween())
     }
-    Surface(
+    NevGradientSurface(
         modifier = modifier.graphicsLayer(scaleY = scale.value, scaleX = scale.value),
         color = color,
         contentColor = contentColor,
         shape = MaterialTheme.shapes.large,
         border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
         onClick = {
-            if (selected || !enabled) return@Surface
+            if (selected || !enabled) return@NevGradientSurface
             onSelected(account)
         },
         enabled = enabled
@@ -499,7 +499,7 @@ fun LoginMenuDialog(
                 .fillMaxWidth(0.6f),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .fillMaxWidth()
@@ -1628,7 +1628,7 @@ fun ChangeSkinDialog(
                 .fillMaxWidth(0.6f),
             contentAlignment = Alignment.Center
         ) {
-            Surface(
+            NevGradientSurface(
                 modifier = Modifier
                     .padding(all = 6.dp)
                     .heightIn(min = (maxHeight * 0.85f).coerceAtMost(rememberDialogMaxHeight()))
@@ -2309,7 +2309,7 @@ private fun SkinActionRow(
     enabled: Boolean = true
 ) {
     val accent = NevRed.GradientStart
-    Surface(
+    NevGradientSurface(
         modifier = modifier,
         shape = nevShape(16.dp),
         color = NevRed.Panel.glassAlpha(0.9f),

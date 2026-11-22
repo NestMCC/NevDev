@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.game.elements
 
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -346,7 +347,7 @@ private fun FileItem(
     LaunchedEffect(Unit) {
         scale.animateTo(targetValue = 1f, animationSpec = getAnimateTween())
     }
-    Surface(
+    NevGradientSurface(
         modifier = modifier.graphicsLayer(scaleY = scale.value, scaleX = scale.value),
         color = color,
         contentColor = contentColor,

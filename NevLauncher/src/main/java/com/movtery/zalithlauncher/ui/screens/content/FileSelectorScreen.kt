@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.content
 
+import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 import com.movtery.zalithlauncher.ui.theme.nevGlow
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.gestures.Orientation
@@ -352,7 +353,7 @@ private fun FileItem(
     LaunchedEffect(Unit) {
         scale.animateTo(targetValue = 1f, animationSpec = getAnimateTween())
     }
-    Surface(
+    NevGradientSurface(
         modifier = modifier
             .nevGlow(RoundedCornerShape(18.dp), 6.dp, 0.4f)
             .graphicsLayer(scaleY = scale.value, scaleX = scale.value),
