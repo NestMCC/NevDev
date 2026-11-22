@@ -18,6 +18,11 @@
 
 package com.movtery.zalithlauncher.ui.screens.content
 
+import androidx.compose.material3.Icon
+import androidx.compose.ui.draw.alpha
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.res.painterResource
 import com.movtery.zalithlauncher.ui.theme.NevGradientSurface
 import com.movtery.zalithlauncher.ui.theme.nevGlow
 import androidx.compose.animation.core.Animatable
@@ -230,6 +235,57 @@ private fun LeftActionMenu(
 ) {
     val ctx = rememberAnimatedContext(isVisible = isVisible)
 
+    if (com.movtery.zalithlauncher.ui.theme.LocalNevStyle.current.futuristic) {
+        //Futuristik: panel "Alat" berisi kisi ubin ikon + label
+        Column(
+            modifier = modifier.animated(ctx, from = AnimatedDirection.Left),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            com.movtery.zalithlauncher.ui.components.BackgroundCard(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = "Alat",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        FuturisticToolTile(
+                            modifier = Modifier.weight(1f),
+                            icon = R.drawable.ic_arrow_back,
+                            label = stringResource(R.string.files_back_to_parent),
+                            enabled = backEnabled,
+                            onClick = backToParent
+                        )
+                        FuturisticToolTile(
+                            modifier = Modifier.weight(1f),
+                            icon = R.drawable.ic_create_new_folder_filled,
+                            label = stringResource(R.string.files_create_dir),
+                            onClick = createDir
+                        )
+                        FuturisticToolTile(
+                            modifier = Modifier.weight(1f),
+                            icon = R.drawable.ic_check,
+                            label = stringResource(R.string.files_select_dir),
+                            highlighted = true,
+                            onClick = selectDir
+                        )
+                    }
+                }
+            }
+        }
+        return
+    }
+
     Column(
         modifier = modifier.animated(ctx, from = AnimatedDirection.Left),
         verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Bottom),
@@ -367,5 +423,50 @@ private fun FileItem(
             file = file,
             modifier = Modifier.padding(all = 12.dp)
         )
+    }
+}
+
+/** Ubin alat bergaya Futuristik: ikon emas + label di bawah, bingkai emas (terang saat disorot). */
+@Composable
+private fun FuturisticToolTile(
+    icon: Int,
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    highlighted: Boolean = false
+) {
+    val gold = MaterialTheme.colorScheme.primary
+    val alpha = if (enabled) 1f else 0.4f
+    com.movtery.zalithlauncher.ui.theme.NevGradientSurface(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(
+            if (highlighted) 1.6.dp else 1.dp,
+            gold.copy(alpha = if (highlighted) 0.95f else 0.5f * alpha)
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(vertical = 12.dp, horizontal = 4.dp)
+                .alpha(alpha),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                painter = painterResource(icon),
+                tint = gold,
+                contentDescription = null
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+            )
+        }
     }
 }

@@ -18,6 +18,19 @@
 
 package com.movtery.zalithlauncher.ui.screens.content.elements
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.layout.width
+import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -57,6 +70,12 @@ fun BaseFileItem(
     suffix: (@Composable RowScope.() -> Unit)? = null
 ) {
     if (!file.exists()) throw IllegalArgumentException("File is not exists!")
+
+    //Futuristik: ubin ikon emas, tag jenis, dan tombol panah (mengikuti referensi)
+    if (LocalNevStyle.current.futuristic) {
+        FuturisticFileRow(file = file, modifier = modifier, suffix = suffix)
+        return
+    }
 
     Row(
         modifier = modifier,
@@ -155,4 +174,103 @@ fun InvalidFilenameException.getInvalidSummary(): String = when {
     isInvalidLength -> stringResource(R.string.file_invalid_length, invalidLength, 255)
     isLeadingOrTrailingSpace -> stringResource(R.string.file_invalid_leading_or_trailing_space)
     else -> ""
+}
+
+@Composable
+private fun FuturisticFileRow(
+    file: File,
+    modifier: Modifier = Modifier,
+    suffix: (@Composable RowScope.() -> Unit)? = null
+) {
+    val gold = MaterialTheme.colorScheme.primary
+    val goldLight = MaterialTheme.colorScheme.tertiary
+    val tileShape = RoundedCornerShape(14.dp)
+    val tag = if (file.isDirectory) "FOLDER" else file.extension.uppercase().ifEmpty { "FILE" }.take(8)
+
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        //ubin ikon berbingkai emas
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .border(1.dp, Brush.linearGradient(listOf(goldLight.copy(alpha = 0.9f), gold.copy(alpha = 0.35f))), tileShape)
+                .background(gold.copy(alpha = 0.14f), tileShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier.size(26.dp),
+                painter = painterResource(
+                    if (file.isDirectory) R.drawable.ic_folder_filled else R.drawable.ic_description_outlined
+                ),
+                tint = if (file.isDirectory) gold else MaterialTheme.colorScheme.secondary,
+                contentDescription = null
+            )
+        }
+        Column(modifier = Modifier.weight(1f)) {
+            MarqueeText(
+                text = file.name,
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+            )
+            Row(
+                modifier = Modifier.basicMarquee(Int.MAX_VALUE),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    modifier = Modifier.alpha(0.7f),
+                    text = formatDate(
+                        date = Date(file.lastModified()),
+                        pattern = stringResource(R.string.date_format)
+                    ),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontFamily = FontFamily.Monospace
+                )
+                if (file.isFile) {
+                    Text(
+                        modifier = Modifier.alpha(0.7f),
+                        text = formatFileSize(FileUtils.sizeOf(file)),
+                        style = MaterialTheme.typography.labelSmall,
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
+            }
+        }
+        //tag jenis (FOLDER / LOG / ...)
+        Box(
+            modifier = Modifier
+                .border(1.dp, gold.copy(alpha = 0.7f), RoundedCornerShape(10.dp))
+                .padding(horizontal = 10.dp, vertical = 4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = tag,
+                style = MaterialTheme.typography.labelSmall,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold,
+                color = gold,
+                maxLines = 1
+            )
+        }
+        if (suffix != null) {
+            suffix.invoke(this)
+        } else if (file.isDirectory) {
+            //tombol panah buka folder
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .border(1.dp, gold.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
+                    .background(gold.copy(alpha = 0.12f), RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(22.dp),
+                    painter = painterResource(R.drawable.ic_arrow_right_rounded),
+                    tint = gold,
+                    contentDescription = null
+                )
+            }
+        }
+    }
 }
