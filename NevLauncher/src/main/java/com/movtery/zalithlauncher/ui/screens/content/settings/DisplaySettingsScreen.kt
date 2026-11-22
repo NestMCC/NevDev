@@ -180,24 +180,26 @@ fun DisplaySettingsScreen(
                         }
                     }
 
-                    EnumSettingsCard(
-                        modifier = Modifier.fillMaxWidth(),
-                        position = CardPosition.Middle,
-                        unit = AllSettings.launcherDesignStyle,
-                        title = stringResource(R.string.settings_display_style_title),
-                        summary = stringResource(R.string.settings_display_style_summary),
-                        entries = DesignStyleType.entries,
-                        getRadioEnable = { true },
-                        getRadioText = { type ->
-                            when (type) {
-                                DesignStyleType.NEV -> stringResource(R.string.settings_display_style_nev)
-                                DesignStyleType.CRYOGENIC -> stringResource(R.string.settings_display_style_cryogenic)
-                                DesignStyleType.CYBER -> stringResource(R.string.settings_display_style_cyber)
-                                DesignStyleType.LIQUID -> stringResource(R.string.settings_display_style_liquid)
-                                DesignStyleType.HERO -> stringResource(R.string.theme_color_hero)
+                    if (!com.movtery.zalithlauncher.ui.theme.LocalNevStyle.current.futuristic) {
+                        EnumSettingsCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            position = CardPosition.Middle,
+                            unit = AllSettings.launcherDesignStyle,
+                            title = stringResource(R.string.settings_display_style_title),
+                            summary = stringResource(R.string.settings_display_style_summary),
+                            entries = DesignStyleType.entries,
+                            getRadioEnable = { true },
+                            getRadioText = { type ->
+                                when (type) {
+                                    DesignStyleType.NEV -> stringResource(R.string.settings_display_style_nev)
+                                    DesignStyleType.CRYOGENIC -> stringResource(R.string.settings_display_style_cryogenic)
+                                    DesignStyleType.CYBER -> stringResource(R.string.settings_display_style_cyber)
+                                    DesignStyleType.LIQUID -> stringResource(R.string.settings_display_style_liquid)
+                                    DesignStyleType.HERO -> stringResource(R.string.theme_color_hero)
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
 
                     SwitchSettingsCard(
                         modifier = Modifier.fillMaxWidth(),
@@ -215,21 +217,23 @@ fun DisplaySettingsScreen(
                         summary = stringResource(R.string.settings_display_control_liquid_summary)
                     )
 
-                    EnumSettingsCard(
-                        modifier = Modifier.fillMaxWidth(),
-                        position = CardPosition.Middle,
-                        unit = AllSettings.launcherNavRailSide,
-                        title = stringResource(R.string.settings_display_nav_side_title),
-                        summary = stringResource(R.string.settings_display_nav_side_summary),
-                        entries = NavRailSide.entries,
-                        getRadioEnable = { true },
-                        getRadioText = { side ->
-                            when (side) {
-                                NavRailSide.START -> stringResource(R.string.settings_display_nav_side_start)
-                                NavRailSide.END -> stringResource(R.string.settings_display_nav_side_end)
+                    if (!com.movtery.zalithlauncher.ui.theme.LocalNevStyle.current.futuristic) {
+                        EnumSettingsCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            position = CardPosition.Middle,
+                            unit = AllSettings.launcherNavRailSide,
+                            title = stringResource(R.string.settings_display_nav_side_title),
+                            summary = stringResource(R.string.settings_display_nav_side_summary),
+                            entries = NavRailSide.entries,
+                            getRadioEnable = { true },
+                            getRadioText = { side ->
+                                when (side) {
+                                    NavRailSide.START -> stringResource(R.string.settings_display_nav_side_start)
+                                    NavRailSide.END -> stringResource(R.string.settings_display_nav_side_end)
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
 
                     ListSettingsCard(
                         modifier = Modifier.fillMaxWidth(),

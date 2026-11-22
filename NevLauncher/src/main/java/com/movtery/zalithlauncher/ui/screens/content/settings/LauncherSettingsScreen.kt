@@ -196,13 +196,15 @@ fun LauncherSettingsScreen(
                         }
                     )
 
-                    SwitchSettingsCard(
-                        modifier = Modifier.fillMaxWidth(),
-                        position = CardPosition.Middle,
-                        unit = AllSettings.launcherFestivalEffects,
-                        title = stringResource(R.string.settings_launcher_festivals_effects_title),
-                        summary = stringResource(R.string.settings_launcher_festivals_effects_summary)
-                    )
+                    if (!com.movtery.zalithlauncher.ui.theme.LocalNevStyle.current.futuristic) {
+                        SwitchSettingsCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            position = CardPosition.Middle,
+                            unit = AllSettings.launcherFestivalEffects,
+                            title = stringResource(R.string.settings_launcher_festivals_effects_title),
+                            summary = stringResource(R.string.settings_launcher_festivals_effects_summary)
+                        )
+                    }
 
                     SwitchSettingsCard(
                         modifier = Modifier.fillMaxWidth(),
