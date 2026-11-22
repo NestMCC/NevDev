@@ -82,7 +82,7 @@ object NevRed {
         @Composable get() = Brush.linearGradient(listOf(GradientStart, GradientEnd))
 
     val PanelBrush: Brush
-        @Composable get() = if (isNevDesign()) NevCardFill else Brush.verticalGradient(listOf(Panel, PanelDeep))
+        @Composable get() = if (isNevGradient()) NevCardFill else Brush.verticalGradient(listOf(Panel, PanelDeep))
 
     /** Brush satu warna (untuk latar polos yang tetap bertipe Brush). */
     @Composable
@@ -403,7 +403,7 @@ val NevCardBorder: BorderStroke
     } else if (LocalNevStyle.current.cyber) {
         //Cyber: garis tepi samar; penanda sudut (cyberFrame) yang menonjol
         BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.28f))
-    } else if (isNevDesign()) {
+    } else if (isNevGradient()) {
         //Nev: bingkai gradasi aksen (sama dengan kartu daftar mod/versi)
         BorderStroke(
             1.5.dp,
@@ -421,6 +421,13 @@ val NevCardBorder: BorderStroke
             )
         )
     )
+
+/** false: layar tertentu (mis. daftar versi game & layar Pasang) memakai tampilan default tanpa gradasi aksen. */
+val LocalNevGradientCards = androidx.compose.runtime.compositionLocalOf { true }
+
+/** true: desain Nev dan gradasi aksen kartu/dialog/panel sedang aktif. */
+@Composable
+fun isNevGradient(): Boolean = isNevDesign() && LocalNevGradientCards.current
 
 /** Isi kartu gradasi: bagian atas berpendar warna aksen lalu memudar ke gelap (sama dengan kartu daftar mod/versi). */
 val NevCardFill: Brush
@@ -443,7 +450,7 @@ fun NevGradientSurface(
     border: BorderStroke? = null,
     content: @Composable () -> Unit
 ) {
-    if (isNevDesign()) {
+    if (isNevGradient()) {
         androidx.compose.material3.Surface(
             modifier = modifier,
             shape = shape,
@@ -485,7 +492,7 @@ fun NevGradientSurface(
     border: BorderStroke? = null,
     content: @Composable () -> Unit
 ) {
-    if (isNevDesign()) {
+    if (isNevGradient()) {
         androidx.compose.material3.Surface(
             onClick = onClick,
             modifier = modifier,

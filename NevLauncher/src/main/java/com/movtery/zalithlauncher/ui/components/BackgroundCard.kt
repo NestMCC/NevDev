@@ -42,7 +42,7 @@ import com.movtery.zalithlauncher.ui.theme.LocalNevStyle
 import com.movtery.zalithlauncher.ui.theme.NevCardBorder
 import com.movtery.zalithlauncher.ui.theme.NevCardFill
 import com.movtery.zalithlauncher.ui.theme.NevRed
-import com.movtery.zalithlauncher.ui.theme.isNevDesign
+import com.movtery.zalithlauncher.ui.theme.isNevGradient
 import com.movtery.zalithlauncher.ui.theme.cyberFrame
 import com.movtery.zalithlauncher.ui.theme.liquidGlassRim
 import com.movtery.zalithlauncher.ui.theme.nevGlow
@@ -81,7 +81,7 @@ fun BackgroundCard(
     content: @Composable ColumnScope.() -> Unit
 ) {
     //desain Nev + warna bawaan: isi gradasi aksen (sama dengan kartu daftar mod/versi)
-    val gradient = colors == null && isNevDesign()
+    val gradient = colors == null && isNevGradient()
     val resolved = colors ?: CardDefaults.cardColors(
         containerColor = if (gradient) NevRed.PanelDeep else cardColor(influencedByBackground).styledAlpha(),
         contentColor = onCardColor()
@@ -120,7 +120,7 @@ fun BackgroundCard(
     enabled: Boolean = true,
     content: @Composable @UiComposable ColumnScope.() -> Unit
 ) {
-    val gradient = colors == null && isNevDesign()
+    val gradient = colors == null && isNevGradient()
     val resolved = colors ?: CardDefaults.cardColors(
         containerColor = if (gradient) NevRed.PanelDeep else cardColor(influencedByBackground).styledAlpha(),
         contentColor = onCardColor(),

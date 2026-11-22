@@ -17,6 +17,8 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.download.game
+import androidx.compose.runtime.CompositionLocalProvider
+import com.movtery.zalithlauncher.ui.theme.LocalNevGradientCards
 
 import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import androidx.activity.compose.BackHandler
@@ -827,7 +829,8 @@ private fun VersionBrowser(
     BackHandler(enabled = opened != null) { onOpenGroup(null) }
 
     if (opened != null) {
-        VersionGroupDetail(
+        CompositionLocalProvider(LocalNevGradientCards provides false) {
+VersionGroupDetail(
             modifier = modifier,
             group = opened,
             accent = GROUP_ACCENTS[groups.indexOf(opened).coerceAtLeast(0) % GROUP_ACCENTS.size],
@@ -836,6 +839,7 @@ private fun VersionBrowser(
             onVersionSelect = onVersionSelect,
             openLink = openLink
         )
+}
         return
     }
 
