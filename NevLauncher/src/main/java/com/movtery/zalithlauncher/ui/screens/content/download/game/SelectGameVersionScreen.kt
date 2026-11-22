@@ -17,8 +17,6 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.download.game
-import androidx.compose.runtime.CompositionLocalProvider
-import com.movtery.zalithlauncher.ui.theme.LocalNevGradientCards
 
 import com.movtery.zalithlauncher.ui.theme.glassAlpha
 import androidx.activity.compose.BackHandler
@@ -500,7 +498,8 @@ private fun VersionList(
     modifier: Modifier = Modifier,
     versions: List<MinecraftVersion>,
     onVersionSelect: (MinecraftVersion) -> Unit,
-    openLink: (url: String) -> Unit
+    openLink: (url: String) -> Unit,
+    latestId: String? = null
 ) {
     val scrollState = rememberLazyListState()
     LazyColumn(
@@ -517,6 +516,7 @@ private fun VersionList(
                     .fillMaxWidth()
                     .padding(vertical = 6.dp),
                 version = version,
+                isLatest = latestId != null && version.version.id == latestId,
                 onClick = {
                     onVersionSelect(version)
                 },
@@ -534,7 +534,8 @@ private fun VersionItemLayout(
     version: MinecraftVersion,
     onClick: () -> Unit = {},
     onAccessWiki: (String) -> Unit = {},
-    shape: Shape = MaterialTheme.shapes.large,
+    isLatest: Boolean = false,
+    shape: Shape = com.movtery.zalithlauncher.ui.theme.nevShape(22.dp),
     influencedByBackground: Boolean = true,
     color: Color = cardColor(influencedByBackground),
     contentColor: Color = onCardColor(),
@@ -547,7 +548,7 @@ private fun VersionItemLayout(
 
     val (icon, versionType, wikiUrl, summary) = getVersionComponents(version)
 
-    Surface(
+    com.movtery.zalithlauncher.ui.theme.NevGradientSurface(
         modifier = modifier.graphicsLayer(scaleY = scale.value, scaleX = scale.value),
         onClick = onClick,
         shape = shape,
@@ -558,7 +559,10 @@ private fun VersionItemLayout(
         Row(
             modifier = Modifier
                 .clip(shape = shape)
-                .backgroundGlass(blur, color, influencedByBackground)
+                .then(
+                    if (com.movtery.zalithlauncher.ui.theme.isNevGradient()) Modifier
+                    else Modifier.backgroundGlass(blur, color, influencedByBackground)
+                )
                 .padding(all = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -587,6 +591,12 @@ private fun VersionItemLayout(
                     LittleTextLabel(
                         text = versionType
                     )
+
+                    if (isLatest) {
+                        LittleTextLabel(
+                            text = stringResource(R.string.download_game_group_badge_latest)
+                        )
+                    }
                 }
 
                 summary?.let { text ->
@@ -829,8 +839,7 @@ private fun VersionBrowser(
     BackHandler(enabled = opened != null) { onOpenGroup(null) }
 
     if (opened != null) {
-        CompositionLocalProvider(LocalNevGradientCards provides false) {
-VersionGroupDetail(
+        VersionGroupDetail(
             modifier = modifier,
             group = opened,
             accent = GROUP_ACCENTS[groups.indexOf(opened).coerceAtLeast(0) % GROUP_ACCENTS.size],
@@ -839,7 +848,6 @@ VersionGroupDetail(
             onVersionSelect = onVersionSelect,
             openLink = openLink
         )
-}
         return
     }
 
@@ -1010,84 +1018,90 @@ private fun VersionGroupDetail(
     openLink: (url: String) -> Unit
 ) {
     val latestId = group.latest.version.id
-    NevPanelFrame(
+    Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            val wide = maxWidth >= 600.dp
-            val list: @Composable (Modifier) -> Unit = { m ->
-                val listState = rememberLazyListState()
-                LazyColumn(
-                    modifier = m.nonInteractiveScrollbar(
-                        state = listState.scrollIndicatorState!!,
-                        orientation = Orientation.Vertical,
-                    ),
-                    state = listState,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+        //kepala ramping: sampul kecil + judul seri + jumlah versi + tombol Tutup
+        com.movtery.zalithlauncher.ui.theme.NevGradientSurface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = com.movtery.zalithlauncher.ui.theme.nevShape(22.dp),
+            color = cardColor(false),
+            contentColor = onCardColor(),
+            border = com.movtery.zalithlauncher.ui.theme.boxyBorder()
+        ) {
+            Row(
+                modifier = Modifier.padding(all = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(88.dp)
+                        .aspectRatio(2.2f)
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(1.dp, accent.copy(alpha = 0.7f), RoundedCornerShape(12.dp))
+                        .background(Brush.horizontalGradient(listOf(accent.copy(alpha = 0.35f), NevRed.PanelDeep))),
+                    contentAlignment = Alignment.Center
                 ) {
-                    itemsIndexed(group.versions, key = { _, v -> v.version.id }) { index, version ->
-                        VersionNumberedRow(
-                            number = index + 1,
-                            version = version,
-                            accent = accent,
-                            isLatest = version.version.id == latestId,
-                            onClick = { onVersionSelect(version) },
-                            openLink = openLink
+                    if (coverUrl != null) {
+                        AsyncImage(
+                            modifier = Modifier.fillMaxSize(),
+                            model = coverUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        DefaultCover(
+                            modifier = Modifier.fillMaxSize(),
+                            seed = group.id,
+                            accent = accent
                         )
                     }
                 }
-            }
-
-            if (wide) {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    VersionGroupInfoPanel(
-                        modifier = Modifier
-                            .weight(0.38f)
-                            .fillMaxHeight(),
-                        group = group,
-                        accent = accent,
-                        coverUrl = coverUrl,
-                        onClose = onClose
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = listOfNotNull(group.key, group.displayTitle()).joinToString("  ·  "),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-                    list(Modifier.weight(0.62f).fillMaxHeight())
+                    Text(
+                        modifier = Modifier.alpha(0.7f),
+                        text = stringResource(R.string.download_game_group_count, group.versions.size),
+                        style = MaterialTheme.typography.labelMedium,
+                        maxLines = 1
+                    )
                 }
-            } else {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                Surface(
+                    onClick = onClose,
+                    shape = RoundedCornerShape(50),
+                    color = Color.Transparent,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, NevRed.OutlineBright.copy(alpha = 0.8f))
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.weight(1f),
-                            text = listOfNotNull(group.key, group.displayTitle()).joinToString("  ·  "),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = accent,
-                            maxLines = 1
-                        )
-                        Text(
-                            modifier = Modifier
-                                .border(1.dp, NevRed.Outline, RoundedCornerShape(50))
-                                .clickable(onClick = onClose)
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            text = stringResource(R.string.generic_close),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    list(Modifier.weight(1f).fillMaxWidth())
+                    Text(
+                        modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp),
+                        text = stringResource(R.string.generic_close),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
+
+        //daftar versi: baris sama dengan daftar versi bawaan (ikon, nama + label, tanggal, tombol link)
+        VersionList(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            versions = group.versions,
+            onVersionSelect = onVersionSelect,
+            openLink = openLink,
+            latestId = latestId
+        )
     }
 }
 

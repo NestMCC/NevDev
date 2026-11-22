@@ -17,8 +17,6 @@
  */
 
 package com.movtery.zalithlauncher.ui.screens.content.download
-import androidx.compose.runtime.CompositionLocalProvider
-import com.movtery.zalithlauncher.ui.theme.LocalNevGradientCards
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
@@ -248,8 +246,7 @@ fun DownloadGameScreen(
                 }
                 entry<NormalNavKey.DownloadGame.Addons> { key ->
                     val context = LocalContext.current
-                    CompositionLocalProvider(LocalNevGradientCards provides false) {
-DownloadGameWithAddonScreen(
+                    DownloadGameWithAddonScreen(
                         mainScreenKey = mainScreenKey,
                         downloadScreenKey = downloadScreenKey,
                         downloadGameScreenKey = downloadGameScreenKey,
@@ -281,7 +278,6 @@ DownloadGameWithAddonScreen(
                             }
                         }
                     }
-}
                 }
             }
         )
