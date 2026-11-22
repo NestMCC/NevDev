@@ -322,7 +322,7 @@ private fun DownloadDialog(
                     ) {
                         if (dependencies.isNotEmpty()) {
                             //info: dependensi wajib dipasang otomatis
-                            val noticeShape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
+                            val noticeShape = androidx.compose.foundation.shape.RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.boxyRadius(10.dp))
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()

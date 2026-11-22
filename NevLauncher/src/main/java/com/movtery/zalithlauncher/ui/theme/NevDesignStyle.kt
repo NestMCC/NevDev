@@ -157,7 +157,7 @@ fun nevPillShape(): Shape {
     } else if (style.cutCorners) {
         CutCornerShape(topStart = 16.dp, topEnd = 0.dp, bottomEnd = 16.dp, bottomStart = 0.dp)
     } else if (isBoxy()) {
-        RoundedCornerShape(10.dp)
+        RoundedCornerShape(0.dp)
     } else {
         RoundedCornerShape(50)
     }

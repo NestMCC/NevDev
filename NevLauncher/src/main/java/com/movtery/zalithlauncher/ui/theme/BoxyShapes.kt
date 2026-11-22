@@ -21,13 +21,12 @@ package com.movtery.zalithlauncher.ui.theme
 import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import com.movtery.zalithlauncher.setting.AllSettings
 import androidx.compose.foundation.shape.RoundedCornerShape as BaseRoundedCornerShape
 
 /*
- * Gaya "kotak berlengkung tipis": dipakai hanya pada tema desain Hero; Nev, Cryogenic, Liquid kembali bulat.
+ * Gaya Hero: KOTAK MURNI tanpa lengkungan sedikit pun (radius 0) di semua aspek; Nev, Futuristik, Liquid tetap bulat.
  * File-file UI meng-import RoundedCornerShape dari sini, jadi semua sudut membulat berubah
  * serentak (Unduh, Modpack/Mod/Snapshot, Kelola Versi, Pengaturan, dialog, dst.).
  * Membaca state Compose, sehingga ikut berubah saat saklar diubah.
@@ -46,14 +45,14 @@ fun nevRectRadius(default: androidx.compose.ui.unit.Dp, rect: androidx.compose.u
 fun isBoxy(): Boolean =
     AllSettings.launcherDesignStyle.state == DesignStyleType.HERO
 
-/** Radius yang diperkecil menjadi sudut kotak berlengkung tipis (4–10 dp). */
+/** Radius pada tema Hero selalu 0 (kotak murni); tema lain memakai ukuran aslinya. */
 fun boxyRadius(size: Dp): Dp =
-    if (!isBoxy() || size <= 0.dp) size else (size * 0.4f).coerceIn(4.dp, 10.dp)
+    if (!isBoxy() || size <= 0.dp) size else 0.dp
 
 fun RoundedCornerShape(size: Dp): BaseRoundedCornerShape = BaseRoundedCornerShape(boxyRadius(size))
 
 fun RoundedCornerShape(percent: Int): BaseRoundedCornerShape =
-    if (isBoxy() && percent >= 25) BaseRoundedCornerShape(10.dp) else BaseRoundedCornerShape(percent)
+    if (isBoxy()) BaseRoundedCornerShape(0.dp) else BaseRoundedCornerShape(percent)
 
 fun RoundedCornerShape(
     topStart: Dp,
@@ -69,16 +68,16 @@ fun RoundedCornerShape(
 
 /** Bentuk Material (Surface, tombol, dialog) untuk mode kotak berlengkung tipis. */
 val BoxyShapes = Shapes(
-    extraSmall = BaseRoundedCornerShape(4.dp),
-    small = BaseRoundedCornerShape(6.dp),
-    medium = BaseRoundedCornerShape(8.dp),
-    large = BaseRoundedCornerShape(10.dp),
-    extraLarge = BaseRoundedCornerShape(12.dp)
+    extraSmall = BaseRoundedCornerShape(0.dp),
+    small = BaseRoundedCornerShape(0.dp),
+    medium = BaseRoundedCornerShape(0.dp),
+    large = BaseRoundedCornerShape(0.dp),
+    extraLarge = BaseRoundedCornerShape(0.dp)
 )
 
 /** Pengganti CircleShape: tetap bulat di gaya lain, jadi kotak berlengkung tipis di mode hero. */
 val CircleShape: BaseRoundedCornerShape
-    get() = if (isBoxy()) BaseRoundedCornerShape(10.dp) else androidx.compose.foundation.shape.CircleShape
+    get() = if (isBoxy()) BaseRoundedCornerShape(0.dp) else androidx.compose.foundation.shape.CircleShape
 
 /** Garis tepi untuk permukaan (Surface) di gaya kotak; null di gaya lain. */
 @androidx.compose.runtime.Composable
