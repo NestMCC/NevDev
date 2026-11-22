@@ -548,6 +548,46 @@ private fun VersionItemLayout(
 
     val (icon, versionType, wikiUrl, summary) = getVersionComponents(version)
 
+    if (com.movtery.zalithlauncher.ui.theme.isBoxy()) {
+        //Hero: baris lebar polos dengan tombol hijau "+ INSTAL"
+        val dateText = formatDate(
+            input = version.version.releaseTime,
+            pattern = stringResource(R.string.date_format)
+        )
+        val latestText = stringResource(R.string.download_game_group_badge_latest)
+        com.movtery.zalithlauncher.ui.screens.content.download.HeroListRow(
+            modifier = modifier,
+            onClick = onClick,
+            title = version.version.id,
+            description = summary,
+            chips = listOfNotNull(versionType, if (isLatest) latestText else null, dateText),
+            actionText = stringResource(R.string.download_install),
+            icon = {
+                icon?.let { versionIcon ->
+                    Image(
+                        modifier = Modifier.size(34.dp),
+                        painter = versionIcon,
+                        contentDescription = null
+                    )
+                }
+            },
+            extra = if (wikiUrl != null) {
+                {
+                    IconButton(
+                        modifier = Modifier.size(32.dp),
+                        onClick = { onAccessWiki(wikiUrl) }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_link),
+                            contentDescription = "Wiki"
+                        )
+                    }
+                }
+            } else null
+        )
+        return
+    }
+
     com.movtery.zalithlauncher.ui.theme.NevGradientSurface(
         modifier = modifier.graphicsLayer(scaleY = scale.value, scaleX = scale.value),
         onClick = onClick,
@@ -1018,7 +1058,7 @@ private fun VersionGroupDetail(
     openLink: (url: String) -> Unit
 ) {
     //daftar bawaan hanya untuk desain Nev Lava; tema lain tetap tampilan sebelumnya
-    if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) {
+    if (com.movtery.zalithlauncher.ui.theme.isNevDesign() || com.movtery.zalithlauncher.ui.theme.isBoxy()) {
         NevVersionGroupDetail(modifier, group, accent, coverUrl, onClose, onVersionSelect, openLink)
     } else {
         LegacyVersionGroupDetail(modifier, group, accent, coverUrl, onClose, onVersionSelect, openLink)
@@ -1061,7 +1101,10 @@ private fun NevVersionGroupDetail(
                         .aspectRatio(2.2f)
                         .clip(RoundedCornerShape(12.dp))
                         .border(1.dp, accent.copy(alpha = 0.7f), RoundedCornerShape(12.dp))
-                        .background(Brush.horizontalGradient(listOf(accent.copy(alpha = 0.35f), NevRed.PanelDeep))),
+                        .background(
+                            if (com.movtery.zalithlauncher.ui.theme.isBoxy()) androidx.compose.ui.graphics.SolidColor(NevRed.PanelDeep)
+                            else Brush.horizontalGradient(listOf(accent.copy(alpha = 0.35f), NevRed.PanelDeep))
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     if (coverUrl != null) {

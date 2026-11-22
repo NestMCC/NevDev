@@ -401,10 +401,11 @@ private fun ResultList(
         androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
             modifier = modifier,
             state = gridState,
-            columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(minSize = 300.dp),
+            columns = if (com.movtery.zalithlauncher.ui.theme.isBoxy()) androidx.compose.foundation.lazy.grid.GridCells.Fixed(1)
+            else androidx.compose.foundation.lazy.grid.GridCells.Adaptive(minSize = 300.dp),
             contentPadding = contentPadding,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(if (com.movtery.zalithlauncher.ui.theme.isBoxy()) 8.dp else 12.dp)
         ) {
             items(data.size) { index ->
                 val (item, mcmod) = data[index]
@@ -414,6 +415,30 @@ private fun ResultList(
                 val isInstalled = installedInfo?.invoke(platform, item.platformId()) != null
                 val iconUrl = remember(item) { item.platformIconUrl() }
 
+                if (com.movtery.zalithlauncher.ui.theme.isBoxy()) {
+                    //Hero: baris lebar polos dengan tombol hijau "+ INSTAL"
+                    val authorsText = remember(item) { item.platformAuthors() }?.joinToString(", ")
+                    val cats = remember(item, classes) { categories }
+                    com.movtery.zalithlauncher.ui.screens.content.download.HeroListRow(
+                        onClick = { swapToDownload(platform, item.platformId(), iconUrl) },
+                        title = mcmod.getMcmodTitle(title, context),
+                        subtitle = authorsText,
+                        description = remember(item) { item.platformDescription() },
+                        downloadsText = formatNumberByLocale(context, remember(item) { item.platformDownloadCount() }),
+                        chips = cats?.sortedWith { o1, o2 -> o1.index() - o2.index() }
+                            ?.take(4)?.map { stringResource(it.getDisplayName()) } ?: emptyList(),
+                        actionText = stringResource(R.string.download_install),
+                        icon = {
+                            Box {
+                                AddonIcon(size = 52.dp, iconUrl = iconUrl)
+                                if (isInstalled) {
+                                    InstalledModBadge(modifier = Modifier.align(Alignment.TopStart).padding(all = 2.dp))
+                                }
+                            }
+                        }
+                    )
+                    return@items
+                }
                 ResultProjectWideCard(
                     modifier = Modifier.fillMaxWidth(),
                     platform = platform,
