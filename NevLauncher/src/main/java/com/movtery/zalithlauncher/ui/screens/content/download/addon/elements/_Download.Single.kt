@@ -320,31 +320,6 @@ private fun DownloadDialog(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        if (dependencies.isNotEmpty()) {
-                            //info: dependensi wajib dipasang otomatis
-                            val noticeShape = androidx.compose.foundation.shape.RoundedCornerShape(com.movtery.zalithlauncher.ui.theme.boxyRadius(10.dp))
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(noticeShape)
-                                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, noticeShape)
-                                    .padding(horizontal = 14.dp, vertical = 12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                Icon(
-                                    painter = androidx.compose.ui.res.painterResource(R.drawable.ic_auto_fix),
-                                    contentDescription = null,
-                                    tint = InstallGreen,
-                                    modifier = Modifier.size(22.dp)
-                                )
-                                Text(
-                                    text = stringResource(R.string.download_addon_auto_dependencies_notice),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
                         Row(
                             modifier = Modifier
                                 .weight(1f, fill = false)
