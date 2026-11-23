@@ -911,8 +911,12 @@ fun NevLauncherTheme(
     }
     //migrasi: Liquid dulu berupa tema, sekarang saklar fitur terpisah
     LaunchedEffect(Unit) {
-        if (AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
+        if (AllSettings.launcherColorTheme.state == ColorThemeType.LIQUID ||
+            AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
             AllSettings.launcherLiquidGlass.save(true)
+            if (AllSettings.launcherColorTheme.state == ColorThemeType.LIQUID) {
+                AllSettings.launcherColorTheme.save(ColorThemeType.NEV_LAVA)
+            }
             if (AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
                 AllSettings.launcherDesignStyle.save(DesignStyleType.NEV)
             }
