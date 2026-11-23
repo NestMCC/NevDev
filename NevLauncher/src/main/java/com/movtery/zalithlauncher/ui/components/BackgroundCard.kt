@@ -22,6 +22,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -97,7 +98,7 @@ fun BackgroundCard(
         border = border,
     ) {
         Column(
-            modifier = (if (gradient) Modifier.background(NevCardFill) else Modifier)
+            modifier = (if (gradient) Modifier.fillMaxSize().background(NevCardFill) else Modifier)
                 .backgroundGlass(blur, resolved.containerColor, influencedByBackground),
             content = content
         )
@@ -139,7 +140,7 @@ fun BackgroundCard(
         enabled = enabled,
     ) {
         Column(
-            modifier = (if (gradient) Modifier.background(NevCardFill) else Modifier)
+            modifier = (if (gradient) Modifier.fillMaxSize().background(NevCardFill) else Modifier)
                 .backgroundGlass(blur, resolved.containerColor, influencedByBackground),
             content = content
         )
