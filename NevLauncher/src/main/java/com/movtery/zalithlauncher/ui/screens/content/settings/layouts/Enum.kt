@@ -45,7 +45,7 @@ import kotlin.enums.EnumEntries
 @Composable
 fun <E: Enum<E>> EnumSettingsCard(
     value: E,
-    entries: EnumEntries<E>,
+    entries: List<E>,
     title: String,
     position: CardPosition,
     modifier: Modifier = Modifier,
@@ -112,7 +112,7 @@ fun <E: Enum<E>> EnumSettingsCard(
 @Composable
 fun <E: Enum<E>> EnumSettingsCard(
     unit: EnumSettingUnit<E>,
-    entries: EnumEntries<E>,
+    entries: List<E>,
     title: String,
     position: CardPosition,
     modifier: Modifier = Modifier,
