@@ -21,6 +21,7 @@ package com.movtery.zalithlauncher.ui.screens.content.download
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import com.movtery.zalithlauncher.coroutine.TaskSystem
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,6 +73,19 @@ fun DownloadModScreen(
         // 同版本重复扫描会直接复用内存与持久缓存，且不会清除已有的标注数据
         if (stackTopKey is NormalNavKey.SearchMod || stackTopKey is NormalNavKey.DownloadAddon) {
             installedViewModel.scan(VersionsManager.currentVersion.value)
+        }
+    }
+
+    // 下载任务全部结束后自动重新扫描，让已安装标记无需手动刷新即可出现
+    LaunchedEffect(Unit) {
+        var hadTasks = false
+        TaskSystem.tasksFlow.collect { list ->
+            if (list.isNotEmpty()) {
+                hadTasks = true
+            } else if (hadTasks) {
+                hadTasks = false
+                installedViewModel.scan(VersionsManager.currentVersion.value)
+            }
         }
     }
 

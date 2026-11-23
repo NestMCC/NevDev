@@ -27,6 +27,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -45,6 +47,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -389,9 +393,9 @@ fun MainScreen(
                 TaskMenu(
                     isExpanded = isTaskMenuExpanded,
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(0.3f)
-                        .align(Alignment.CenterStart)
+                        .fillMaxWidth(0.6f)
+                        .widthIn(max = 460.dp)
+                        .align(Alignment.Center)
                         .padding(all = 6.dp)
                 ) {
                     changeTasksExpandedState()
@@ -1095,19 +1099,13 @@ private fun TaskMenu(
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     AnimatedVisibility(
         modifier = modifier,
-        enter = slideInHorizontally(
-            initialOffsetX = { if (isRtl) it else -it },
-            animationSpec = getAnimateTween()
-        ) + fadeIn(),
-        exit = slideOutHorizontally(
-            targetOffsetX = { if (isRtl) it else -it },
-            animationSpec = getAnimateTween()
-        ) + fadeOut(),
+        enter = scaleIn(initialScale = 0.9f, animationSpec = getAnimateTween()) + fadeIn(),
+        exit = scaleOut(targetScale = 0.9f, animationSpec = getAnimateTween()) + fadeOut(),
         visible = show
     ) {
         BackgroundCard(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(all = 6.dp),
             influencedByBackground = false,
             shape = MaterialTheme.shapes.extraLarge,
@@ -1146,9 +1144,7 @@ private fun TaskMenu(
                 }
 
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f),
+                    modifier = Modifier.heightIn(max = 320.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     items(tasks, key = { it.id }) { task ->
