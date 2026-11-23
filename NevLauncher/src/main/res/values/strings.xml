@@ -3402,4 +3402,6 @@
     <string name="fut_account">Account</string>
     <string name="fut_manage_account">Manage Account</string>
     <string name="download_quick_install_preparing">Preparing installation…</string>
+    <string name="download_addon_quick_preparing">Looking for a compatible version…</string>
+    <string name="download_addon_quick_no_compatible">No compatible version for the current game version. Opening the project page…</string>
 </resources>

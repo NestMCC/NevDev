@@ -941,6 +941,7 @@ private fun VersionBrowser(
                         stringResource(R.string.download_game_group_latest, group.latest.version.id)
                     ),
                     actionText = stringResource(R.string.generic_view),
+                    plusPrefix = false,
                     icon = {
                         if (cover != null) {
                             AsyncImage(

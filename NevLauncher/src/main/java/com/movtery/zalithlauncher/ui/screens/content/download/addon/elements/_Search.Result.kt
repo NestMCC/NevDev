@@ -417,6 +417,7 @@ private fun ResultList(
 
                 if (com.movtery.zalithlauncher.ui.theme.isBoxy()) {
                     //Hero: baris lebar polos dengan tombol hijau "+ INSTAL"
+                    val quickInstall = com.movtery.zalithlauncher.ui.screens.content.download.addon.elements.LocalQuickAddonInstall.current
                     val authorsText = remember(item) { item.platformAuthors() }?.joinToString(", ")
                     val cats = remember(item, classes) { categories }
                     com.movtery.zalithlauncher.ui.screens.content.download.HeroListRow(
@@ -427,15 +428,23 @@ private fun ResultList(
                         downloadsText = formatNumberByLocale(context, remember(item) { item.platformDownloadCount() }),
                         chips = cats?.sortedWith { o1, o2 -> o1.index() - o2.index() }
                             ?.take(4)?.map { stringResource(it.getDisplayName()) } ?: emptyList(),
-                        actionText = stringResource(R.string.download_install),
-                        icon = {
-                            Box {
-                                AddonIcon(size = 52.dp, iconUrl = iconUrl)
-                                if (isInstalled) {
-                                    InstalledModBadge(modifier = Modifier.align(Alignment.TopStart).padding(all = 2.dp))
+                        //modpack: tombol "LIHAT" (buka halaman); mod/paket sumber daya/shader: "+ INSTAL" langsung unduh
+                        actionText = stringResource(
+                            if (classes == PlatformClasses.MOD_PACK) R.string.generic_view else R.string.download_install
+                        ),
+                        plusPrefix = classes != PlatformClasses.MOD_PACK,
+                        onActionClick = quickInstall.takeIf { classes != PlatformClasses.MOD_PACK }?.let { quick ->
+                            {
+                                quick(platform, item.platformId(), classes) {
+                                    swapToDownload(platform, item.platformId(), iconUrl)
                                 }
                             }
-                        }
+                        },
+                        icon = { AddonIcon(size = 52.dp, iconUrl = iconUrl) },
+                        //tanda centang "sudah terpasang" di kiri tombol
+                        extra = if (isInstalled) {
+                            { InstalledModBadge() }
+                        } else null
                     )
                     return@items
                 }

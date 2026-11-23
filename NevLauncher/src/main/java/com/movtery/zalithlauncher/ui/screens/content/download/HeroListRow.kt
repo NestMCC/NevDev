@@ -2,6 +2,7 @@ package com.movtery.zalithlauncher.ui.screens.content.download
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,6 +53,8 @@ fun HeroListRow(
     downloadsText: String? = null,
     chips: List<String> = emptyList(),
     actionText: String,
+    plusPrefix: Boolean = true,
+    onActionClick: (() -> Unit)? = null,
     icon: @Composable () -> Unit,
     extra: (@Composable RowScope.() -> Unit)? = null,
     /** Bila tidak null, baris bisa dibuka (dropdown): tombol hijau diganti panah dan isi tampil di bawah. */
@@ -178,11 +181,12 @@ fun HeroListRow(
                 Box(
                     modifier = Modifier
                         .background(Color(0xFF10B981), RoundedCornerShape(0.dp))
+                        .then(if (onActionClick != null) Modifier.clickable(onClick = onActionClick) else Modifier)
                         .padding(horizontal = 14.dp, vertical = 9.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "+ ${actionText.uppercase()}",
+                        text = if (plusPrefix) "+ ${actionText.uppercase()}" else actionText.uppercase(),
                         color = Color.White,
                         style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                         maxLines = 1

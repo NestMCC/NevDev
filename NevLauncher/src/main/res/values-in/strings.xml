@@ -1790,4 +1790,6 @@
     <string name="fut_account">Akun</string>
     <string name="fut_manage_account">Kelola Akun</string>
     <string name="download_quick_install_preparing">Menyiapkan pemasangan…</string>
+    <string name="download_addon_quick_preparing">Mencari versi yang cocok…</string>
+    <string name="download_addon_quick_no_compatible">Tidak ada versi yang cocok untuk versi game ini. Membuka halaman proyek…</string>
 </resources>

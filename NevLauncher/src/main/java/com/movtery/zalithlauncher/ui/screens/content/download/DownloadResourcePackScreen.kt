@@ -39,6 +39,8 @@ import com.movtery.zalithlauncher.ui.screens.NormalNavKey
 import com.movtery.zalithlauncher.ui.screens.TitledNavKey
 import com.movtery.zalithlauncher.ui.screens.content.download.addon.download.DownloadAddonScreen
 import com.movtery.zalithlauncher.ui.screens.content.download.addon.elements.DownloadSingleOperation
+import com.movtery.zalithlauncher.ui.screens.content.download.addon.elements.LocalQuickAddonInstall
+import com.movtery.zalithlauncher.ui.screens.content.download.addon.elements.rememberQuickAddonInstaller
 import com.movtery.zalithlauncher.ui.screens.content.download.addon.search.SearchResourcePackScreen
 import com.movtery.zalithlauncher.ui.screens.navigateTo
 import com.movtery.zalithlauncher.ui.screens.onBack
@@ -92,6 +94,8 @@ fun DownloadResourcePackScreen(
         }
     )
 
+    val quickInstaller = rememberQuickAddonInstaller { operation = it }
+    androidx.compose.runtime.CompositionLocalProvider(LocalQuickAddonInstall provides quickInstaller) {
     if (backStack.isNotEmpty()) {
         NestedNavDisplay(
             ownerKey = key,
@@ -139,5 +143,6 @@ fun DownloadResourcePackScreen(
         )
     } else {
         Box(Modifier.fillMaxSize())
+    }
     }
 }
