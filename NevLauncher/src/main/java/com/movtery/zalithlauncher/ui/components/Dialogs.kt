@@ -772,7 +772,10 @@ fun NevAlertDialog(
                     androidx.compose.runtime.CompositionLocalProvider(
                         androidx.compose.material3.LocalContentColor provides NevRed.OnPanel
                     ) {
-                        content()
+                        //Column agar beberapa teks/elemen di isi dialog tersusun ke bawah (bukan bertumpuk)
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            content()
+                        }
                     }
                 }
 
