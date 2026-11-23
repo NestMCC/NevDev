@@ -197,6 +197,14 @@ fun DisplaySettingsScreen(
                     SwitchSettingsCard(
                         modifier = Modifier.fillMaxWidth(),
                         position = CardPosition.Middle,
+                        unit = AllSettings.launcherLiteMode,
+                        title = stringResource(R.string.settings_display_lite_mode_title),
+                        summary = stringResource(R.string.settings_display_lite_mode_summary)
+                    )
+
+                    SwitchSettingsCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        position = CardPosition.Middle,
                         unit = AllSettings.launcherLiquidGlass,
                         title = stringResource(R.string.settings_display_liquid_glass_title),
                         summary = stringResource(R.string.settings_display_liquid_glass_summary)

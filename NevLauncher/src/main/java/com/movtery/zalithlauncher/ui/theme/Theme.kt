@@ -1005,7 +1005,7 @@ fun NevLauncherTheme(
 
     //satu animasi putar bersama untuk garis tepi semua tombol Liquid (hanya berjalan bila fitur aktif)
     val liquidOn = AllSettings.controlLiquid.state
-    val liquidSpin: androidx.compose.runtime.State<Float>? = if (liquidOn || nevStyle.liquid) {
+    val liquidSpin: androidx.compose.runtime.State<Float>? = if (liquidOn) {
         androidx.compose.animation.core.rememberInfiniteTransition(label = "liquidSpin").animateFloat(
             initialValue = 0f,
             targetValue = 360f,

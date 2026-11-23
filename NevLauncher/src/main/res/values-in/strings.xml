@@ -1794,4 +1794,6 @@
     <string name="download_addon_quick_no_compatible">Tidak ada versi yang cocok untuk versi game ini. Membuka halaman proyek…</string>
     <string name="settings_display_liquid_glass_title">Liquid Glass</string>
     <string name="settings_display_liquid_glass_summary">Ubah tema yang dipakai (mis. Nev) jadi kaca bening transparan. Tata letak tetap sama, hanya tampilannya yang berubah. Bisa dimatikan kapan saja.</string>
+    <string name="settings_display_lite_mode_title">Mode ringan</string>
+    <string name="settings_display_lite_mode_summary">Matikan efek berat (glow bayangan, blur kaca) agar scroll dan pindah menu lebih mulus di HP spek rendah. Otomatis aktif di HP RAM kecil.</string>
 </resources>

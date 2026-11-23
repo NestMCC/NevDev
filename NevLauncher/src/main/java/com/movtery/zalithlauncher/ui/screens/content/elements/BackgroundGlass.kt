@@ -75,6 +75,7 @@ fun Modifier.backgroundGlass(
 ): Modifier {
     if (AllSettings.backgroundBlurType.state == BackgroundBlur.Background) return this
     if (!enabled) return this
+    if (com.movtery.zalithlauncher.ui.theme.isLiteMode()) return this
     val background = LocalBackgroundViewModel.current?.takeIf { it.isValid } ?: return this
     if (blur <= 0 || AllSettings.launcherBackgroundOpacity.state >= 100) return this
     return this then GlassElement(blur, color, background)

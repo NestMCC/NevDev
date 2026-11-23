@@ -493,6 +493,9 @@ object AllSettings : SettingsRegistry() {
     /** Fitur Liquid Glass: mengubah tampilan tema apa pun menjadi kaca bening transparan (tata letak tetap). */
     val launcherLiquidGlass = boolSetting("launcherLiquidGlass", false)
 
+    /** Mode ringan: matikan efek berat (glow bayangan, blur kaca) agar mulus di HP spek rendah. Otomatis aktif di HP RAM rendah. */
+    val launcherLiteMode = boolSetting("launcherLiteMode", false)
+
     /**
      * 主界面操作菜单的停泊侧
      */

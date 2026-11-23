@@ -196,6 +196,22 @@ android {
             useLegacyPackaging = true
             pickFirsts += listOf("**/libbytehook.so")
         }
+        resources {
+            //berkas metadata pustaka yang tidak dipakai saat runtime (memperkecil APK)
+            excludes += listOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+                "/META-INF/DEPENDENCIES",
+                "/META-INF/LICENSE*",
+                "/META-INF/NOTICE*",
+                "/META-INF/*.version",
+                "/META-INF/INDEX.LIST",
+                "/META-INF/versions/9/OSGI-INF/MANIFEST.MF",
+                "DebugProbesKt.bin",
+                "kotlin-tooling-metadata.json",
+                "**/*.kotlin_builtins",
+                "**/*.kotlin_metadata"
+            )
+        }
     }
 
     compileOptions {
@@ -297,6 +313,12 @@ androidComponents {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
+        //buang pemeriksaan null otomatis: kode lebih kecil dan sedikit lebih cepat
+        freeCompilerArgs.addAll(
+            "-Xno-param-assertions",
+            "-Xno-call-assertions",
+            "-Xno-receiver-assertions"
+        )
         optIn.addAll(
             "androidx.compose.material3.ExperimentalMaterial3Api",
         )
