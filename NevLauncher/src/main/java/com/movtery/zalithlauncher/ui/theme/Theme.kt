@@ -903,20 +903,16 @@ fun NevLauncherTheme(
     content: @Composable () -> Unit
 ) {
     val colorTheme = AllSettings.launcherColorTheme.state
-    val liquidGlass = AllSettings.launcherLiquidGlass.state ||
-        AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID ||
-        colorTheme == ColorThemeType.LIQUID
+    //Liquid Glass sekarang tema warna: gaya kaca bening berlaku di atas gaya desain apa pun
     val nevStyle = nevStyleFor(AllSettings.launcherDesignStyle.state).let {
-        if (liquidGlass) it.copy(liquid = true) else it
+        if (colorTheme == ColorThemeType.LIQUID) it.copy(liquid = true) else it
     }
-    //migrasi: Liquid dulu berupa tema, sekarang saklar fitur terpisah
+    //migrasi: saklar Liquid Glass / gaya Liquid lama -> tema warna Liquid Glass
     LaunchedEffect(Unit) {
-        if (AllSettings.launcherColorTheme.state == ColorThemeType.LIQUID ||
+        if (AllSettings.launcherLiquidGlass.state ||
             AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
-            AllSettings.launcherLiquidGlass.save(true)
-            if (AllSettings.launcherColorTheme.state == ColorThemeType.LIQUID) {
-                AllSettings.launcherColorTheme.save(ColorThemeType.NEV_LAVA)
-            }
+            AllSettings.launcherColorTheme.save(ColorThemeType.LIQUID)
+            AllSettings.launcherLiquidGlass.save(false)
             if (AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
                 AllSettings.launcherDesignStyle.save(DesignStyleType.NEV)
             }

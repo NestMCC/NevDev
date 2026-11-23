@@ -66,6 +66,7 @@ private val builtInOrder = listOf(
     ColorThemeType.NEV_LAVA,
     ColorThemeType.CRYOGENIC,
     ColorThemeType.CYBER,
+    ColorThemeType.LIQUID,
     ColorThemeType.HERO
 )
 

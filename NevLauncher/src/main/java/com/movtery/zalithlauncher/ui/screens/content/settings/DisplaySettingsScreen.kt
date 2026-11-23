@@ -95,6 +95,12 @@ private val designThemes = listOf(
         style = DesignStyleType.CYBER
     ),
     DesignTheme(
+        type = ColorThemeType.LIQUID,
+        nameRes = R.string.theme_color_liquid,
+        descRes = R.string.settings_display_theme_liquid_desc,
+        swatch = listOf(Color(0xFF1A1D21), Color(0xFFDDE3EA), Color(0xFFFFFFFF))
+    ),
+    DesignTheme(
         type = ColorThemeType.HERO,
         nameRes = R.string.theme_color_hero,
         descRes = R.string.settings_display_theme_hero_desc,
@@ -159,6 +165,8 @@ fun DisplaySettingsScreen(
                                             if (ownStyle != null) {
                                                 //tema dengan gaya sendiri (Cyber): pasang gaya + tata letaknya
                                                 AllSettings.launcherDesignStyle.save(ownStyle)
+                                            } else if (theme.type == ColorThemeType.LIQUID) {
+                                                //Liquid Glass berlaku di atas gaya desain yang sedang dipakai: gaya tidak diubah
                                             } else if (AllSettings.launcherDesignStyle.state == DesignStyleType.CYBER ||
                                                 AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID ||
                                                 AllSettings.launcherDesignStyle.state == DesignStyleType.CRYOGENIC ||
@@ -193,14 +201,6 @@ fun DisplaySettingsScreen(
                             }
                         )
                     }
-
-                    SwitchSettingsCard(
-                        modifier = Modifier.fillMaxWidth(),
-                        position = CardPosition.Middle,
-                        unit = AllSettings.launcherLiquidGlass,
-                        title = stringResource(R.string.settings_display_liquid_glass_title),
-                        summary = stringResource(R.string.settings_display_liquid_glass_summary)
-                    )
 
                     SwitchSettingsCard(
                         modifier = Modifier.fillMaxWidth(),
