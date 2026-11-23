@@ -398,7 +398,14 @@ val NevCardBorder: BorderStroke
         //Liquid: tepi kaca putih bening
         BorderStroke(
             1.dp,
-            Brush.linearGradient(listOf(Color.White.copy(alpha = 0.5f), Color.White.copy(alpha = 0.1f)))
+            Brush.linearGradient(
+                colorStops = arrayOf(
+                    0f to Color.White.copy(alpha = 0.85f),
+                    0.4f to Color.White.copy(alpha = 0.12f),
+                    0.7f to Color.White.copy(alpha = 0.12f),
+                    1f to Color.White.copy(alpha = 0.55f)
+                )
+            )
         )
     } else if (LocalNevStyle.current.cyber) {
         //Cyber: garis tepi samar; penanda sudut (cyberFrame) yang menonjol
@@ -450,7 +457,17 @@ val NevCardBase: Color
 
 /** Isi kartu gradasi: bagian atas berpendar warna aksen lalu memudar ke gelap (sama dengan kartu daftar mod/versi). */
 val NevCardFill: Brush
-    @Composable get() = if (LocalNevStyle.current.futuristic) {
+    @Composable get() = if (LocalNevStyle.current.liquid) {
+        //Liquid Glass: kilau kaca diagonal, terang di sudut atas-kiri, bening di tengah, kilau tipis di bawah-kanan
+        Brush.linearGradient(
+            colorStops = arrayOf(
+                0f to Color.White.copy(alpha = 0.30f),
+                0.35f to Color.White.copy(alpha = 0.08f),
+                0.7f to Color.White.copy(alpha = 0.03f),
+                1f to Color.White.copy(alpha = 0.16f)
+            )
+        )
+    } else if (LocalNevStyle.current.futuristic) {
         //Futuristik: kaca gelap dengan pendar emas dari kiri
         Brush.horizontalGradient(
             listOf(
