@@ -578,20 +578,7 @@ fun Modifier.nevGlow(
     shape: Shape,
     radius: Dp = 8.dp,
     intensity: Float = 0.6f
-): Modifier = composed {
-    val c = MaterialTheme.colorScheme.primary
-    val style = LocalNevStyle.current
-    //Liquid Glass: bayangan tembus ke dalam kaca bening (muncul sebagai kotak gelap), jadi dimatikan
-    if (style.liquid || style.futuristic || isLiteMode()) return@composed this
-    val glow = (intensity * style.glowIntensityScale).coerceIn(0f, 1f)
-    shadow(
-        elevation = radius * style.glowRadiusScale,
-        shape = shape,
-        clip = false,
-        ambientColor = c.copy(alpha = glow),
-        spotColor = c.copy(alpha = glow)
-    )
-}
+): Modifier = this //Glow bayangan dimatikan di semua tema: berat saat scroll dan tembus ke panel kaca
 
 /**
  * Tab atas bergaya kapsul untuk layar Unduh: lingkaran ikon di kiri, nomor kecil ("01") di atas label.

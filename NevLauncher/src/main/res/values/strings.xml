@@ -3406,6 +3406,4 @@
     <string name="download_addon_quick_no_compatible">No compatible version for the current game version. Opening the project page…</string>
     <string name="settings_display_liquid_glass_title">Liquid Glass</string>
     <string name="settings_display_liquid_glass_summary">Turns the current theme (e.g. Nev) into clear, transparent glass. Layout stays the same; only the look changes. Can be turned off any time.</string>
-    <string name="settings_display_lite_mode_title">Lite mode</string>
-    <string name="settings_display_lite_mode_summary">Turns off heavy effects (shadow glow, glass blur) for smoother scrolling on low-end phones. Turned on automatically on low-RAM devices.</string>
 </resources>
