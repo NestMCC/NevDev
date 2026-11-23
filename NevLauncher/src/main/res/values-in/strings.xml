@@ -1792,4 +1792,6 @@
     <string name="download_quick_install_preparing">Menyiapkan pemasangan…</string>
     <string name="download_addon_quick_preparing">Mencari versi yang cocok…</string>
     <string name="download_addon_quick_no_compatible">Tidak ada versi yang cocok untuk versi game ini. Membuka halaman proyek…</string>
+    <string name="settings_display_liquid_glass_title">Liquid Glass</string>
+    <string name="settings_display_liquid_glass_summary">Ubah tema yang dipakai (mis. Nev) jadi kaca bening transparan. Tata letak tetap sama, hanya tampilannya yang berubah. Bisa dimatikan kapan saja.</string>
 </resources>

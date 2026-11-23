@@ -136,7 +136,7 @@ val NevLiquidStyle = NevStyle(
 )
 
 fun nevStyleFor(type: DesignStyleType): NevStyle = when (type) {
-    DesignStyleType.LIQUID -> NevLiquidStyle
+    DesignStyleType.LIQUID -> NevClassicStyle
     DesignStyleType.NEV -> NevClassicStyle
     DesignStyleType.HERO -> NevClassicStyle
     DesignStyleType.CRYOGENIC -> NevCryogenicStyle
@@ -149,9 +149,7 @@ val LocalNevStyle = compositionLocalOf { NevClassicStyle }
 @Composable
 fun nevPillShape(): Shape {
     val style = LocalNevStyle.current
-    return if (style.liquid && !isBoxy()) {
-        RoundedCornerShape(50)
-    } else if (style.cyber) {
+    return if (style.cyber) {
         //Cyber: potongan pada sisi diagonal yang berlawanan dengan Cryogenic
         CutCornerShape(topStart = 0.dp, topEnd = 12.dp, bottomEnd = 0.dp, bottomStart = 12.dp)
     } else if (style.cutCorners) {
@@ -167,9 +165,7 @@ fun nevPillShape(): Shape {
 @Composable
 fun nevShape(radius: Dp): Shape {
     val style = LocalNevStyle.current
-    return if (style.liquid && !isBoxy()) {
-        RoundedCornerShape(radius * 1.3f)
-    } else if (style.cyber) {
+    return if (style.cyber) {
         val cut = radius * 0.5f
         CutCornerShape(topStart = 0.dp, topEnd = cut, bottomEnd = 0.dp, bottomStart = cut)
     } else if (style.cutCorners) {

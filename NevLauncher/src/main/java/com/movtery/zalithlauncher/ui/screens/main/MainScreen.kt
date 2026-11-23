@@ -281,7 +281,6 @@ fun MainScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .then(if (bottomDock) Modifier.cyberBackdrop() else Modifier)
-                .then(if (com.movtery.zalithlauncher.ui.theme.LocalNevStyle.current.liquid) Modifier.liquidBackdrop() else Modifier)
         ) {
         if (railSide == NavRailSide.START && !bottomDock && !heroLayout) rail()
         Column(

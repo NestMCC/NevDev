@@ -490,6 +490,9 @@ object AllSettings : SettingsRegistry() {
     /** Tombol kontrol bergaya kaca dengan animasi cairan saat ditekan */
     val controlLiquid = boolSetting("controlLiquid", false)
 
+    /** Fitur Liquid Glass: mengubah tampilan tema apa pun menjadi kaca bening transparan (tata letak tetap). */
+    val launcherLiquidGlass = boolSetting("launcherLiquidGlass", false)
+
     /**
      * 主界面操作菜单的停泊侧
      */

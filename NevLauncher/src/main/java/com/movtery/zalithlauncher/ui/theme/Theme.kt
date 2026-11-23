@@ -903,7 +903,24 @@ fun NevLauncherTheme(
     content: @Composable () -> Unit
 ) {
     val colorTheme = AllSettings.launcherColorTheme.state
-    val nevStyle = nevStyleFor(AllSettings.launcherDesignStyle.state)
+    val liquidGlass = AllSettings.launcherLiquidGlass.state ||
+        AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID
+    val nevStyle = nevStyleFor(AllSettings.launcherDesignStyle.state).let {
+        if (liquidGlass) it.copy(liquid = true) else it
+    }
+    //migrasi: Liquid dulu berupa tema, sekarang saklar fitur terpisah
+    LaunchedEffect(Unit) {
+        if (AllSettings.launcherColorTheme.state == ColorThemeType.LIQUID ||
+            AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
+            AllSettings.launcherLiquidGlass.save(true)
+            if (AllSettings.launcherColorTheme.state == ColorThemeType.LIQUID) {
+                AllSettings.launcherColorTheme.save(ColorThemeType.NEV_LAVA)
+            }
+            if (AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
+                AllSettings.launcherDesignStyle.save(DesignStyleType.NEV)
+            }
+        }
+    }
     val customColorInt = AllSettings.launcherCustomColor.state
     val customColor = Color(customColorInt)
     val customPaletteStyle = AllSettings.launcherCustomPaletteStyle.state

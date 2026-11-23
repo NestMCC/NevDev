@@ -95,13 +95,6 @@ private val designThemes = listOf(
         style = DesignStyleType.CYBER
     ),
     DesignTheme(
-        type = ColorThemeType.LIQUID,
-        nameRes = R.string.theme_color_liquid,
-        descRes = R.string.settings_display_theme_liquid_desc,
-        swatch = listOf(Color(0xFF060D18), Color(0xFF5AC8FA), Color(0xFF9B8CFF)),
-        style = DesignStyleType.LIQUID
-    ),
-    DesignTheme(
         type = ColorThemeType.HERO,
         nameRes = R.string.theme_color_hero,
         descRes = R.string.settings_display_theme_hero_desc,
@@ -187,7 +180,7 @@ fun DisplaySettingsScreen(
                             unit = AllSettings.launcherDesignStyle,
                             title = stringResource(R.string.settings_display_style_title),
                             summary = stringResource(R.string.settings_display_style_summary),
-                            entries = DesignStyleType.entries,
+                            entries = DesignStyleType.entries.filter { it != DesignStyleType.LIQUID },
                             getRadioEnable = { true },
                             getRadioText = { type ->
                                 when (type) {
@@ -200,6 +193,14 @@ fun DisplaySettingsScreen(
                             }
                         )
                     }
+
+                    SwitchSettingsCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        position = CardPosition.Middle,
+                        unit = AllSettings.launcherLiquidGlass,
+                        title = stringResource(R.string.settings_display_liquid_glass_title),
+                        summary = stringResource(R.string.settings_display_liquid_glass_summary)
+                    )
 
                     SwitchSettingsCard(
                         modifier = Modifier.fillMaxWidth(),
