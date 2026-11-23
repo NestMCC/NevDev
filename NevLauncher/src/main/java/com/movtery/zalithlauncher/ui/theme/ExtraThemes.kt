@@ -87,7 +87,7 @@ fun themeSwatchColor(type: ColorThemeType): Color = when (type) {
     ColorThemeType.NEV_LAVA -> Color(0xFFFF5A3D)
     ColorThemeType.CRYOGENIC -> Color(0xFFF5B52E)
     ColorThemeType.CYBER -> Color(0xFF00E5FF)
-    ColorThemeType.LIQUID -> Color(0xFF5AC8FA)
+    ColorThemeType.LIQUID -> Color(0xFFFFFFFF)
     ColorThemeType.HERO -> Color(0xFFFFFFFF)
     ColorThemeType.CUSTOM -> Color(AllSettings.launcherCustomColor.state)
     else -> seedThemeOf(type)?.seed ?: Color.Gray

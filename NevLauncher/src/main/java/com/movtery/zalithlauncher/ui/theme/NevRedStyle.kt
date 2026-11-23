@@ -442,7 +442,7 @@ val LocalNevGradientCards = androidx.compose.runtime.compositionLocalOf { true }
 
 /** true: desain Nev dan gradasi aksen kartu/dialog/panel sedang aktif. */
 @Composable
-fun isNevGradient(): Boolean = (isNevDesign() || LocalNevStyle.current.futuristic) && LocalNevGradientCards.current
+fun isNevGradient(): Boolean = (isNevDesign() || LocalNevStyle.current.futuristic || LocalNevStyle.current.liquid) && LocalNevGradientCards.current
 
 /** Warna dasar kartu gradasi: tembus pandang (kaca) pada tema Futuristik, solid pada Nev. */
 val NevCardBase: Color

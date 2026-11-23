@@ -213,7 +213,7 @@ private fun getPredefinedSeedColor(theme: ColorThemeType, darkTheme: Boolean): I
         ColorThemeType.NEV_LAVA -> if (darkTheme) 0xFFFF5A3D.toInt() else 0xFFB3201A.toInt()
         ColorThemeType.CRYOGENIC -> if (darkTheme) 0xFFF5B52E.toInt() else 0xFF8A5A00.toInt()
         ColorThemeType.CYBER -> if (darkTheme) 0xFF00E5FF.toInt() else 0xFF00697A.toInt()
-        ColorThemeType.LIQUID -> if (darkTheme) 0xFF5AC8FA.toInt() else 0xFF006A8E.toInt()
+        ColorThemeType.LIQUID -> if (darkTheme) 0xFFFFFFFF.toInt() else 0xFF4A5662.toInt()
         ColorThemeType.HERO -> if (darkTheme) 0xFFFFFFFF.toInt() else 0xFF000000.toInt()
         else -> seedThemeOf(theme)?.seed?.toArgb() ?: 0xFFE2641F.toInt()
     }

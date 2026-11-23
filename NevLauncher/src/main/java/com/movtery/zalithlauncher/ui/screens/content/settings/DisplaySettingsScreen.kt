@@ -98,7 +98,7 @@ private val designThemes = listOf(
         type = ColorThemeType.LIQUID,
         nameRes = R.string.theme_color_liquid,
         descRes = R.string.settings_display_theme_liquid_desc,
-        swatch = listOf(Color(0xFFE8F4FF), Color(0xFF9FD8FF), Color(0xFFFFFFFF))
+        swatch = listOf(Color(0xFF1A1D21), Color(0xFFDDE3EA), Color(0xFFFFFFFF))
     ),
     DesignTheme(
         type = ColorThemeType.HERO,
