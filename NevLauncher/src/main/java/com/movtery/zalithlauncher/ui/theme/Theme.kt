@@ -904,18 +904,15 @@ fun NevLauncherTheme(
 ) {
     val colorTheme = AllSettings.launcherColorTheme.state
     val liquidGlass = AllSettings.launcherLiquidGlass.state ||
-        AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID
+        AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID ||
+        colorTheme == ColorThemeType.LIQUID
     val nevStyle = nevStyleFor(AllSettings.launcherDesignStyle.state).let {
         if (liquidGlass) it.copy(liquid = true) else it
     }
     //migrasi: Liquid dulu berupa tema, sekarang saklar fitur terpisah
     LaunchedEffect(Unit) {
-        if (AllSettings.launcherColorTheme.state == ColorThemeType.LIQUID ||
-            AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
+        if (AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
             AllSettings.launcherLiquidGlass.save(true)
-            if (AllSettings.launcherColorTheme.state == ColorThemeType.LIQUID) {
-                AllSettings.launcherColorTheme.save(ColorThemeType.NEV_LAVA)
-            }
             if (AllSettings.launcherDesignStyle.state == DesignStyleType.LIQUID) {
                 AllSettings.launcherDesignStyle.save(DesignStyleType.NEV)
             }

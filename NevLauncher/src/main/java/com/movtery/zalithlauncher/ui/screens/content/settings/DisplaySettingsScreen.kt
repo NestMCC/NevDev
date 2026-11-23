@@ -95,6 +95,12 @@ private val designThemes = listOf(
         style = DesignStyleType.CYBER
     ),
     DesignTheme(
+        type = ColorThemeType.LIQUID,
+        nameRes = R.string.theme_color_liquid,
+        descRes = R.string.settings_display_theme_liquid_desc,
+        swatch = listOf(Color(0xFFE8F4FF), Color(0xFF9FD8FF), Color(0xFFFFFFFF))
+    ),
+    DesignTheme(
         type = ColorThemeType.HERO,
         nameRes = R.string.theme_color_hero,
         descRes = R.string.settings_display_theme_hero_desc,

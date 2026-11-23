@@ -46,13 +46,13 @@ object NevRed {
     val OnGradient: Color
         @Composable get() = MaterialTheme.colorScheme.onPrimary
     val Panel: Color
-        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainer, 0.42f)
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainer, 0.18f)
     val PanelDeep: Color
-        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerLow, 0.50f)
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerLow, 0.22f)
     val SurfaceHigh: Color
-        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerHigh, 0.48f)
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerHigh, 0.24f)
     val SurfaceHighest: Color
-        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerHighest, 0.52f)
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerHighest, 0.28f)
 
     /** Pada gaya Liquid warna panel dibuat tembus pandang seperti kaca; gaya lain tetap solid. */
     @Composable
