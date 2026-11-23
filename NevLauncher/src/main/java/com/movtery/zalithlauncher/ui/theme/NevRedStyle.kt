@@ -502,7 +502,7 @@ fun NevGradientSurface(
             color = NevCardBase,
             contentColor = NevRed.OnPanel,
             tonalElevation = 0.dp,
-            shadowElevation = shadowElevation,
+            shadowElevation = if (LocalNevStyle.current.liquid) 0.dp else shadowElevation,
             border = border ?: NevCardBorder
         ) {
             Box(modifier = Modifier.background(NevCardFill), propagateMinConstraints = true) {
@@ -516,7 +516,7 @@ fun NevGradientSurface(
             color = color,
             contentColor = contentColor,
             tonalElevation = tonalElevation,
-            shadowElevation = shadowElevation,
+            shadowElevation = if (LocalNevStyle.current.liquid) 0.dp else shadowElevation,
             border = border,
             content = content
         )
@@ -546,7 +546,7 @@ fun NevGradientSurface(
             color = NevCardBase,
             contentColor = NevRed.OnPanel,
             tonalElevation = 0.dp,
-            shadowElevation = shadowElevation,
+            shadowElevation = if (LocalNevStyle.current.liquid) 0.dp else shadowElevation,
             border = border ?: NevCardBorder
         ) {
             Box(modifier = Modifier.background(NevCardFill), propagateMinConstraints = true) {
@@ -562,7 +562,7 @@ fun NevGradientSurface(
             color = color,
             contentColor = contentColor,
             tonalElevation = tonalElevation,
-            shadowElevation = shadowElevation,
+            shadowElevation = if (LocalNevStyle.current.liquid) 0.dp else shadowElevation,
             border = border,
             content = content
         )
@@ -581,6 +581,8 @@ fun Modifier.nevGlow(
 ): Modifier = composed {
     val c = MaterialTheme.colorScheme.primary
     val style = LocalNevStyle.current
+    //Liquid Glass: bayangan tembus ke dalam kaca bening (muncul sebagai kotak gelap), jadi dimatikan
+    if (style.liquid) return@composed this
     val glow = (intensity * style.glowIntensityScale).coerceIn(0f, 1f)
     shadow(
         elevation = radius * style.glowRadiusScale,
