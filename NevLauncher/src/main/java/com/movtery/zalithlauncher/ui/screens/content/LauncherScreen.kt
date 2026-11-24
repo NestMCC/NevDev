@@ -1537,69 +1537,19 @@ private fun DashboardHome(
                                 }
                             }
 
-                            Box {
-                                Surface(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    shape = MaterialTheme.shapes.small,
-                                    color = Color.Transparent,
-                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f)),
-                                    onClick = { showList = true }
-                                ) {
-                                    Row(
-                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(
-                                            modifier = Modifier.weight(1f),
-                                            text = if (ready) version!!.getVersionName() else stringResource(R.string.hero_empty_title),
-                                            style = MaterialTheme.typography.labelLarge,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                        Icon(
-                                            modifier = Modifier.size(20.dp),
-                                            painter = painterResource(R.drawable.ic_keyboard_arrow_down),
-                                            contentDescription = stringResource(R.string.hero_switch_version)
-                                        )
-                                    }
-                                }
-                                DropdownMenu(
-                                    border = com.movtery.zalithlauncher.ui.theme.boxyBorder(),
-                                    expanded = showList,
-                                    onDismissRequest = { showList = false },
-                                    modifier = Modifier.width(260.dp),
-                                    shape = MaterialTheme.shapes.extraLarge
-                                ) {
-                                    versions.forEach { v ->
-                                        DropdownMenuItem(
-                                            text = {
-                                                CommonVersionInfoLayout(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    version = v,
-                                                    iconSize = 28.dp
-                                                )
-                                            },
-                                            onClick = {
-                                                if (version != v) VersionsManager.saveVersion(v)
-                                                showList = false
-                                            }
-                                        )
-                                    }
-                                    androidx.compose.material3.HorizontalDivider()
-                                    DropdownMenuItem(
-                                        text = {
-                                            Text(
-                                                text = stringResource(R.string.hero_manage_versions),
-                                                fontWeight = FontWeight.SemiBold,
-                                                color = NevRed.GradientStart
-                                            )
-                                        },
-                                        onClick = {
-                                            showList = false
-                                            toVersionManageScreen()
-                                        }
-                                    )
-                                }
+                            //versi yang sedang dipilih (pemilihan lewat daftar Paket & Versi di bawah, tanpa dropdown)
+                            if (ready) {
+                                CommonVersionInfoLayout(
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp),
+                                    version = version!!,
+                                    iconSize = 28.dp
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(R.string.hero_empty_title),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    modifier = Modifier.alpha(0.7f)
+                                )
                             }
                         }
                     }

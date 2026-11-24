@@ -85,11 +85,15 @@ fun BackgroundCard(
     //desain Nev + warna bawaan: isi gradasi aksen (sama dengan kartu daftar mod/versi)
     val gradient = colors == null && isNevGradient()
     val resolved = colors ?: CardDefaults.cardColors(
-        containerColor = if (gradient) NevCardBase else cardColor(influencedByBackground).styledAlpha(),
+        containerColor = if (gradient) Color.Transparent else cardColor(influencedByBackground).styledAlpha(),
         contentColor = onCardColor()
     )
+    val baseColor = NevCardBase
+    val fill = NevCardFill
     Card(
         modifier = modifier.nevGlow(shape, 6.dp, 0.45f)
+            //isi gradasi digambar pada seluruh kartu (tanpa memengaruhi tinggi kartu)
+            .then(if (gradient) Modifier.background(baseColor, shape).background(fill, shape) else Modifier)
             .then(if (LocalNevStyle.current.cyber) Modifier.cyberFrame() else Modifier)
             .then(if (LocalNevStyle.current.liquid) Modifier.liquidGlassRim(shape) else Modifier),
         shape = shape,
@@ -98,8 +102,7 @@ fun BackgroundCard(
         border = border,
     ) {
         Column(
-            modifier = (if (gradient) Modifier.fillMaxSize().background(NevCardFill) else Modifier)
-                .backgroundGlass(blur, resolved.containerColor, influencedByBackground),
+            modifier = Modifier.backgroundGlass(blur, if (gradient) baseColor else resolved.containerColor, influencedByBackground),
             content = content
         )
     }
@@ -124,12 +127,16 @@ fun BackgroundCard(
 ) {
     val gradient = colors == null && isNevGradient()
     val resolved = colors ?: CardDefaults.cardColors(
-        containerColor = if (gradient) NevCardBase else cardColor(influencedByBackground).styledAlpha(),
+        containerColor = if (gradient) Color.Transparent else cardColor(influencedByBackground).styledAlpha(),
         contentColor = onCardColor(),
-        disabledContainerColor = if (gradient) NevCardBase else cardColor(influencedByBackground).styledAlpha()
+        disabledContainerColor = if (gradient) Color.Transparent else cardColor(influencedByBackground).styledAlpha()
     )
+    val baseColor = NevCardBase
+    val fill = NevCardFill
     Card(
         modifier = modifier.nevGlow(shape, 6.dp, 0.45f)
+            //isi gradasi digambar pada seluruh kartu (tanpa memengaruhi tinggi kartu)
+            .then(if (gradient) Modifier.background(baseColor, shape).background(fill, shape) else Modifier)
             .then(if (LocalNevStyle.current.cyber) Modifier.cyberFrame() else Modifier)
             .then(if (LocalNevStyle.current.liquid) Modifier.liquidGlassRim(shape) else Modifier),
         shape = shape,
@@ -140,8 +147,7 @@ fun BackgroundCard(
         enabled = enabled,
     ) {
         Column(
-            modifier = (if (gradient) Modifier.fillMaxSize().background(NevCardFill) else Modifier)
-                .backgroundGlass(blur, resolved.containerColor, influencedByBackground),
+            modifier = Modifier.backgroundGlass(blur, if (gradient) baseColor else resolved.containerColor, influencedByBackground),
             content = content
         )
     }
