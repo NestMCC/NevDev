@@ -1540,7 +1540,11 @@ private fun DashboardHome(
                             //versi yang sedang dipilih (pemilihan lewat daftar Paket & Versi di bawah, tanpa dropdown)
                             if (ready) {
                                 CommonVersionInfoLayout(
-                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(MaterialTheme.shapes.medium)
+                                        .clickable(onClick = toVersionManageScreen)
+                                        .padding(horizontal = 2.dp, vertical = 2.dp),
                                     version = version!!,
                                     iconSize = 28.dp
                                 )
