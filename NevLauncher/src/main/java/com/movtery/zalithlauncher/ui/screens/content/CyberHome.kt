@@ -16,6 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,6 +48,7 @@ import com.movtery.zalithlauncher.game.version.installed.Version
 import com.movtery.zalithlauncher.game.version.installed.VersionsManager
 import com.movtery.zalithlauncher.ui.components.animated
 import com.movtery.zalithlauncher.ui.components.rememberAnimatedContext
+import com.movtery.zalithlauncher.ui.screens.content.elements.CommonVersionInfoLayout
 import com.movtery.zalithlauncher.ui.screens.content.elements.PlayerFace
 
 /**
@@ -66,6 +70,8 @@ fun CyberHome(
     val refreshWardrobe by AccountsManager.refreshWardrobe.collectAsStateWithLifecycle()
     val version by VersionsManager.currentVersion.collectAsStateWithLifecycle()
     var menuOpen by remember { mutableStateOf(false) }
+    var showVersions by remember { mutableStateOf(false) }
+    val versions by VersionsManager.versions.collectAsStateWithLifecycle()
     val primary = MaterialTheme.colorScheme.primary
     val barShape = CutCornerShape(topStart = 18.dp, bottomEnd = 18.dp)
     val chipShape = CutCornerShape(topStart = 10.dp, bottomEnd = 10.dp)
@@ -195,21 +201,66 @@ fun CyberHome(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .clip(chipShape)
-                        .background(glass)
-                        .border(neon, chipShape)
-                        .clickable(onClick = toVersionManageScreen)
-                        .padding(horizontal = 12.dp, vertical = 10.dp)
-                ) {
-                    Text(
-                        text = version?.getVersionName() ?: stringResource(R.string.hero_empty_title),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                Box {
+                    Row(
+                        modifier = Modifier
+                            .clip(chipShape)
+                            .background(glass)
+                            .border(neon, chipShape)
+                            .clickable { showVersions = true }
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = version?.getVersionName() ?: stringResource(R.string.hero_empty_title),
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Icon(
+                            modifier = Modifier.size(18.dp),
+                            painter = painterResource(R.drawable.ic_keyboard_arrow_down),
+                            contentDescription = stringResource(R.string.hero_switch_version)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showVersions,
+                        onDismissRequest = { showVersions = false },
+                        modifier = Modifier.width(280.dp),
+                        shape = chipShape
+                    ) {
+                        versions.forEach { v ->
+                            DropdownMenuItem(
+                                text = {
+                                    CommonVersionInfoLayout(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        version = v,
+                                        iconSize = 28.dp
+                                    )
+                                },
+                                onClick = {
+                                    if (version != v) VersionsManager.saveVersion(v)
+                                    showVersions = false
+                                }
+                            )
+                        }
+                        HorizontalDivider()
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = stringResource(R.string.hero_manage_versions),
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = primary
+                                )
+                            },
+                            onClick = {
+                                showVersions = false
+                                toVersionManageScreen()
+                            }
+                        )
+                    }
                 }
                 account?.let {
                     Row(
