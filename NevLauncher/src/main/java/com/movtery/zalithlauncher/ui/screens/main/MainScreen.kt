@@ -243,6 +243,14 @@ fun MainScreen(
             )
         )
     }
+    val installerReady by com.movtery.zalithlauncher.components.ComponentInstaller.ready.collectAsStateWithLifecycle()
+    val playFromDock: () -> Unit = {
+        if (installerReady) {
+            eventViewModel.sendEvent(EventViewModel.Event.Launch.Game(null))
+        } else {
+            eventViewModel.sendToast(androidText(R.string.components_wait_toast))
+        }
+    }
     val rail: @Composable () -> Unit = {
     SideRail(
         modifier = if (bottomDock) {
@@ -257,6 +265,7 @@ fun MainScreen(
         toHomeScreen = toMainScreen,
         floating = floatingRail && !bottomDock,
         dock = bottomDock,
+        onPlay = if (bottomDock) playFromDock else null,
         contentColor = onBackgroundColor(),
         inServerHubScreen = mainScreenKey is NormalNavKey.ServerHub,
         inMultiplayerScreen = mainScreenKey is NormalNavKey.Multiplayer,
@@ -652,6 +661,7 @@ private fun SideRail(
     futuristic: Boolean = false,
     inHomeScreen: Boolean = false,
     toHomeScreen: () -> Unit = {},
+    onPlay: (() -> Unit)? = null,
 ) {
     val railItems: @Composable () -> Unit = {
             SideRailItem(
@@ -711,31 +721,113 @@ private fun SideRail(
                 openFileManager = openFileManager
             )
         } else if (dock) {
-            //dock Cyber: panel potong-sudut bercahaya di bawah layar; bisa digeser bila layar sempit
-            val dockShape = nevShape(20.dp)
+            //dock Cyber: tiap menu punya kotak potong-sudut sendiri (terpisah); tombol MAIN di tengah, sedikit lebih tinggi
+            val cellShape = nevShape(16.dp)
+            val neon = MaterialTheme.colorScheme.primary
+            val cellBorder = BorderStroke(1.dp, NevRed.Outline)
+            val cell: @Composable (@Composable () -> Unit) -> Unit = { content ->
+                Box(
+                    modifier = Modifier
+                        .background(NevRed.Panel.glassAlpha(0.92f), cellShape)
+                        .border(cellBorder, cellShape)
+                ) { content() }
+            }
             Box(
                 modifier = modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Row(
                     modifier = Modifier
-                        .nevGlow(dockShape, 10.dp, 0.45f)
-                        .background(NevRed.Panel.glassAlpha(0.92f), dockShape)
-                        .border(
-                            BorderStroke(
-                                1.dp,
-                                Brush.horizontalGradient(
-                                    listOf(NevRed.OutlineBright, NevRed.Outline, NevRed.OutlineBright)
-                                )
-                            ),
-                            dockShape
-                        )
                         .horizontalScroll(rememberScrollState())
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                        .padding(horizontal = 2.dp),
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Bottom
                 ) {
-                    railItems()
+                    cell {
+                        SideRailItem(
+                            selected = inHomeScreen,
+                            painter = painterResource(R.drawable.ic_home_filled),
+                            text = stringResource(R.string.hero_nav_home),
+                            onClick = { if (!inHomeScreen) toHomeScreen() }
+                        )
+                    }
+                    cell {
+                        SideRailItem(
+                            selected = false,
+                            painter = painterResource(R.drawable.ic_folder_filled),
+                            text = "File",
+                            onClick = openFileManager
+                        )
+                    }
+                    cell {
+                        SideRailItem(
+                            selected = inServerHubScreen,
+                            painter = painterResource(R.drawable.ic_dns_outlined),
+                            text = stringResource(R.string.server_hub_title),
+                            onClick = { if (!inServerHubScreen) toServerHubScreen() }
+                        )
+                    }
+                    cell {
+                        SideRailItem(
+                            selected = inMultiplayerScreen,
+                            painter = painterResource(R.drawable.ic_group_filled),
+                            text = stringResource(R.string.terracotta),
+                            onClick = { if (!inMultiplayerScreen) toMultiplayerScreen() }
+                        )
+                    }
+                    if (onPlay != null) {
+                        //MAIN: warna mengikuti tema launcher, lebih tinggi dari menu lain tapi tidak terlalu
+                        val playShape = nevShape(18.dp)
+                        Column(
+                            modifier = Modifier
+                                .width(96.dp)
+                                .height(84.dp)
+                                .clip(playShape)
+                                .background(Brush.verticalGradient(listOf(neon, MaterialTheme.colorScheme.tertiary)))
+                                .border(1.5.dp, neon.copy(alpha = 0.9f), playShape)
+                                .clickable(onClick = onPlay),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(32.dp),
+                                painter = painterResource(R.drawable.ic_play_arrow_filled),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = stringResource(R.string.main_play).uppercase(),
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.ExtraBold,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                    cell {
+                        SideRailItem(
+                            selected = inDonateScreen,
+                            painter = painterResource(R.drawable.ic_favorite_filled),
+                            text = stringResource(R.string.donate_menu),
+                            onClick = { if (!inDonateScreen) toDonateScreen() }
+                        )
+                    }
+                    cell {
+                        SideRailItem(
+                            selected = inDownloadScreen,
+                            painter = painterResource(R.drawable.ic_download_2_filled),
+                            text = stringResource(R.string.generic_download),
+                            onClick = { if (!inDownloadScreen) toDownloadScreen() }
+                        )
+                    }
+                    cell {
+                        SideRailItem(
+                            selected = inSettingsScreen,
+                            painter = painterResource(R.drawable.ic_settings_filled),
+                            text = stringResource(R.string.generic_setting),
+                            onClick = { if (!inSettingsScreen) toSettingsScreen() }
+                        )
+                    }
                 }
             }
         } else if (floating) {

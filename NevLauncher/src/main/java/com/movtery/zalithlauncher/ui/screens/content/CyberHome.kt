@@ -118,37 +118,6 @@ fun CyberHome(
             }
         }
 
-        //tengah: tombol PLAY hijau besar
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 110.dp)
-                .width(220.dp)
-                .height(64.dp)
-                .clip(CutCornerShape(topStart = 20.dp, bottomEnd = 20.dp))
-                .background(Brush.verticalGradient(listOf(Color(0xFF4CE07A), Color(0xFF1DAA4C))))
-                .border(BorderStroke(1.5.dp, Color(0xFFB8FFCF).copy(alpha = 0.8f)), CutCornerShape(topStart = 20.dp, bottomEnd = 20.dp))
-                .clickable { onLaunchGame(null) },
-            contentAlignment = Alignment.Center
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    painter = painterResource(R.drawable.ic_play_arrow_filled),
-                    contentDescription = null,
-                    tint = Color(0xFF04210F)
-                )
-                Text(
-                    text = stringResource(R.string.main_play).uppercase(),
-                    color = Color(0xFF04210F),
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 24.sp,
-                    letterSpacing = 2.sp,
-                    maxLines = 1
-                )
-            }
-        }
-
         //kanan atas: chip versi (dropdown versi terpasang + kelola versi)
         Box(modifier = Modifier.align(Alignment.TopEnd).padding(end = 12.dp, top = 8.dp)) {
         Box {
