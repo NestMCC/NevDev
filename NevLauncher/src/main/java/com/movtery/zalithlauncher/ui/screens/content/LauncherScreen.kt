@@ -215,6 +215,26 @@ fun LauncherScreen(
             return@BaseScreen
         }
 
+        if (LocalNevStyle.current.cyber) {
+            CyberHome(
+                isVisible = isVisible,
+                onLaunchGame = onLaunchGame,
+                onOpenFileManager = onOpenFileManager,
+                toAccountManageScreen = {
+                    backStackViewModel.mainScreen.navigateTo(
+                        screenKey = NormalNavKey.AccountManager(FirstLoginMenu.NONE)
+                    )
+                },
+                toVersionManageScreen = {
+                    backStackViewModel.mainScreen.removeAndNavigateTo(
+                        remove = NestedNavKey.VersionSettings::class,
+                        screenKey = NormalNavKey.VersionsManager
+                    )
+                }
+            )
+            return@BaseScreen
+        }
+
         if (AllSettings.launcherDesignStyle.state != com.movtery.zalithlauncher.ui.theme.DesignStyleType.HERO &&
             !LocalNevStyle.current.cyber
         ) {
