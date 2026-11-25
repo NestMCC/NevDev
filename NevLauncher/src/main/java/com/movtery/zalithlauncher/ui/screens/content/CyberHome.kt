@@ -69,11 +69,9 @@ fun CyberHome(
     val account by AccountsManager.currentAccountFlow.collectAsStateWithLifecycle()
     val refreshWardrobe by AccountsManager.refreshWardrobe.collectAsStateWithLifecycle()
     val version by VersionsManager.currentVersion.collectAsStateWithLifecycle()
-    var menuOpen by remember { mutableStateOf(false) }
     var showVersions by remember { mutableStateOf(false) }
     val versions by VersionsManager.versions.collectAsStateWithLifecycle()
     val primary = MaterialTheme.colorScheme.primary
-    val barShape = CutCornerShape(topStart = 18.dp, bottomEnd = 18.dp)
     val chipShape = CutCornerShape(topStart = 10.dp, bottomEnd = 10.dp)
     val glass = Color(0xFF05080F).copy(alpha = 0.55f)
     val neon = BorderStroke(1.dp, primary.copy(alpha = 0.75f))
@@ -123,8 +121,8 @@ fun CyberHome(
         //tengah: tombol PLAY hijau besar
         Box(
             modifier = Modifier
-                .align(Alignment.Center)
-                .padding(top = 40.dp)
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 110.dp)
                 .width(220.dp)
                 .height(64.dp)
                 .clip(CutCornerShape(topStart = 20.dp, bottomEnd = 20.dp))
@@ -151,176 +149,78 @@ fun CyberHome(
             }
         }
 
-        //kiri bawah: dock melayang (Beranda + ikon menu yang membuka Versi/File)
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 14.dp, bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            if (menuOpen) {
-                Column(
-                    modifier = Modifier
-                        .clip(barShape)
-                        .background(glass)
-                        .border(neon, barShape)
-                        .padding(6.dp)
-                ) {
-                    CyberBarItem(R.drawable.ic_extension_outlined, stringResource(R.string.cyber_nav_versions)) {
-                        menuOpen = false
-                        toVersionManageScreen()
-                    }
-                    CyberBarItem(R.drawable.ic_folder_outlined, stringResource(R.string.cyber_nav_files)) {
-                        menuOpen = false
-                        onOpenFileManager()
-                    }
-                }
-            }
+        //kanan atas: chip versi (dropdown versi terpasang + kelola versi)
+        Box(modifier = Modifier.align(Alignment.TopEnd).padding(end = 12.dp, top = 8.dp)) {
+        Box {
             Row(
                 modifier = Modifier
-                    .clip(barShape)
+                    .clip(chipShape)
                     .background(glass)
-                    .border(neon, barShape)
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .border(neon, chipShape)
+                    .clickable { showVersions = true }
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                CyberBarItem(R.drawable.ic_home_filled, stringResource(R.string.hero_nav_home), selected = !menuOpen) { menuOpen = false }
-                CyberBarItem(R.drawable.ic_menu, stringResource(R.string.cyber_nav_menu), selected = menuOpen) { menuOpen = !menuOpen }
+                Text(
+                    text = version?.getVersionName() ?: stringResource(R.string.hero_empty_title),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Icon(
+                    modifier = Modifier.size(18.dp),
+                    painter = painterResource(R.drawable.ic_keyboard_arrow_down),
+                    contentDescription = stringResource(R.string.hero_switch_version)
+                )
+            }
+            DropdownMenu(
+                expanded = showVersions,
+                onDismissRequest = { showVersions = false },
+                modifier = Modifier.width(280.dp),
+                shape = chipShape
+            ) {
+                versions.forEach { v ->
+                    DropdownMenuItem(
+                        text = {
+                            CommonVersionInfoLayout(
+                                modifier = Modifier.fillMaxWidth(),
+                                version = v,
+                                iconSize = 28.dp
+                            )
+                        },
+                        onClick = {
+                            if (version != v) VersionsManager.saveVersion(v)
+                            showVersions = false
+                        }
+                    )
+                }
+                HorizontalDivider()
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = stringResource(R.string.hero_manage_versions),
+                            fontWeight = FontWeight.SemiBold,
+                            color = primary
+                        )
+                    },
+                    onClick = {
+                        showVersions = false
+                        toVersionManageScreen()
+                    }
+                )
             }
         }
+        }
 
-        //kanan bawah: chip versi dan akun, nomor versi di bawahnya
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 14.dp, bottom = 2.dp),
-            horizontalAlignment = Alignment.End
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box {
-                    Row(
-                        modifier = Modifier
-                            .clip(chipShape)
-                            .background(glass)
-                            .border(neon, chipShape)
-                            .clickable { showVersions = true }
-                            .padding(horizontal = 12.dp, vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = version?.getVersionName() ?: stringResource(R.string.hero_empty_title),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.SemiBold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Icon(
-                            modifier = Modifier.size(18.dp),
-                            painter = painterResource(R.drawable.ic_keyboard_arrow_down),
-                            contentDescription = stringResource(R.string.hero_switch_version)
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = showVersions,
-                        onDismissRequest = { showVersions = false },
-                        modifier = Modifier.width(280.dp),
-                        shape = chipShape
-                    ) {
-                        versions.forEach { v ->
-                            DropdownMenuItem(
-                                text = {
-                                    CommonVersionInfoLayout(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        version = v,
-                                        iconSize = 28.dp
-                                    )
-                                },
-                                onClick = {
-                                    if (version != v) VersionsManager.saveVersion(v)
-                                    showVersions = false
-                                }
-                            )
-                        }
-                        HorizontalDivider()
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = stringResource(R.string.hero_manage_versions),
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = primary
-                                )
-                            },
-                            onClick = {
-                                showVersions = false
-                                toVersionManageScreen()
-                            }
-                        )
-                    }
-                }
-                account?.let {
-                    Row(
-                        modifier = Modifier
-                            .clip(chipShape)
-                            .background(glass)
-                            .border(neon, chipShape)
-                            .clickable(onClick = toAccountManageScreen)
-                            .padding(horizontal = 8.dp, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        PlayerFace(account = it, avatarSize = 26.dp, refreshKey = refreshWardrobe)
-                        Text(
-                            text = it.username,
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
-            }
+        //kanan bawah: nomor versi launcher
+        Box(modifier = Modifier.align(Alignment.BottomEnd).padding(end = 14.dp, bottom = 2.dp)) {
             Text(
-                modifier = Modifier.alpha(0.6f).padding(top = 2.dp),
+                modifier = Modifier.alpha(0.6f),
                 text = "v${BuildConfig.VERSION_NAME}",
                 style = MaterialTheme.typography.labelSmall
             )
         }
-    }
-}
-
-@Composable
-private fun CyberBarItem(
-    iconRes: Int,
-    label: String,
-    selected: Boolean = false,
-    onClick: () -> Unit
-) {
-    val primary = MaterialTheme.colorScheme.primary
-    Column(
-        modifier = Modifier
-            .clip(CutCornerShape(topStart = 10.dp, bottomEnd = 10.dp))
-            .background(if (selected) primary.copy(alpha = 0.18f) else Color.Transparent)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 10.dp, vertical = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            modifier = Modifier.size(20.dp),
-            painter = painterResource(iconRes),
-            contentDescription = null,
-            tint = if (selected) primary else MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(Modifier.height(1.dp))
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = if (selected) primary else MaterialTheme.colorScheme.onSurface,
-            maxLines = 1
-        )
     }
 }
