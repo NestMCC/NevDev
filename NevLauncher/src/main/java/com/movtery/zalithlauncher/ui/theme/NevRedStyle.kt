@@ -46,13 +46,13 @@ object NevRed {
     val OnGradient: Color
         @Composable get() = MaterialTheme.colorScheme.onPrimary
     val Panel: Color
-        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainer, 0.18f)
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainer, 0.08f)
     val PanelDeep: Color
-        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerLow, 0.22f)
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerLow, 0.10f)
     val SurfaceHigh: Color
-        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerHigh, 0.24f)
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerHigh, 0.12f)
     val SurfaceHighest: Color
-        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerHighest, 0.28f)
+        @Composable get() = glass(MaterialTheme.colorScheme.surfaceContainerHighest, 0.14f)
 
     /** Pada gaya Liquid warna panel dibuat tembus pandang seperti kaca; gaya lain tetap solid. */
     @Composable
@@ -462,10 +462,10 @@ val NevCardFill: Brush
         //Liquid Glass: kilau kaca diagonal, terang di sudut atas-kiri, bening di tengah, kilau tipis di bawah-kanan
         Brush.linearGradient(
             colorStops = arrayOf(
-                0f to Color.White.copy(alpha = 0.30f),
-                0.35f to Color.White.copy(alpha = 0.08f),
-                0.7f to Color.White.copy(alpha = 0.03f),
-                1f to Color.White.copy(alpha = 0.16f)
+                0f to Color.White.copy(alpha = 0.14f),
+                0.35f to Color.White.copy(alpha = 0.03f),
+                0.7f to Color.White.copy(alpha = 0.01f),
+                1f to Color.White.copy(alpha = 0.07f)
             )
         )
     } else if (LocalNevStyle.current.futuristic) {

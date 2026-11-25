@@ -20,6 +20,14 @@ import androidx.compose.ui.unit.dp
 private fun resolveButtonShape(shape: Shape?): Shape =
     shape ?: if (isBoxy()) RoundedCornerShape(12.dp) else ButtonDefaults.shape
 
+/** Liquid Glass: tombol berisi kaca bening (bukan warna solid) dengan teks terang */
+@Composable
+private fun glassButtonColors(colors: ButtonColors): ButtonColors =
+    if (LocalNevStyle.current.liquid) colors.copy(
+        containerColor = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.14f),
+        contentColor = androidx.compose.ui.graphics.Color.White
+    ) else colors
+
 @Composable
 fun Button(
     onClick: () -> Unit,
@@ -39,7 +47,7 @@ fun Button(
     modifier = modifier.liquidButton(src, shape),
     enabled = enabled,
     shape = resolveButtonShape(shape),
-    colors = colors,
+    colors = glassButtonColors(colors),
     elevation = elevation,
     border = border,
     contentPadding = contentPadding,
@@ -67,7 +75,7 @@ fun FilledTonalButton(
     modifier = modifier.liquidButton(src, shape),
     enabled = enabled,
     shape = resolveButtonShape(shape),
-    colors = colors,
+    colors = glassButtonColors(colors),
     elevation = elevation,
     border = border,
     contentPadding = contentPadding,
