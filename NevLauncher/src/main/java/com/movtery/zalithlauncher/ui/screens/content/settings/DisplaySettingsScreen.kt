@@ -152,7 +152,7 @@ fun DisplaySettingsScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                designThemes.forEach { theme ->
+                                designThemes.filter { !(com.movtery.zalithlauncher.BuildConfig.RUSH && it.type == ColorThemeType.LIQUID) }.forEach { theme ->
                                     DesignThemeCard(
                                         modifier = Modifier.weight(1f),
                                         theme = theme,

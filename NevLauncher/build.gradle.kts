@@ -30,6 +30,8 @@ val defaultKeyPassword = project.findProperty("default_key_password") as? String
 val defaultCurseForgeApiKey = project.findProperty("curseforge_api_key") as? String
 
 val projectArch: String = System.getProperty("arch", "all")
+//Edisi Rush: APK terpisah (paket & nama sendiri) yang ringan, dipilih lewat -Drush=true
+val rushEdition: Boolean = System.getProperty("rush") == "true"
 
 fun getKeyFromLocal(envKey: String, fileName: String? = null, default: String? = null): String {
     val key = System.getenv(envKey)
@@ -130,12 +132,13 @@ android {
 
     defaultConfig {
         applicationId = zalithPackageName
-        applicationIdSuffix = ".v2"
+        applicationIdSuffix = if (rushEdition) ".rush" else ".v2"
         minSdk = 26
         targetSdk = 34
         versionCode = launcherVersionCode
         versionName = launcherVersionName
-        manifestPlaceholders["launcher_name"] = launcherAPPName
+        manifestPlaceholders["launcher_name"] = if (rushEdition) "$launcherAPPName Rush" else launcherAPPName
+        buildConfigField("boolean", "RUSH", rushEdition.toString())
     }
 
     buildTypes {
@@ -301,7 +304,7 @@ androidComponents {
                 }
 
                 (output.getFilter(ABI)?.identifier ?: "all").let { abi ->
-                    val baseName = "$launcherName-$launcherVersionName"
+                    val baseName = "$launcherName-$launcherVersionName" + if (rushEdition) "-Rush" else ""
                     output.outputFileName = if (abi == "all") "$baseName.apk" else "$baseName-$abi.apk"
                 }
             }

@@ -7,6 +7,10 @@ on:
       variant:
         required: true
         type: string
+      rush:
+        required: false
+        type: boolean
+        default: false
     secrets:
       KEY_PASSWORD:
         required: false
@@ -23,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: ["all", "arm", "arm64", "x86", "x86_64"]
+        arch: ${{ fromJSON(inputs.rush && '["all","arm64"]' || '["all","arm","arm64","x86","x86_64"]') }}
       fail-fast: false
 
     env:
@@ -86,14 +90,14 @@ jobs:
       - name: Build APK for ${{ matrix.arch }}
         run: |
           chmod +x gradlew
-          ./gradlew NevLauncher:assemble${{ inputs.variant }} -Darch=${{ matrix.arch }}
+          ./gradlew NevLauncher:assemble${{ inputs.variant }} -Darch=${{ matrix.arch }} -Drush=${{ inputs.rush }}
 
       - name: Upload Release APK for ${{ matrix.arch }}
         if: inputs.variant == 'Release'
         continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: release apk (${{ matrix.arch }})
+          name: release apk${{ inputs.rush && ' rush' || '' }} (${{ matrix.arch }})
           path: NevLauncher/build/outputs/apk/release/*.apk
 
       - name: Upload Release Mapping for ${{ matrix.arch }}
@@ -101,7 +105,7 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: mapping (${{ matrix.arch }})
+          name: mapping${{ inputs.rush && ' rush' || '' }} (${{ matrix.arch }})
           path: NevLauncher/build/outputs/mapping/release/mapping.txt
 
       - name: Upload Debug APK for ${{ matrix.arch }}
@@ -109,5 +113,5 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: debug apk (${{ matrix.arch }})
+          name: debug apk${{ inputs.rush && ' rush' || '' }} (${{ matrix.arch }})
           path: NevLauncher/build/outputs/apk/debug/*.apk

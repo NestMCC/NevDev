@@ -471,7 +471,7 @@ object AllSettings : SettingsRegistry() {
     /**
      * 启用页面切换动画
      */
-    val launcherSwapAnimEnabled = boolSetting("launcherSwapAnimEnabled", true)
+    val launcherSwapAnimEnabled = boolSetting("launcherSwapAnimEnabled", !com.movtery.zalithlauncher.BuildConfig.RUSH)
 
     /**
      * 动画速度

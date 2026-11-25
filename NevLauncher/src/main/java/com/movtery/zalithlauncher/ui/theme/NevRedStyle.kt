@@ -445,7 +445,8 @@ val NevCardBorder: BorderStroke
     )
 
 /** false: layar tertentu (mis. daftar versi game & layar Pasang) memakai tampilan default tanpa gradasi aksen. */
-val LocalNevGradientCards = androidx.compose.runtime.compositionLocalOf { true }
+//Edisi Rush: kartu polos tanpa gradasi (lebih ringan)
+val LocalNevGradientCards = androidx.compose.runtime.compositionLocalOf { !com.movtery.zalithlauncher.BuildConfig.RUSH }
 
 /** true: desain Nev dan gradasi aksen kartu/dialog/panel sedang aktif. */
 @Composable
