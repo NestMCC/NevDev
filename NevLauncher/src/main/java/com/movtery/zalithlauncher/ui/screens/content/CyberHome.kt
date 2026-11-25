@@ -2,6 +2,7 @@ package com.movtery.zalithlauncher.ui.screens.content
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -61,8 +65,8 @@ fun CyberHome(
     val account by AccountsManager.currentAccountFlow.collectAsStateWithLifecycle()
     val refreshWardrobe by AccountsManager.refreshWardrobe.collectAsStateWithLifecycle()
     val version by VersionsManager.currentVersion.collectAsStateWithLifecycle()
+    var menuOpen by remember { mutableStateOf(false) }
     val primary = MaterialTheme.colorScheme.primary
-    val tertiary = MaterialTheme.colorScheme.tertiary
     val barShape = CutCornerShape(topStart = 18.dp, bottomEnd = 18.dp)
     val chipShape = CutCornerShape(topStart = 10.dp, bottomEnd = 10.dp)
     val glass = Color(0xFF05080F).copy(alpha = 0.55f)
@@ -110,75 +114,94 @@ fun CyberHome(
             }
         }
 
-        //bilah kaca di bawah
-        Row(
+        //tengah: tombol PLAY hijau besar
+        Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(start = 14.dp, end = 14.dp, bottom = 16.dp)
-                .clip(barShape)
-                .background(glass)
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(primary.copy(alpha = 0.16f), Color.Transparent, tertiary.copy(alpha = 0.16f))
-                    )
-                )
-                .padding(horizontal = 14.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .align(Alignment.Center)
+                .padding(top = 40.dp)
+                .width(220.dp)
+                .height(64.dp)
+                .clip(CutCornerShape(topStart = 20.dp, bottomEnd = 20.dp))
+                .background(Brush.verticalGradient(listOf(Color(0xFF4CE07A), Color(0xFF1DAA4C))))
+                .border(BorderStroke(1.5.dp, Color(0xFFB8FFCF).copy(alpha = 0.8f)), CutCornerShape(topStart = 20.dp, bottomEnd = 20.dp))
+                .clickable { onLaunchGame(null) },
+            contentAlignment = Alignment.Center
         ) {
-            //kiri: menu cepat
-            Row(
-                modifier = Modifier.weight(1f),
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CyberBarItem(R.drawable.ic_home_filled, stringResource(R.string.hero_nav_home), selected = true) {}
-                CyberBarItem(R.drawable.ic_extension_outlined, stringResource(R.string.cyber_nav_versions), onClick = toVersionManageScreen)
-                CyberBarItem(R.drawable.ic_folder_outlined, stringResource(R.string.cyber_nav_files), onClick = onOpenFileManager)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Icon(
+                    modifier = Modifier.size(28.dp),
+                    painter = painterResource(R.drawable.ic_play_arrow_filled),
+                    contentDescription = null,
+                    tint = Color(0xFF04210F)
+                )
+                Text(
+                    text = stringResource(R.string.main_play).uppercase(),
+                    color = Color(0xFF04210F),
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 24.sp,
+                    letterSpacing = 2.sp,
+                    maxLines = 1
+                )
             }
+        }
 
-            //tengah: MAIN
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .width(150.dp)
-                    .height(46.dp)
-                    .clip(CutCornerShape(topStart = 14.dp, bottomEnd = 14.dp))
-                    .background(Brush.horizontalGradient(listOf(primary, tertiary)))
-                    .clickable { onLaunchGame(null) },
-                contentAlignment = Alignment.Center
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        painter = painterResource(R.drawable.ic_play_arrow_filled),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Text(
-                        text = stringResource(R.string.main_play).uppercase(),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 16.sp,
-                        letterSpacing = 1.5.sp,
-                        maxLines = 1
-                    )
+        //kiri bawah: dock melayang (Beranda + ikon menu yang membuka Versi/File)
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 14.dp, bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            if (menuOpen) {
+                Column(
+                    modifier = Modifier
+                        .clip(barShape)
+                        .background(glass)
+                        .border(neon, barShape)
+                        .padding(6.dp)
+                ) {
+                    CyberBarItem(R.drawable.ic_extension_outlined, stringResource(R.string.cyber_nav_versions)) {
+                        menuOpen = false
+                        toVersionManageScreen()
+                    }
+                    CyberBarItem(R.drawable.ic_folder_outlined, stringResource(R.string.cyber_nav_files)) {
+                        menuOpen = false
+                        onOpenFileManager()
+                    }
                 }
             }
-
-            //kanan: versi dan akun
             Row(
-                modifier = Modifier.weight(1f),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                modifier = Modifier
+                    .clip(barShape)
+                    .background(glass)
+                    .border(neon, barShape)
+                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CyberBarItem(R.drawable.ic_home_filled, stringResource(R.string.hero_nav_home), selected = !menuOpen) { menuOpen = false }
+                CyberBarItem(R.drawable.ic_menu, stringResource(R.string.cyber_nav_menu), selected = menuOpen) { menuOpen = !menuOpen }
+            }
+        }
+
+        //kanan bawah: chip versi dan akun, nomor versi di bawahnya
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 14.dp, bottom = 2.dp),
+            horizontalAlignment = Alignment.End
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .weight(1f, fill = false)
                         .clip(chipShape)
-                        .background(Color.White.copy(alpha = 0.06f))
+                        .background(glass)
+                        .border(neon, chipShape)
                         .clickable(onClick = toVersionManageScreen)
-                        .padding(horizontal = 10.dp, vertical = 7.dp)
+                        .padding(horizontal = 12.dp, vertical = 10.dp)
                 ) {
                     Text(
                         text = version?.getVersionName() ?: stringResource(R.string.hero_empty_title),
@@ -192,42 +215,30 @@ fun CyberHome(
                     Row(
                         modifier = Modifier
                             .clip(chipShape)
-                            .background(Color.White.copy(alpha = 0.06f))
+                            .background(glass)
+                            .border(neon, chipShape)
                             .clickable(onClick = toAccountManageScreen)
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                            .padding(horizontal = 8.dp, vertical = 5.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         PlayerFace(account = it, avatarSize = 26.dp, refreshKey = refreshWardrobe)
-                        Column {
-                            Text(
-                                text = it.username,
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Text(
-                                modifier = Modifier.alpha(0.7f),
-                                text = getAccountTypeName(it),
-                                style = MaterialTheme.typography.labelSmall,
-                                maxLines = 1
-                            )
-                        }
+                        Text(
+                            text = it.username,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
             }
+            Text(
+                modifier = Modifier.alpha(0.6f).padding(top = 2.dp),
+                text = "v${BuildConfig.VERSION_NAME}",
+                style = MaterialTheme.typography.labelSmall
+            )
         }
-
-        //kanan bawah: nomor versi launcher
-        Text(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 16.dp, bottom = 2.dp)
-                .alpha(0.55f),
-            text = "v${BuildConfig.VERSION_NAME}",
-            style = MaterialTheme.typography.labelSmall
-        )
     }
 }
 

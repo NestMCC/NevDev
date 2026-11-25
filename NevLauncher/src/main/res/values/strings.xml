@@ -3408,4 +3408,5 @@
     <string name="settings_display_liquid_glass_summary">Turns the current theme (e.g. Nev) into clear, transparent glass. Layout stays the same; only the look changes. Can be turned off any time.</string>
     <string name="cyber_nav_versions">Versions</string>
     <string name="cyber_nav_files">Files</string>
+    <string name="cyber_nav_menu">Menu</string>
 </resources>

@@ -1796,4 +1796,5 @@
     <string name="settings_display_liquid_glass_summary">Ubah tema yang dipakai (mis. Nev) jadi kaca bening transparan. Tata letak tetap sama, hanya tampilannya yang berubah. Bisa dimatikan kapan saja.</string>
     <string name="cyber_nav_versions">Versi</string>
     <string name="cyber_nav_files">File</string>
+    <string name="cyber_nav_menu">Menu</string>
 </resources>
