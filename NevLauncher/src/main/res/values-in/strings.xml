@@ -769,6 +769,7 @@
     <string name="about_acknowledgements_laby_text">%s mengambil daftar jubah (cape) dari Laby.net untuk fitur lemari pakaian</string>
     <string name="about_acknowledgements_title">Kontributor</string>
     <string name="about_acknowledgements_pojav_text">%s menggunakan backend peluncur dari PojavLauncher</string>
+    <string name="about_acknowledgements_zalith2_text">%s dibangun di atas Zalith Launcher 2 (sumber terbuka, GPL-3.0)</string>
     <string name="about_acknowledgements_modrinth_text">%s memport preset animasi model pemain dari Modrinth</string>
     <string name="about_acknowledgements_pcl_text">%s merujuk bagian implementasi dari PCL2</string>
     <string name="about_acknowledgements_fcl_text">%s menggabungkan kode dari FCL dan merujuk bagian implementasinya</string>

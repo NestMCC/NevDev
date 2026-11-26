@@ -2669,6 +2669,7 @@
     <string name="about_acknowledgements_title">Contributors</string>
     <!-- Description of the PojavLauncher item in the acknowledgements; %s is the launcher name -->
     <string name="about_acknowledgements_pojav_text">%s uses the launch backend from PojavLauncher</string>
+    <string name="about_acknowledgements_zalith2_text">%s is built on Zalith Launcher 2 (open source, GPL-3.0)</string>
     <!-- Description of the Modrinth item in the acknowledgements; %s is the launcher name -->
     <string name="about_acknowledgements_modrinth_text">%s ports the player model animation presets from Modrinth</string>
     <!-- Description of the Plain Craft Launcher 2 item in the acknowledgements; %s is the launcher name -->
