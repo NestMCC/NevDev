@@ -474,22 +474,6 @@ private fun <E: TitledNavKey> TopBar(
                             )
                         }
 
-                        if (showHomeButton) {
-                        IconButton(
-                            modifier = Modifier.fillMaxHeight(),
-                            onClick = {
-                                if (!inLauncherScreen) {
-                                    //不在主屏幕时才允许回到主页面
-                                    toMainScreen()
-                                }
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_home_filled),
-                                contentDescription = stringResource(R.string.generic_main_menu)
-                            )
-                        }
-                        }
                     }
                 }
             }
@@ -664,6 +648,12 @@ private fun SideRail(
     onPlay: (() -> Unit)? = null,
 ) {
     val railItems: @Composable () -> Unit = {
+            SideRailItem(
+                selected = inHomeScreen,
+                painter = painterResource(R.drawable.ic_home_filled),
+                text = stringResource(R.string.hero_nav_home),
+                onClick = { if (!inHomeScreen) toHomeScreen() }
+            )
             SideRailItem(
                 selected = false,
                 painter = painterResource(R.drawable.ic_folder_filled),
