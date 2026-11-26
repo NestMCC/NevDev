@@ -238,9 +238,9 @@ object LocalServerManager {
               address: 0.0.0.0
               port: $BEDROCK_PORT
               clone-remote-port: false
-              motd1: "${cfg.name.replace('"', '\x27')}"
+              motd1: "${cfg.name.replace('"', '\'')}"
               motd2: "Nev Launcher"
-              server-name: "${cfg.name.replace('"', '\x27')}"
+              server-name: "${cfg.name.replace('"', '\'')}"
             remote:
               address: 127.0.0.1
               port: ${cfg.port}
