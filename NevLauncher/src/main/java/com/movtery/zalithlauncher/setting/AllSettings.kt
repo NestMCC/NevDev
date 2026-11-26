@@ -481,7 +481,7 @@ object AllSettings : SettingsRegistry() {
     /**
      * 启动器界面缩放（百分比）
      */
-    val launcherUiScale = intSetting("launcherUiScale", 100, 60..150)
+    val launcherUiScale = intSetting("launcherUiScale", 100, 20..150)
 
 
     /** Warna tombol kontrol (merah/oranye bawaan Nev) mengikuti tema warna launcher */
