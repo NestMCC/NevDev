@@ -182,6 +182,17 @@
         </service>
 
         <service
+            android:name=".game.localserver.GeyserService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            android:process=":geyser">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_TYPE"
+                android:value="Bridge Bedrock players to the local Minecraft server" />
+        </service>
+
+        <service
             android:name=".game.launch.GameService"
             android:enabled="true"
             android:foregroundServiceType="specialUse"

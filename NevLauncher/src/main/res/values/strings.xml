@@ -3442,4 +3442,8 @@
     <string name="local_server_delete_title">Delete %s?</string>
     <string name="local_server_delete_message">The world and all server files will be permanently deleted.</string>
     <string name="local_server_notification">Local server running: %s</string>
+    <string name="local_server_bedrock">Allow Bedrock players</string>
+    <string name="local_server_bedrock_desc">Uses Geyser so Bedrock Edition (phone/console/Windows) can join on UDP 19132. Needs Java 17+.</string>
+    <string name="local_server_bedrock_prepare">Preparing Bedrock support (downloading Geyser)…</string>
+    <string name="local_server_bedrock_failed">Failed to prepare Bedrock support. Check your internet and that Java 17+ is installed.</string>
 </resources>

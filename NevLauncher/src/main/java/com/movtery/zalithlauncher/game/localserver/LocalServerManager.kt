@@ -36,6 +36,9 @@ private const val TAG = "LocalServer"
 
 const val ACTION_LOCAL_SERVER_EXIT = "local.server.exit"
 const val EXTRA_EXIT_CODE = "exit.code"
+const val ACTION_GEYSER_EXIT = "geyser.exit"
+const val BEDROCK_PORT = 19132
+private const val GEYSER_URL = "https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/standalone"
 const val SERVER_PROCESS_SUFFIX = ":server"
 private const val MAX_CONSOLE_LINES = 400
 
@@ -50,7 +53,9 @@ data class LocalServerConfig(
     val port: Int,
     val onlineMode: Boolean,
     val rconPort: Int,
-    val rconPassword: String
+    val rconPassword: String,
+    /** Izinkan pemain Bedrock lewat Geyser (UDP 19132) */
+    val bedrock: Boolean = false
 )
 
 enum class LocalServerStatus { STOPPED, STARTING, RUNNING, STOPPING }
@@ -62,6 +67,7 @@ enum class LocalServerStatus { STOPPED, STARTING, RUNNING, STOPPING }
 object LocalServerManager {
     private val scope = CoroutineScope(Dispatchers.IO)
     private var registered = false
+    private var appContext: Context? = null
     private var tailJob: Job? = null
 
     private val _servers = MutableStateFlow<List<LocalServerConfig>>(emptyList())
@@ -83,6 +89,7 @@ object LocalServerManager {
 
     fun init(context: Context) {
         val app = context.applicationContext
+        appContext = app
         if (!registered) {
             registered = true
             val receiver = object : BroadcastReceiver() {
@@ -151,6 +158,7 @@ object LocalServerManager {
         ramMb: Int,
         port: Int,
         onlineMode: Boolean,
+        bedrock: Boolean = false,
         onProgress: (String) -> Unit
     ): LocalServerConfig = withContext(Dispatchers.IO) {
         val entry = MinecraftVersions.getVersionManifest().versions.firstOrNull { it.id == mcVersion }
@@ -183,7 +191,8 @@ object LocalServerManager {
                 port = port,
                 onlineMode = onlineMode,
                 rconPort = port + 10,
-                rconPassword = UUID.randomUUID().toString().replace("-", "").take(16)
+                rconPassword = UUID.randomUUID().toString().replace("-", "").take(16),
+                bedrock = bedrock
             )
             File(dir, "eula.txt").writeText("eula=true\n")
             File(dir, "server.properties").writeText(buildProperties(cfg))
@@ -204,6 +213,69 @@ object LocalServerManager {
         view-distance=6
         simulation-distance=5
     """.trimIndent() + "\n"
+
+    /** Ubah izin Bedrock server yang sudah ada (hanya saat server berhenti) */
+    fun setBedrock(cfg: LocalServerConfig, enabled: Boolean) {
+        if (_status.value != LocalServerStatus.STOPPED) return
+        val dir = serverDir(cfg.id)
+        runCatching { File(dir, "config.json").writeText(GSON.toJson(cfg.copy(bedrock = enabled))) }
+        reload()
+    }
+
+    private fun geyserDir(id: String) = File(serverDir(id), "geyser")
+
+    /** Unduh Geyser Standalone (sekali) dan tulis konfigurasinya. @return false bila tidak ada Java 17+ */
+    suspend fun prepareBedrock(cfg: LocalServerConfig): Boolean = withContext(Dispatchers.IO) {
+        if (pickJre(17) == null) return@withContext false
+        val gd = geyserDir(cfg.id).also { it.mkdirs() }
+        val jar = File(gd, "Geyser-Standalone.jar")
+        if (!jar.exists() || jar.length() < 1_000_000) {
+            downloadFile(url = GEYSER_URL, outputFile = jar)
+        }
+        File(gd, "config.yml").writeText(
+            """
+            bedrock:
+              address: 0.0.0.0
+              port: $BEDROCK_PORT
+              clone-remote-port: false
+              motd1: "${cfg.name.replace('"', '\x27')}"
+              motd2: "Nev Launcher"
+              server-name: "${cfg.name.replace('"', '\x27')}"
+            remote:
+              address: 127.0.0.1
+              port: ${cfg.port}
+              auth-type: ${if (cfg.onlineMode) "online" else "offline"}
+            passthrough-motd: false
+            passthrough-player-counts: false
+            """.trimIndent() + "\n"
+        )
+        true
+    }
+
+    private fun startGeyser(cfg: LocalServerConfig) {
+        val ctx = appContext ?: return
+        val jre = pickJre(17) ?: return
+        val gd = geyserDir(cfg.id)
+        if (!File(gd, "Geyser-Standalone.jar").exists()) return
+        runCatching { File(gd, "nev-geyser.log").delete() }
+        val intent = Intent(ctx, GeyserService::class.java).apply {
+            putExtra(SERVICE_SERVER_DIR, gd.absolutePath)
+            putExtra(SERVICE_SERVER_JRE, jre)
+            putExtra(SERVICE_SERVER_RAM, 384)
+            putExtra(SERVICE_SERVER_NAME, "Geyser (Bedrock)")
+            putExtra(SERVICE_SERVER_JAR, "Geyser-Standalone.jar")
+            putExtra(SERVICE_SERVER_ARGS, "--nogui")
+            putExtra(SERVICE_SERVER_LOG, "nev-geyser.log")
+            putExtra(SERVICE_EXIT_ACTION, ACTION_GEYSER_EXIT)
+        }
+        runCatching { ctx.startForegroundService(intent) }
+        _console.update { (it + "[Nev] Bedrock aktif di UDP $BEDROCK_PORT (Geyser)").takeLast(MAX_CONSOLE_LINES) }
+    }
+
+    private fun stopGeyser() {
+        val ctx = appContext ?: return
+        runCatching { ctx.stopService(Intent(ctx, GeyserService::class.java)) }
+    }
 
     /** Nama JRE terkecil yang memenuhi syarat Java versi server */
     fun pickJre(javaMajor: Int): String? =
@@ -245,6 +317,7 @@ object LocalServerManager {
         val cfg = _servers.value.firstOrNull { it.id == _runningId.value } ?: return
         if (_status.value == LocalServerStatus.STOPPED) return
         _status.value = LocalServerStatus.STOPPING
+        stopGeyser()
         val ok = runCatching { RconClient.exec(cfg.rconPort, cfg.rconPassword, "stop") }.isSuccess
         if (!ok) {
             //RCON belum siap: hentikan paksa layanan
@@ -272,6 +345,7 @@ object LocalServerManager {
 
     private fun onProcessExit() {
         tailJob?.cancel()
+        stopGeyser()
         _status.value = LocalServerStatus.STOPPED
         _runningId.value = null
     }
@@ -306,6 +380,7 @@ object LocalServerManager {
                 _console.update { (it + lines).takeLast(MAX_CONSOLE_LINES) }
                 if (_status.value == LocalServerStatus.STARTING && lines.any { it.contains("Done (") }) {
                     _status.value = LocalServerStatus.RUNNING
+                    _servers.value.firstOrNull { it.id == id }?.takeIf { it.bedrock }?.let { startGeyser(it) }
                 }
             }
         }

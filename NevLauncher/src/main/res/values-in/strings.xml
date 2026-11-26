@@ -1830,4 +1830,8 @@
     <string name="local_server_delete_title">Hapus %s?</string>
     <string name="local_server_delete_message">Dunia dan seluruh berkas server akan dihapus permanen.</string>
     <string name="local_server_notification">Server lokal berjalan: %s</string>
+    <string name="local_server_bedrock">Izinkan pemain Bedrock</string>
+    <string name="local_server_bedrock_desc">Memakai Geyser agar Bedrock Edition (HP/konsol/Windows) bisa masuk lewat UDP 19132. Butuh Java 17+.</string>
+    <string name="local_server_bedrock_prepare">Menyiapkan dukungan Bedrock (mengunduh Geyser)…</string>
+    <string name="local_server_bedrock_failed">Gagal menyiapkan dukungan Bedrock. Cek internet dan pastikan Java 17+ terpasang.</string>
 </resources>

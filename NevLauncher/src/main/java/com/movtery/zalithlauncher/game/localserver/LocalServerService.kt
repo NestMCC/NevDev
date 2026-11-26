@@ -29,9 +29,14 @@ const val SERVICE_SERVER_DIR = "server.dir"
 const val SERVICE_SERVER_JRE = "server.jre"
 const val SERVICE_SERVER_RAM = "server.ram"
 const val SERVICE_SERVER_NAME = "server.name"
+const val SERVICE_SERVER_JAR = "server.jar.name"
+const val SERVICE_SERVER_ARGS = "server.args"
+const val SERVICE_SERVER_LOG = "server.log.name"
+const val SERVICE_EXIT_ACTION = "server.exit.action"
+const val SERVICE_HEAP_ONLY = "server.heap.only"
 
 /** Menjalankan JVM server Minecraft di proses `:server` (tanpa grafis) */
-class LocalServerService : Service() {
+open class LocalServerService : Service() {
     private val scope = CoroutineScope(Dispatchers.Default)
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -43,16 +48,20 @@ class LocalServerService : Service() {
         val dir = intent?.getStringExtra(SERVICE_SERVER_DIR)
         val jre = intent?.getStringExtra(SERVICE_SERVER_JRE)
         val ram = intent?.getIntExtra(SERVICE_SERVER_RAM, 1024) ?: 1024
+        val jar = intent?.getStringExtra(SERVICE_SERVER_JAR) ?: "server.jar"
+        val jarArgs = intent?.getStringExtra(SERVICE_SERVER_ARGS) ?: "nogui"
+        val logName = intent?.getStringExtra(SERVICE_SERVER_LOG) ?: "nev-console.log"
+        val exitAction = intent?.getStringExtra(SERVICE_EXIT_ACTION) ?: ACTION_LOCAL_SERVER_EXIT
         if (dir == null || jre == null) {
             stopSelf()
             return START_NOT_STICKY
         }
 
         scope.launch {
-            val code = run(dir, jre, ram)
+            val code = run(dir, jre, ram, jar, jarArgs, logName)
             runCatching {
                 sendBroadcast(
-                    Intent(packageName + "." + ACTION_LOCAL_SERVER_EXIT)
+                    Intent(packageName + "." + exitAction)
                         .setPackage(packageName)
                         .putExtra(EXTRA_EXIT_CODE, code)
                 )
@@ -63,10 +72,10 @@ class LocalServerService : Service() {
         return START_NOT_STICKY
     }
 
-    private suspend fun run(dir: String, jre: String, ram: Int): Int = withContext(Dispatchers.IO) {
+    private suspend fun run(dir: String, jre: String, ram: Int, jar: String, jarArgs: String, logName: String): Int = withContext(Dispatchers.IO) {
         runCatching {
             withContext(Dispatchers.Main) { NativeLibraryLoader.loadPojavLib() }
-            val log = File(dir, "nev-console.log")
+            val log = File(dir, logName)
             if (!log.exists() && !log.createNewFile()) error("Failed to create console log")
             LoggerBridge.start(log.absolutePath)
             Logger.info(TAG, "start server jvm in $dir")
@@ -76,7 +85,9 @@ class LocalServerService : Service() {
                 dir = File(dir),
                 jreName = jre,
                 ramMb = ram,
-                logFile = log
+                logFile = log,
+                jarName = jar,
+                jarArgs = jarArgs
             ).launch(IntSize(1280, 720))
         }.onFailure { e ->
             Logger.warning(TAG, "server jvm crashed", e)
@@ -112,7 +123,9 @@ private class ServerLauncher(
     private val dir: File,
     private val jreName: String,
     private val ramMb: Int,
-    private val logFile: File
+    private val logFile: File,
+    private val jarName: String,
+    private val jarArgs: String
 ) : Launcher(onExit = { _, _ -> }, openPath = {}) {
 
     override suspend fun launch(screenSize: IntSize): Int {
@@ -124,9 +137,8 @@ private class ServerLauncher(
             context = context,
             jvmArgs = listOf(
                 "-Djava.awt.headless=true",
-                "-jar", File(dir, "server.jar").absolutePath,
-                "nogui"
-            ),
+                "-jar", File(dir, jarName).absolutePath
+            ) + jarArgs.split(' ').filter { it.isNotBlank() },
             userHome = dir.absolutePath,
             userArgs = "",
             screenSize = screenSize,
@@ -145,3 +157,6 @@ private class ServerLauncher(
     override fun getLogFile(): File = logFile
     override fun exit() {}
 }
+
+/** Proses terpisah untuk Geyser (jembatan Bedrock → Java); JVM hanya bisa satu per proses */
+class GeyserService : LocalServerService()

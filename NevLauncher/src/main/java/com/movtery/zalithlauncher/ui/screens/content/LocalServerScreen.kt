@@ -205,13 +205,23 @@ private fun LocalServerContent() {
                         OutlinedButton(
                             enabled = !otherRunning,
                             onClick = {
-                                val err = LocalServerManager.start(context, selected)
-                                if (err != null) {
-                                    val msg = when {
-                                        err.startsWith("java:") -> context.getString(R.string.local_server_no_java, err.removePrefix("java:"))
-                                        else -> context.getString(R.string.local_server_start_failed, err)
+                                scope.launch {
+                                    if (selected.bedrock) {
+                                        Toast.makeText(context, R.string.local_server_bedrock_prepare, Toast.LENGTH_SHORT).show()
+                                        val ok = runCatching { LocalServerManager.prepareBedrock(selected) }.getOrDefault(false)
+                                        if (!ok) {
+                                            Toast.makeText(context, R.string.local_server_bedrock_failed, Toast.LENGTH_LONG).show()
+                                            return@launch
+                                        }
                                     }
-                                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                                    val err = LocalServerManager.start(context, selected)
+                                    if (err != null) {
+                                        val msg = when {
+                                            err.startsWith("java:") -> context.getString(R.string.local_server_no_java, err.removePrefix("java:"))
+                                            else -> context.getString(R.string.local_server_start_failed, err)
+                                        }
+                                        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                                    }
                                 }
                             },
                             border = BorderStroke(1.dp, NevRed.OutlineBright)
@@ -223,17 +233,34 @@ private fun LocalServerContent() {
                 }
 
                 //alamat untuk bergabung
+                if (!isRunning) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Text(stringResource(R.string.local_server_bedrock), style = MaterialTheme.typography.labelLarge)
+                            Text(
+                                stringResource(R.string.local_server_bedrock_desc),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = NevRed.OnPanel.copy(alpha = 0.6f)
+                            )
+                        }
+                        Switch(checked = selected.bedrock, onCheckedChange = { LocalServerManager.setBedrock(selected, it) })
+                    }
+                }
                 val addrs = remember(isRunning) { LocalServerManager.localAddresses() }
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(stringResource(R.string.local_server_join), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                     val lines = buildList {
                         add("localhost:${selected.port}  (${stringResource(R.string.local_server_this_device)})")
                         addrs.forEach { add("$it:${selected.port}") }
+                        if (selected.bedrock) {
+                            add("Bedrock (UDP): localhost:19132  (${stringResource(R.string.local_server_this_device)})")
+                            addrs.forEach { add("Bedrock (UDP): $it:19132") }
+                        }
                     }
                     lines.forEach { line ->
                         Text(
                             modifier = Modifier.clickable {
-                                val addr = line.substringBefore("  ")
+                                val addr = line.substringBefore("  ").removePrefix("Bedrock (UDP): ")
                                 val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                 cm.setPrimaryClip(ClipData.newPlainText("address", addr))
                                 Toast.makeText(context, R.string.local_server_copied, Toast.LENGTH_SHORT).show()
@@ -358,6 +385,7 @@ private fun CreateServerDialog(
     var port by remember { mutableStateOf("25565") }
     var online by remember { mutableStateOf(false) }
     var eula by remember { mutableStateOf(false) }
+    var bedrock by remember { mutableStateOf(false) }
     var working by remember { mutableStateOf(false) }
 
     //batas RAM: sampai 60% dari RAM perangkat, minimal 512 MB
@@ -425,6 +453,17 @@ private fun CreateServerDialog(
                     Switch(checked = online, onCheckedChange = { online = it }, enabled = !working)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text(stringResource(R.string.local_server_bedrock))
+                        Text(
+                            stringResource(R.string.local_server_bedrock_desc),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = NevRed.OnPanel.copy(alpha = 0.6f)
+                        )
+                    }
+                    Switch(checked = bedrock, onCheckedChange = { bedrock = it }, enabled = !working)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = eula, onCheckedChange = { eula = it }, enabled = !working)
                     Text(stringResource(R.string.local_server_eula), style = MaterialTheme.typography.bodySmall)
                 }
@@ -446,6 +485,7 @@ private fun CreateServerDialog(
                                 ramMb = ram.toInt(),
                                 port = portValue!!,
                                 onlineMode = online,
+                                bedrock = bedrock,
                                 onProgress = {}
                             )
                         }.onSuccess(onCreated).onFailure {
