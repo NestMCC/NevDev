@@ -235,9 +235,10 @@ fun AboutInfoScreen(
                             openLink = { openLink("https://github.com/Meloong-Git/PCL") }
                         )
                         LinkIconItem(
-                            icon = painterResource(R.drawable.ic_github),
+                            icon = painterResource(R.drawable.img_launcher_zalith),
                             title = "Zalith Launcher 2",
                             text = stringResource(R.string.about_acknowledgements_zalith2_text, BuildKeys.LAUNCHER_SHORT_NAME),
+                            openLicense = { openLicense(R.raw.gpl_3_license) },
                             openLink = { openLink("https://github.com/ZalithLauncher/ZalithLauncher2") }
                         )
                         LinkIconItem(
