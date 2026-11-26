@@ -905,7 +905,7 @@ fun NevLauncherTheme(
     val colorTheme = AllSettings.launcherColorTheme.state
     //Liquid Glass sekarang tema warna: gaya kaca bening berlaku di atas gaya desain apa pun
     val nevStyle = nevStyleFor(AllSettings.launcherDesignStyle.state).let {
-        if (colorTheme == ColorThemeType.LIQUID && !com.movtery.zalithlauncher.BuildConfig.RUSH) it.copy(liquid = true) else it
+        if (colorTheme == ColorThemeType.LIQUID) it.copy(liquid = true) else it
     }
     //migrasi: saklar Liquid Glass / gaya Liquid lama -> tema warna Liquid Glass
     LaunchedEffect(Unit) {

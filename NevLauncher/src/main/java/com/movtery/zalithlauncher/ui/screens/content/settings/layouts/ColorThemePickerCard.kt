@@ -68,7 +68,7 @@ private val builtInOrder = listOf(
     ColorThemeType.CYBER,
     ColorThemeType.LIQUID,
     ColorThemeType.HERO
-).filter { !(com.movtery.zalithlauncher.BuildConfig.RUSH && it == ColorThemeType.LIQUID) }
+)
 
 @Composable
 private fun themeLabel(type: ColorThemeType): String = when (type) {
