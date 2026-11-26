@@ -457,20 +457,29 @@ private fun <E: TitledNavKey> TopBar(
                     Row(modifier = Modifier.fillMaxHeight()) {
                         Spacer(Modifier.width(12.dp))
 
-                        IconButton(
-                            modifier = Modifier.fillMaxHeight(),
-                            onClick = {
-                                if (!inLauncherScreen) {
-                                    //不在主屏幕时才允许返回
-                                    backDispatcher?.onBackPressed() ?: run {
-                                        onScreenBack()
+                        //tombol kembali: bentuk, isi, dan garis tepi mengikuti tema desain aktif
+                        val backShape = nevPillShape()
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .size(width = 46.dp, height = 34.dp)
+                                .background(NevRed.Panel.glassAlpha(0.7f), backShape)
+                                .border(1.dp, NevRed.Outline, backShape)
+                                .clip(backShape)
+                                .clickable {
+                                    if (!inLauncherScreen) {
+                                        //不在主屏幕时才允许返回
+                                        backDispatcher?.onBackPressed() ?: run {
+                                            onScreenBack()
+                                        }
                                     }
-                                }
-                            }
+                                },
+                            contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                modifier = Modifier.size(24.dp),
+                                modifier = Modifier.size(22.dp),
                                 painter = painterResource(R.drawable.ic_arrow_back),
+                                tint = NevRed.OnPanel,
                                 contentDescription = stringResource(R.string.generic_back)
                             )
                         }
