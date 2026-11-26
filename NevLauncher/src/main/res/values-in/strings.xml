@@ -1798,4 +1798,36 @@
     <string name="cyber_nav_versions">Versi</string>
     <string name="cyber_nav_files">File</string>
     <string name="cyber_nav_menu">Menu</string>
+    <string name="local_server_title">Server Lokal</string>
+    <string name="local_server_create">Buat server</string>
+    <string name="local_server_empty">Belum ada server. Buat satu, servernya berjalan di perangkat ini.</string>
+    <string name="local_server_pick">Pilih server di kiri, atau buat yang baru.</string>
+    <string name="local_server_start">Mulai</string>
+    <string name="local_server_stop">Hentikan</string>
+    <string name="local_server_status_stopped">Berhenti</string>
+    <string name="local_server_status_starting">Memulai…</string>
+    <string name="local_server_status_running">Berjalan</string>
+    <string name="local_server_status_stopping">Menghentikan…</string>
+    <string name="local_server_join">Alamat untuk bergabung (ketuk untuk salin)</string>
+    <string name="local_server_this_device">perangkat ini</string>
+    <string name="local_server_copied">Alamat disalin</string>
+    <string name="local_server_join_hint">Perangkat lain harus di Wi-Fi/hotspot yang sama. Pakai alamat yang diawali 192.168 atau 10.</string>
+    <string name="local_server_command_hint">Perintah, mis. list atau op nama</string>
+    <string name="local_server_send">Kirim</string>
+    <string name="local_server_command_failed">Perintah gagal. Tunggu sampai server benar-benar berjalan.</string>
+    <string name="local_server_name">Nama server</string>
+    <string name="local_server_loading">Memuat versi…</string>
+    <string name="local_server_versions_failed">Gagal memuat versi</string>
+    <string name="local_server_ram">RAM: %d MB</string>
+    <string name="local_server_port">Port (1024–65500)</string>
+    <string name="local_server_online_mode">Mode online</string>
+    <string name="local_server_online_mode_desc">Mati = akun offline/non-premium bisa masuk. Hidup = hanya akun resmi.</string>
+    <string name="local_server_eula">Saya menyetujui EULA Minecraft (aka.ms/MinecraftEULA)</string>
+    <string name="local_server_creating">Membuat server dan mengunduh server.jar…</string>
+    <string name="local_server_create_failed">Gagal membuat server: %s</string>
+    <string name="local_server_no_java">Java %s (atau lebih baru) belum terpasang di launcher.</string>
+    <string name="local_server_start_failed">Gagal memulai server: %s</string>
+    <string name="local_server_delete_title">Hapus %s?</string>
+    <string name="local_server_delete_message">Dunia dan seluruh berkas server akan dihapus permanen.</string>
+    <string name="local_server_notification">Server lokal berjalan: %s</string>
 </resources>

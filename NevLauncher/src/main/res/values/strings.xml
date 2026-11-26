@@ -3410,4 +3410,36 @@
     <string name="cyber_nav_versions">Versions</string>
     <string name="cyber_nav_files">Files</string>
     <string name="cyber_nav_menu">Menu</string>
+    <string name="local_server_title">Local Server</string>
+    <string name="local_server_create">Create server</string>
+    <string name="local_server_empty">No servers yet. Create one and it will run on this device.</string>
+    <string name="local_server_pick">Pick a server on the left, or create a new one.</string>
+    <string name="local_server_start">Start</string>
+    <string name="local_server_stop">Stop</string>
+    <string name="local_server_status_stopped">Stopped</string>
+    <string name="local_server_status_starting">Starting…</string>
+    <string name="local_server_status_running">Running</string>
+    <string name="local_server_status_stopping">Stopping…</string>
+    <string name="local_server_join">Join address (tap to copy)</string>
+    <string name="local_server_this_device">this device</string>
+    <string name="local_server_copied">Address copied</string>
+    <string name="local_server_join_hint">Other devices must be on the same Wi-Fi/hotspot. Use the address that starts with 192.168 or 10.</string>
+    <string name="local_server_command_hint">Command, e.g. list or op name</string>
+    <string name="local_server_send">Send</string>
+    <string name="local_server_command_failed">Command failed. Wait until the server is fully running.</string>
+    <string name="local_server_name">Server name</string>
+    <string name="local_server_loading">Loading versions…</string>
+    <string name="local_server_versions_failed">Failed to load versions</string>
+    <string name="local_server_ram">RAM: %d MB</string>
+    <string name="local_server_port">Port (1024–65500)</string>
+    <string name="local_server_online_mode">Online mode</string>
+    <string name="local_server_online_mode_desc">Off = offline/cracked accounts can join. On = official accounts only.</string>
+    <string name="local_server_eula">I agree to the Minecraft EULA (aka.ms/MinecraftEULA)</string>
+    <string name="local_server_creating">Creating server and downloading server.jar…</string>
+    <string name="local_server_create_failed">Failed to create server: %s</string>
+    <string name="local_server_no_java">Java %s (or newer) is not installed in the launcher.</string>
+    <string name="local_server_start_failed">Failed to start server: %s</string>
+    <string name="local_server_delete_title">Delete %s?</string>
+    <string name="local_server_delete_message">The world and all server files will be permanently deleted.</string>
+    <string name="local_server_notification">Local server running: %s</string>
 </resources>

@@ -62,6 +62,10 @@ sealed interface NormalNavKey : TitledNavKey {
     @Serializable data object ServerHub : NormalNavKey {
         @Contextual override val title: AndroidStringText = androidText(R.string.server_hub_title)
     }
+    /** Server Lokal: server Minecraft yang berjalan di perangkat sendiri */
+    @Serializable data object LocalServer : NormalNavKey {
+        @Contextual override val title: AndroidStringText = androidText(R.string.local_server_title)
+    }
     /** 多人联机屏幕 */
     @Serializable data object Multiplayer: NormalNavKey {
         @Contextual override val title: AndroidStringText = androidText(R.string.terracotta_terracotta)
