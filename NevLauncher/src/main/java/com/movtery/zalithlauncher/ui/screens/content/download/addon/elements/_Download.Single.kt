@@ -175,8 +175,7 @@ fun DownloadSingleOperation(
             // 自动模式：资源版本与当前游戏版本（含 Fabric 等加载器）匹配时，跳过对话框，直接选中当前版本并下载
             val currentVersion by VersionsManager.currentVersion.collectAsStateWithLifecycle()
             val autoTarget = currentVersion?.takeIf { target ->
-                AllSettings.autoInstallAddons.state &&
-                        target.isValid() &&
+                target.isValid() &&
                         operation.version.isAutoInstallable(target, classes)
             }
 
