@@ -50,6 +50,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -169,19 +170,12 @@ fun MenuBox(
                 modifier = Modifier.size(28.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Crossfade(opened) { state ->
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        painter = painterResource(
-                            if (state) {
-                                R.drawable.ic_menu_open
-                            } else {
-                                R.drawable.ic_menu
-                            }
-                        ),
-                        contentDescription = null
-                    )
-                }
+                //logo Nev Launcher sebagai tombol menu editor (sedikit redup saat menu terbuka)
+                androidx.compose.foundation.Image(
+                    modifier = Modifier.size(26.dp).alpha(if (opened) 0.6f else 1f),
+                    painter = painterResource(R.drawable.img_nev_logo),
+                    contentDescription = null
+                )
             }
         }
     }
