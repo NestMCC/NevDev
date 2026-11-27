@@ -4,13 +4,23 @@ on:
   push:
     branches:
       - '**'
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
   workflow_dispatch:
+    inputs:
+      arches:
+        description: 'Arsitektur (JSON); bawaan hanya arm64. Semua: ["all","arm","arm64","x86","x86_64"]'
+        required: false
+        type: string
+        default: '["arm64"]'
 
 jobs:
   Build:
     uses: ./.github/workflows/build.yml
     with:
       variant: Debug
+      arches: ${{ inputs.arches || '["arm64"]' }}
     secrets:
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}

@@ -2,11 +2,26 @@ name: Build APK
 
 on:
   workflow_dispatch:
+    inputs:
+      variant:
+        description: "Debug atau Release"
+        required: false
+        type: string
+        default: "Release"
+      arches:
+        description: 'Arsitektur (JSON), mis. ["arm64"] atau ["all","arm","arm64","x86","x86_64"]'
+        required: false
+        type: string
+        default: '["all","arm","arm64","x86","x86_64"]'
   workflow_call:
     inputs:
       variant:
         required: true
         type: string
+      arches:
+        required: false
+        type: string
+        default: '["arm64"]'
     secrets:
       KEY_PASSWORD:
         required: false
@@ -23,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: ["all","arm","arm64","x86","x86_64"]
+        arch: ${{ fromJSON(inputs.arches) }}
       fail-fast: false
 
     env:
