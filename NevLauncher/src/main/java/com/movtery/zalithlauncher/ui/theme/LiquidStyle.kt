@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -59,12 +60,14 @@ fun Modifier.liquidBackdrop(): Modifier = composed {
     val c1 = scheme.primary
     val c2 = scheme.secondary
     val c3 = scheme.tertiary
-    val phase = rememberInfiniteTransition(label = "liquidBackdrop").animateFloat(
+    val rawPhase = rememberInfiniteTransition(label = "liquidBackdrop").animateFloat(
         initialValue = 0f,
         targetValue = (2 * PI).toFloat(),
         animationSpec = infiniteRepeatable(tween(26000, easing = LinearEasing)),
         label = "liquidBackdropPhase"
     )
+    //gerakan sangat pelan: cukup digambar ulang ~12x/detik (bukan 60x) agar GPU/CPU tidak terus bekerja
+    val phase = remember(rawPhase) { derivedStateOf { (rawPhase.value / 0.02f).toInt() * 0.02f } }
     drawBehind {
         val p = phase.value
         val w = size.width
@@ -99,7 +102,9 @@ fun Modifier.liquidBackdrop(): Modifier = composed {
  * Dipakai pada kartu bergaya Liquid.
  */
 fun Modifier.liquidGlassRim(shape: Shape): Modifier = composed {
-    val spin = LocalLiquidSpin.current
+    val rawSpin = LocalLiquidSpin.current
+    //putaran garis tepi dibulatkan per 4 derajat: jauh lebih sedikit gambar ulang pada banyak kartu
+    val spin = remember(rawSpin) { rawSpin?.let { r -> derivedStateOf { (r.value / 4f).toInt() * 4f } } }
     val accent = MaterialTheme.colorScheme.primary
     val strokePx = with(LocalDensity.current) { 1.4.dp.toPx() }
     val colors = remember(accent) {

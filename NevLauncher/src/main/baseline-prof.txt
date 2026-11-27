@@ -1,0 +1,17 @@
+# Baseline Profile (aturan wildcard): kode launcher + Compose dikompilasi lebih awal
+# sehingga pindah halaman, tab, dan scroll tidak lagi tersendat saat pertama kali dipakai.
+HSPLcom/movtery/zalithlauncher/**;->**(**)**
+Lcom/movtery/zalithlauncher/**;
+HSPLcom/movtery/layer_controller/**;->**(**)**
+Lcom/movtery/layer_controller/**;
+HSPLandroidx/compose/**;->**(**)**
+Landroidx/compose/**;
+HSPLandroidx/navigation3/**;->**(**)**
+Landroidx/navigation3/**;
+HSPLandroidx/lifecycle/**;->**(**)**
+Landroidx/lifecycle/**;
+HSPLkotlin/**;->**(**)**
+HSPLkotlinx/coroutines/**;->**(**)**
+Lkotlinx/coroutines/**;
+HSPLcoil3/**;->**(**)**
+Lcoil3/**;

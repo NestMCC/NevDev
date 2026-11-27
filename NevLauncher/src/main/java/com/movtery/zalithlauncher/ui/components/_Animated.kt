@@ -97,10 +97,13 @@ private fun rememberAnimatedContext(
         index = index,
         extraDelayMillis = extraDelayMillis
     )
-    val distanceScale = swapAnimateDistanceScaleAsState(
-        isVisible = isVisible,
-        index = index
-    )
+    //skala jarak diturunkan dari progress (tanpa animasi ketiga per item): lebih ringan saat banyak kartu
+    val distanceScale = remember(progress) {
+        object : State<Float> {
+            override val value: Float
+                get() = SwapTimeline.EXIT_DISTANCE_SCALE + (1f - SwapTimeline.EXIT_DISTANCE_SCALE) * progress.value
+        }
+    }
     return remember(progress, alphaProgress, distanceScale) {
         AnimatedContext(progress, alphaProgress, distanceScale, defaultDirection)
     }
@@ -223,37 +226,6 @@ fun swapAnimateAlphaProgressAsState(
     )
 }
 
-@Composable
-private fun swapAnimateDistanceScaleAsState(
-    isVisible: Boolean,
-    index: Int
-): State<Float> {
-    if (SwapTimeline.isSwapClosed()) return rememberUpdatedState(newValue = 1f)
-    val spec: TweenSpec<Float> = if (isVisible) {
-        tween(
-            durationMillis = SwapTimeline.swapTime(SwapTimeline.ENTER_ITEM),
-            delayMillis = SwapTimeline.enterStagger(index),
-            easing = LinearEasing
-        )
-    } else {
-        tween(
-            durationMillis = SwapTimeline.swapTime(SwapTimeline.EXIT_ITEM),
-            delayMillis = SwapTimeline.exitStagger(index),
-            easing = LinearEasing
-        )
-    }
-    return animateFloatAsState(
-        targetValue = if (isVisible) 1f else SwapTimeline.EXIT_DISTANCE_SCALE,
-        animationSpec = spec
-    )
-}
-
-
-/**
- * 支持连锁动画效果的垂直布局容器，自动为每个子项应用递增的动画延迟
- * @param isVisible 控制容器内所有子项的动画触发状态
- * @param stagger 是否启用子项连锁错峰
- */
 @Composable
 fun AnimatedColumn(
     modifier: Modifier = Modifier,
