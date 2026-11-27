@@ -54,7 +54,6 @@ class ScreenBackStackViewModel : ViewModel() {
         downloadScreen::class,
         NormalNavKey.Multiplayer::class,
         NormalNavKey.ServerHub::class,
-        NormalNavKey.LocalServer::class,
         NormalNavKey.Donate::class
     )
 }

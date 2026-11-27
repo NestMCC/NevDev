@@ -96,17 +96,13 @@ fun ServerHubScreen(
         screenKey = NormalNavKey.ServerHub,
         currentKey = backScreenViewModel.mainScreen.currentKey
     ) { _ ->
-        ServerHubContent(
-            onQuickPlay = onQuickPlay,
-            onOpenLocalServer = { backScreenViewModel.mainScreen.navigateTo(NormalNavKey.LocalServer) }
-        )
+        ServerHubContent(onQuickPlay = onQuickPlay)
     }
 }
 
 @Composable
 private fun ServerHubContent(
-    onQuickPlay: (Version?, String) -> Unit,
-    onOpenLocalServer: () -> Unit
+    onQuickPlay: (Version?, String) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -243,15 +239,6 @@ private fun ServerHubContent(
                 )
             ) {
                 Text(stringResource(R.string.server_hub_favorites, cards.size), maxLines = 1)
-            }
-            OutlinedButton(
-                onClick = onOpenLocalServer,
-                shape = if (com.movtery.zalithlauncher.ui.theme.isNevDesign()) CircleShape else RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, NevRed.Outline),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = NevRed.OnPanel),
-                contentPadding = PaddingValues(horizontal = 12.dp)
-            ) {
-                Text(stringResource(R.string.local_server_title), maxLines = 1)
             }
             OutlinedButton(
                 onClick = { showAdd = true },

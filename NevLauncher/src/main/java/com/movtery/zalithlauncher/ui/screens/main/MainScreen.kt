@@ -133,7 +133,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import com.movtery.zalithlauncher.ui.screens.content.DonateScreen
 import com.movtery.zalithlauncher.ui.screens.content.MultiplayerScreen
-import com.movtery.zalithlauncher.ui.screens.content.LocalServerScreen
 import com.movtery.zalithlauncher.ui.screens.content.ServerHubScreen
 import com.movtery.zalithlauncher.ui.screens.content.SettingsScreen
 import com.movtery.zalithlauncher.ui.screens.content.VersionExportScreen
@@ -1152,9 +1151,6 @@ private fun NavigationUI(
                             }
                         }
                     )
-                }
-                entry<NormalNavKey.LocalServer> {
-                    LocalServerScreen(backScreenViewModel = screenBackStackModel)
                 }
                 entry<NormalNavKey.Multiplayer> {
                     MultiplayerScreen(
